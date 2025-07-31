@@ -5,9 +5,9 @@ export function AdminLayout(){
     return(
         <header>
             <nav>
-                <NavLink to="/coupons">Coupons</NavLink>
-                <NavLink to="/localities">Localities</NavLink>
-                <NavLink to="/categories">Categories</NavLink>
+                <NavLink to="/admin/coupons">Coupons</NavLink>
+                <NavLink to="/admin/localities">Localities</NavLink>
+                <NavLink to="/admin/categories">Categories</NavLink>
             </nav>
         </header>
     )
