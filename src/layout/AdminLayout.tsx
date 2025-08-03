@@ -20,6 +20,18 @@ export function AdminLayout() {
                 </div>
                 
                 <nav className="sidebar-nav">
+
+                    <NavLink 
+                        to="" 
+                        end
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"><FaBars /></div>
+                        <div className="nav-text">Dashboard</div>
+                    </NavLink>
+
                     <NavLink 
                         to="users/" 
                         className={({ isActive }) => 
