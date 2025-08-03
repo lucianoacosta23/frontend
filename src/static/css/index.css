@@ -22,7 +22,32 @@ a:hover {
 }
 
 body {
-  display: flex;
+  margin: 0;
+  padding: 0;
   min-width: 320px;
+  min-height: 100vh;
+  /* Removido display: flex para evitar conflictos com el layout */
+}
+
+/* Reset adicional para móviles */
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Mejoras para touch en móviles */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* App.css - Si existe, debería ser así */
+.App {
+  width: 100%;
   min-height: 100vh;
 }
