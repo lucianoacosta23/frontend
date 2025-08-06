@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './couponTable.css'
+import type {Coupon} from './couponJSON.ts'
 
 export default function CouponGetAll() {
     const [data, setData] = useState<CouponResponse | null>(null);
@@ -54,13 +55,6 @@ export default function CouponGetAll() {
     </div>
   );
 }
-
-type Coupon = {
-  id: number;
-  discount: number;
-  status: string;
-  expiringDate: string; 
-};
 
 type CouponResponse = {
     data: Coupon[];
