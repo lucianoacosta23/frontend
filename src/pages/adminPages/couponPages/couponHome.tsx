@@ -8,6 +8,8 @@ export default function CouponHome() {
       <nav>
         <Link to="/admin/coupons">Inicio</Link>
         <Link to="/admin/coupons/getAll/">Ver cupones</Link>
+        <Link to="/admin/coupons/getOne/">Ver cupon por ID</Link>
+        <Link to="/admin/coupons/add/">Crear cupones</Link>
     </nav>
         <Outlet />
     </div>

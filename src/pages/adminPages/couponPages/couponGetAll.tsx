@@ -30,9 +30,7 @@ export default function CouponGetAll() {
         return <div>Error: {error.message}</div>
     }
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Página de cupones</h1>
-      <p>¡Bienvenido a la página de gestión de cupones!</p>
+    <div>
         <pre>
             <table className='couponTable'>
                 <thead>
