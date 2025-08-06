@@ -9,4 +9,8 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  server: {
+    host: true, // Permite conexiones desde cualquier IP
+    port: 5173, // Puerto por defecto de Vite
+  }
 })
