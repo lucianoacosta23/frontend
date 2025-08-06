@@ -4,6 +4,7 @@ import {AdminLayout} from '../../layout/AdminLayout.tsx';
 import LocalityHome from '../adminPages/localityPages/localityHome.tsx';
 import AdminDashboard from '../adminPages/adminDashboard.tsx';
 import CouponHome from '../adminPages/couponPages/couponHome.tsx';
+import CouponGetAll from '../adminPages/couponPages/couponGetAll.tsx';
 
 function App() {
   return (
@@ -11,7 +12,9 @@ function App() {
       <Routes>
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
-          <Route path="coupons/" element={<CouponHome />} />
+          <Route path="coupons/" element={<CouponHome />}>
+            <Route path="getAll/" element={<CouponGetAll />}/>
+          </Route>
           <Route path="localities/" element={<LocalityHome />} />
           <Route path="categories/" element={<div>Categories Page</div>} />
         </Route>

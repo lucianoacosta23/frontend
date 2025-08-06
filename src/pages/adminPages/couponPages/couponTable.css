@@ -1,0 +1,28 @@
+.couponTable {
+  border-collapse: collapse; /* quita espacios entre bordes */
+  margin-top: 1rem;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.couponTable thead {
+  background-color: #025a06;
+}
+
+.couponTable thead th {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+.couponTable tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.couponTable tbody td {
+  padding: 8px 10px;
+}
+
+.couponTable tbody tr:hover {
+  background-color: #006525; /* color al pasar el mouse */
+}
