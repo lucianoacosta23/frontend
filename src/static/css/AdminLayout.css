@@ -175,7 +175,6 @@
 .admin-content {
     flex: 1;
     padding: 30px;
-    margin-left: var(--sidebar-width);
     transition: margin-left 0.3s;
 }
 

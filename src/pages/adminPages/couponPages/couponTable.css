@@ -26,3 +26,13 @@
 .couponTable tbody tr:hover {
   background-color: #006525; /* color al pasar el mouse */
 }
+
+form{
+  display:flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+form input, button{
+  height: 3vh;
+}
