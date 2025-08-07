@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './couponTable.css'
-import type {Coupon} from './couponJSON.ts'
+import type {Coupon} from '../../../types/couponType.ts'
 
 export default function CouponGetAll() {
     const [data, setData] = useState<CouponResponse | null>(null);

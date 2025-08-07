@@ -1,5 +1,5 @@
 import './couponTable.css'
-import type {Coupon} from './couponJSON.ts'
+import type {Coupon} from '../../../types/couponType.ts'
 import { useState } from 'react';
 
 export default function CouponGetOne(){
