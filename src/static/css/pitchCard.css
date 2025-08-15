@@ -42,18 +42,6 @@
     border-radius: 10% 10% 0 0;
 }
 
-.pitchCard button{
-    outline: 0;
-    border: none;
-    width: 100%;
-    background-color: #1abc9c;
-    color: black;
-    font-weight: 700;
-    font-size: 16px;
-    margin-top: 1vh;
-    border-radius: 0 0 15% 15%;
-    transition: background-color 0.4s ease; 
-}
 
 .pitchCard button:hover{
     cursor: pointer;

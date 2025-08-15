@@ -1,8 +1,8 @@
 .couponTable {
-  border-collapse: collapse; /* quita espacios entre bordes */
+  border-collapse: collapse; 
   margin-top: 1rem;
   font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .couponTable thead {
@@ -24,7 +24,7 @@
 }
 
 .couponTable tbody tr:hover {
-  background-color: #006525; /* color al pasar el mouse */
+  background-color: #006525;
 }
 
 form{
@@ -35,4 +35,5 @@ form{
 
 form input, button{
   height: 3vh;
+  cursor: pointer;
 }

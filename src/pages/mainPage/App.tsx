@@ -7,6 +7,7 @@ import CouponHome from '../adminPages/couponPages/couponHome.tsx';
 import CouponGetAll from '../adminPages/couponPages/couponGetAll.tsx';
 import CouponGetOne from '../adminPages/couponPages/couponGetOne.tsx';
 import CouponAdd from '../adminPages/couponPages/couponAdd.tsx';
+import CouponUpdate from '../adminPages/couponPages/couponUpdate.tsx';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="getAll/" element={<CouponGetAll />}/>
             <Route path='getOne/' element={<CouponGetOne />}/>
             <Route path='add/' element={<CouponAdd />}/>
+            <Route path='update/' element={<CouponUpdate />}/>
           </Route>
           <Route path="localities/" element={<LocalityHome />} />
           <Route path="categories/" element={<div>Categories Page</div>} />
