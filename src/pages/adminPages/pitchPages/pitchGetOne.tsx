@@ -1,4 +1,4 @@
-import './couponTable.css'
+import '../couponPages/couponTable.css'
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useState } from 'react';
 
@@ -69,5 +69,5 @@ export default function PitchGetOne(){
 }
 
 type CouponResponse = {
-    data:Coupon
+    data:Pitch
 }

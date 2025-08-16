@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './couponTable.css'
+import '../couponPages/couponTable.css'
 import type {Pitch} from '../../../types/pitchType.ts'
 
 export default function PitchGetAll() {
@@ -74,17 +74,18 @@ export default function PitchGetAll() {
                     <th>Size</th>
                     <th>Ground type</th>
                     <th>Roof</th>
+                    <th>Eliminar</th>
                 </thead>
                 <tbody>
                     {data?.data.map((pitch) => (
             <tr key={pitch.id}>
               <td>{pitch.id}</td>
-              <td>{pitch.businessId}</td>
-              <td>{pitch.rating}</td>
+              <td>{pitch.business.id}</td>
+              <td>{('⭐️').repeat(pitch.rating)}</td>
               <td>${pitch.price}</td>
               <td>{pitch.size}</td>
               <td>{pitch.groundType}</td>
-              <td>{pitch.roof}</td>
+              <td>{pitch.roof ? 'Techado':'Sin techo'}</td>
               <td><button onClick={handleDeleteSubmit} value={pitch.id}>❌</button></td>
             </tr>
           ))}

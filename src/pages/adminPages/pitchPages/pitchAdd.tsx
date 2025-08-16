@@ -1,26 +1,26 @@
 import { useState } from 'react';
-import './couponTable.css'
+import '../coupons/couponTable.css'
 import type {Pitch} from '../../../types/pitchType.ts'
 
 export default function PitchAdd(){
-    const [data, setData] = useState<CouponResponse | null>(null);
+    const [data, setData] = useState<PitchResponse | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     
-    const add = async (coupon:Pitch) =>{
+    const add = async (pitch:Pitch) =>{
         try{
             setLoading(true)
             setError(null)
-            const response = await fetch('http://localhost:3000/api/coupons/add',{method:"POST",
+            const response = await fetch('http://localhost:3000/api/pitchs/add',{method:"POST",
                 headers: { 'Content-Type': 'application/json',}, 
-                body: JSON.stringify(coupon)}
+                body: JSON.stringify(pitch)}
             )
             if(!response.ok){
                 throw new Error("HTTP Error! status: " + response.status)
             }
-            const json:CouponResponse = await response.json()
+            const json:PitchResponse = await response.json()
             setData(json)
-            alert('Cupón creado con éxito')
+            alert('Cancha creada con éxito')
         }catch(error){
             setError(error as Error)
             setLoading(false)
@@ -31,27 +31,36 @@ export default function PitchAdd(){
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const coupon:Coupon = {
+        const pitch:Pitch = {
             id:0,
-            discount:Number(formData.get("discount")),
-            status:String(formData.get("status")),
-            expiringDate:String(formData.get("expiringDate"))
+            businessId:Number(formData.get("businessId")),
+            rating:Number(formData.get("rating")),
+            price:Number(formData.get("price")),
+            size:String(formData.get("size")),
+            groundType:String(formData.get("groundType")),
+            roof:Boolean(formData.get("roof"))
         }
-        if(coupon) {
-            add(coupon);
+        if(pitch) {
+            add(pitch);
         }
       };
 
     return (
     <div>
-            <h2>Crear cupón</h2>
+            <h2>Crear cancha</h2>
             <form onSubmit={handleSubmit}>
-                <label>Discount</label>
-                <input name="discount" type="number" required step="0.01" max={1}/>
-                <label>Status</label>
-                <input type="text" name="status" required />
-                <label>Expiring Date</label>
-                <input type="date" name="expiringDate" required />
+                <label>ID de negocio asociado: </label>
+                <input name="businessId" type="number" required />
+                <label>Rating: </label>
+                <input name="rating" type="number" required />
+                <label>Precio: </label>
+                <input name="price" type="number" required />
+                <label>Tamaño: </label>
+                <input type="text" name="size" required />
+                <label>Tipo de suelo: </label>
+                <input type="text" name="groundType" required />
+                <label>Techo: </label>
+                <input type="checkbox" name="roof" required />
                 <button type="submit">Crear</button>
             </form>
             <pre>
@@ -61,18 +70,24 @@ export default function PitchAdd(){
                 <table className='couponTable'>
                 <thead>
                     <tr>
-                    <th>ID</th>
-                    <th>Discount</th>
-                    <th>Status</th>
-                    <th>Expiring Date</th>
+                        <th>ID</th>
+                        <th>Business ID</th>
+                        <th>Rating</th>
+                        <th>Price</th>
+                        <th>Size</th>
+                        <th>Ground type</th>
+                        <th>Roof</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                    <td>{data.data.id}</td>
-                    <td>{data.data.discount}</td>
-                    <td>{data.data.status}</td>
-                    <td>{data.data.expiringDate}</td>
+                        <td>{data.data.id}</td>
+                        <td>{data.data.businessId}</td>
+                        <td>{('⭐️').repeat(data.data.rating)}</td>
+                        <td>${data.data.price}</td>
+                        <td>{data.data.size}</td>
+                        <td>{data.data.groundType}</td>
+                        <td>{data.data.roof ? 'Techado':'Sin techo'}</td>
                     </tr>
                 </tbody>
                 </table>)}
@@ -80,6 +95,6 @@ export default function PitchAdd(){
         </div>)
 }
 
-type CouponResponse = {
+type PitchResponse = {
     data:Pitch
-}
+} 
