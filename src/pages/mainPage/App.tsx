@@ -8,6 +8,11 @@ import CouponGetAll from '../adminPages/couponPages/couponGetAll.tsx';
 import CouponGetOne from '../adminPages/couponPages/couponGetOne.tsx';
 import CouponAdd from '../adminPages/couponPages/couponAdd.tsx';
 import CouponUpdate from '../adminPages/couponPages/couponUpdate.tsx';
+import PitchHome from '../adminPages/pitchPages/pitchHome.tsx';
+import PitchGetAll from '../adminPages/pitchPages/pitchGetAll.tsx';
+import PitchGetOne from '../adminPages/pitchPages/pitchGetOne.tsx';
+import PitchAdd from '../adminPages/pitchPages/pitchAdd.tsx';
+import PitchUpdate from '../adminPages/pitchPages/pitchUpdate.tsx';
 
 function App() {
   return (
@@ -20,6 +25,12 @@ function App() {
             <Route path='getOne/' element={<CouponGetOne />}/>
             <Route path='add/' element={<CouponAdd />}/>
             <Route path='update/' element={<CouponUpdate />}/>
+          </Route>
+          <Route path="pitchs/" element={<PitchHome />}>
+            <Route path="getAll/" element={<PitchGetAll />}/>
+            <Route path='getOne/' element={<PitchGetOne />}/>
+            <Route path='add/' element={<PitchAdd />}/>
+            <Route path='update/' element={<PitchUpdate />}/>
           </Route>
           <Route path="localities/" element={<LocalityHome />} />
           <Route path="categories/" element={<div>Categories Page</div>} />

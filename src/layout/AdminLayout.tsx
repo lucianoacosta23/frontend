@@ -61,6 +61,15 @@ export function AdminLayout() {
                         <div className="nav-icon"><FaTicketAlt /></div>
                         <div className="nav-text">Cupones</div>
                     </NavLink>
+                    <NavLink 
+                        to="pitchs/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"><FaTicketAlt /></div>
+                        <div className="nav-text">Canchas</div>
+                    </NavLink>
                 </nav>
             </aside>
 
@@ -109,6 +118,16 @@ export function AdminLayout() {
                     >
                         <div className="nav-icon"><FaTicketAlt /></div>
                         <div className="nav-text">Cupones</div>
+                    </NavLink>
+                    <NavLink 
+                        to="pitchs/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                        onClick={toggleMobileMenu}
+                    >
+                        <div className="nav-icon"><FaTicketAlt /></div>
+                        <div className="nav-text">Canchas</div>
                     </NavLink>
                 </nav>
             </div>
