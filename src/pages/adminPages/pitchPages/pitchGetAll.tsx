@@ -80,7 +80,7 @@ export default function PitchGetAll() {
                     {data?.data.map((pitch) => (
             <tr key={pitch.id}>
               <td>{pitch.id}</td>
-              <td>{pitch.business.id}</td>
+              <td>{pitch.businessId}</td>
               <td>{('⭐️').repeat(pitch.rating)}</td>
               <td>${pitch.price}</td>
               <td>{pitch.size}</td>

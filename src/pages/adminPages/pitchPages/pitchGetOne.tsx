@@ -3,7 +3,7 @@ import type {Pitch} from '../../../types/pitchType.ts'
 import { useState } from 'react';
 
 export default function PitchGetOne(){
-    const [data, setData] = useState<CouponResponse | null>(null);
+    const [data, setData] = useState<PitchResponse | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -11,11 +11,11 @@ export default function PitchGetOne(){
         try{
             setLoading(true)
             setError(null)
-            const response = await fetch('http://localhost:3000/api/coupons/getOne/'+id)
+            const response = await fetch('http://localhost:3000/api/pitchs/getOne/'+id)
             if(!response.ok){
                 throw new Error("HTTP Error! status: " + response.status)
             }
-            const json:CouponResponse = await response.json()
+            const json:PitchResponse = await response.json()
             setData(json)
         }catch(error){
             setError(error as Error)
@@ -35,11 +35,11 @@ export default function PitchGetOne(){
     
     return (
         <div>
-            <h2>Conseguir cupón</h2>
+            <h2>Conseguir cancha</h2>
             <form onSubmit={handleSubmit}>
-                <label>ID del cupón</label>
+                <label>ID de la cancha</label>
                 <input name="id" type="number" required />
-                <button type="submit">Conseguir cupón</button>
+                <button type="submit">Conseguir cancha</button>
             </form>
             <pre>
             {loading && <p>Loading...</p>}
@@ -48,18 +48,24 @@ export default function PitchGetOne(){
                 <table className='couponTable'>
                 <thead>
                     <tr>
-                    <th>ID</th>
-                    <th>Discount</th>
-                    <th>Status</th>
-                    <th>Expiring Date</th>
+                        <th>ID</th>
+                        <th>Business ID</th>
+                        <th>Rating</th>
+                        <th>Price</th>
+                        <th>Size</th>
+                        <th>Ground type</th>
+                        <th>Roof</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                    <td>{data.data.id}</td>
-                    <td>{data.data.discount}</td>
-                    <td>{data.data.status}</td>
-                    <td>{data.data.expiringDate}</td>
+                        <td>{data.data.id}</td>
+                        <td>{data.data.businessId}</td>
+                        <td>{('⭐️').repeat(data.data.rating)}</td>
+                        <td>${data.data.price}</td>
+                        <td>{data.data.size}</td>
+                        <td>{data.data.groundType}</td>
+                        <td>{data.data.roof ? 'Techado':'Sin techo'}</td>
                     </tr>
                 </tbody>
                 </table>)}
@@ -68,6 +74,6 @@ export default function PitchGetOne(){
     )
 }
 
-type CouponResponse = {
+type PitchResponse = {
     data:Pitch
 }

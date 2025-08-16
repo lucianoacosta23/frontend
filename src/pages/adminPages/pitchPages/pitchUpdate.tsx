@@ -3,24 +3,24 @@ import '../couponPages/couponTable.css'
 import type {Pitch} from '../../../types/pitchType.ts'
 
 export default function PitchUpdate(){
-    const [data, setData] = useState<CouponResponse | null>(null);
+    const [data, setData] = useState<PitchResponse | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     
-    const update = async (coupon:Coupon) =>{
+    const update = async (pitch:Pitch) =>{
         try{
             setLoading(true)
             setError(null)
-            const response = await fetch('http://localhost:3000/api/coupons/update/' + String(coupon.id),{method:"PATCH",
+            const response = await fetch('http://localhost:3000/api/pitchs/update/' + String(pitch.id),{method:"PATCH",
                 headers: { 'Content-Type': 'application/json',}, 
-                body: JSON.stringify(coupon)}
+                body: JSON.stringify(pitch)}
             )
             if(!response.ok){
                 throw new Error("HTTP Error! status: " + response.status)
             }
-            const json:CouponResponse = await response.json()
+            const json:PitchResponse = await response.json()
             setData(json)
-            alert('Cupón actualizado con éxito')
+            alert('Cancha actualizada con éxito')
         }catch(error){
             setError(error as Error)
             setLoading(false)
@@ -31,14 +31,17 @@ export default function PitchUpdate(){
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const coupon:Coupon = {
-            id:Number(formData.get("id")),
-            discount:Number(formData.get("discount")),
-            status:String(formData.get("status")),
-            expiringDate:String(formData.get("expiringDate"))
+        const pitch:Pitch = {
+            id:0,
+            businessId:Number(formData.get("businessId")),
+            rating:Number(formData.get("rating")),
+            price:Number(formData.get("price")),
+            size:String(formData.get("size")),
+            groundType:String(formData.get("groundType")),
+            roof:Boolean(formData.get("roof"))
         }
-        if(coupon) {
-            update(coupon);
+        if(pitch) {
+            update(pitch);
         }
       };
 
@@ -63,18 +66,23 @@ export default function PitchUpdate(){
                 <table className='couponTable'>
                 <thead>
                     <tr>
-                    <th>ID</th>
-                    <th>Discount</th>
-                    <th>Status</th>
-                    <th>Expiring Date</th>
+                        <th>ID</th>
+                        <th>Business ID</th>
+                        <th>Rating</th>
+                        <th>Price</th>
+                        <th>Size</th>
+                        <th>Ground type</th>
+                        <th>Roof</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                    <td>{data.updatedCoupon.id}</td>
-                    <td>{data.updatedCoupon.discount}</td>
-                    <td>{data.updatedCoupon.status}</td>
-                    <td>{data.updatedCoupon.expiringDate}</td>
+                        <td>{data.updatedPitch.id}</td>
+                        <td>{('⭐️').repeat(data.updatedPitch.rating)}</td>
+                        <td>${data.updatedPitch.price}</td>
+                        <td>{data.updatedPitch.size}</td>
+                        <td>{data.updatedPitch.groundType}</td>
+                        <td>{data.updatedPitch.roof ? 'Techado':'Sin techo'}</td>
                     </tr>
                 </tbody>
                 </table>)}
@@ -82,6 +90,6 @@ export default function PitchUpdate(){
         </div>)
 }
 
-type CouponResponse = {
-    updatedCoupon:Coupon
+type PitchResponse = {
+    updatedPitch:Pitch
 }
