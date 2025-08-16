@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './couponTable.css'
 import type {Coupon} from '../../../types/couponType.ts'
 
 export default function CouponAdd(){
@@ -58,7 +57,7 @@ export default function CouponAdd(){
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
             {data && (
-                <table className='couponTable'>
+                <table className='crudTable'>
                 <thead>
                     <tr>
                     <th>ID</th>

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import '../couponPages/couponTable.css'
 import type {Pitch} from '../../../types/pitchType.ts'
 
 export default function PitchGetAll() {

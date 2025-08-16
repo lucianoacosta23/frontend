@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './couponTable.css'
 import type {Coupon} from '../../../types/couponType.ts'
 
 export default function CouponGetAll() {
@@ -65,7 +64,7 @@ export default function CouponGetAll() {
   return (
     <div>
         <pre>
-            <table className='couponTable'>
+            <table className='crudTable'>
                 <thead>
                     <th>ID</th>
                     <th>Discount</th>

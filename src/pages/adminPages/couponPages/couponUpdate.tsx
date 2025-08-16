@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './couponTable.css'
 import type {Coupon} from '../../../types/couponType.ts'
 
 export default function CouponUpdate(){

@@ -1,4 +1,3 @@
-import '../couponPages/couponTable.css'
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useState } from 'react';
 

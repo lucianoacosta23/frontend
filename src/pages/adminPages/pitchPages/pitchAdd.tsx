@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import '../coupons/couponTable.css'
 import type {Pitch} from '../../../types/pitchType.ts'
 
 export default function PitchAdd(){

@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router";
+import '../../../static/css/crudTable.css'
 
 export default function CouponHome() {
   return (

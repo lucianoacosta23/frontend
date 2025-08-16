@@ -1,4 +1,3 @@
-import './couponTable.css'
 import type {Coupon} from '../../../types/couponType.ts'
 import { useState } from 'react';
 
@@ -45,7 +44,7 @@ export default function CouponGetOne(){
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
             {data && (
-                <table className='couponTable'>
+                <table className='crudTable'>
                 <thead>
                     <tr>
                     <th>ID</th>

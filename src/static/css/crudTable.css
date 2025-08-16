@@ -1,29 +1,29 @@
-.couponTable {
+.crudTable {
   border-collapse: collapse; 
   margin-top: 1rem;
   font-family: Arial, sans-serif;
   font-size: 18px;
 }
 
-.couponTable thead {
+.crudTable thead {
   background-color: #025a06;
 }
 
-.couponTable thead th {
+.crudTable thead th {
   padding: 10px;
   text-align: left;
   border-bottom: 2px solid #ddd;
 }
 
-.couponTable tbody tr {
+.crudTable tbody tr {
   border-bottom: 1px solid #ddd;
 }
 
-.couponTable tbody td {
+.crudTable tbody td {
   padding: 8px 10px;
 }
 
-.couponTable tbody tr:hover {
+.crudTable tbody tr:hover {
   background-color: #006525;
 }
 
