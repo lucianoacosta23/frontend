@@ -13,11 +13,13 @@ import PitchGetAll from '../adminPages/pitchPages/pitchGetAll.tsx';
 import PitchGetOne from '../adminPages/pitchPages/pitchGetOne.tsx';
 import PitchAdd from '../adminPages/pitchPages/pitchAdd.tsx';
 import PitchUpdate from '../adminPages/pitchPages/pitchUpdate.tsx';
+import { LoginPage } from '../loginPage.tsx';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path='login/' element={<LoginPage/>}/>
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="coupons/" element={<CouponHome />}>
