@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import '../static/css/loginPage.css'
 import { useState } from 'react';
+import type { UserData } from '../types/userData.js';
+
 
 export function LoginPage(){
     const [error, setError] = useState<Error | null>(null)
@@ -15,10 +17,11 @@ export function LoginPage(){
                 throw new Error("HTTP Error! status: " + response.status)
             }
             const token = await response.json()
-            localStorage.setItem('user', token)
+
+            localStorage.setItem('user', JSON.stringify(token))
             
             alert('Sesión iniciada con éxito')
-            navigate('/')
+            navigate('/admin')
         }catch(error){
             setError(error as Error)
         }
@@ -62,12 +65,5 @@ export function LoginPage(){
         </form>
         </div>
     )
-}
-
-type UserData = {
-    email:string,
-    password:string,
-    name:string,
-    category:number
 }
 

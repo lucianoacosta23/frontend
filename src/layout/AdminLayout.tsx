@@ -1,22 +1,36 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, Navigate } from "react-router-dom";
 import "../static/css/AdminLayout.css";
 import { useState } from "react";
-import { FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt } from "react-icons/fa";
+import { FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol } from "react-icons/fa";
+import type { UserData } from "../types/userData.js";
+import {jwtDecode} from 'jwt-decode'
 
 export function AdminLayout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!mobileMenuOpen);
     };
+
+    const storedUser = localStorage.getItem('user')
+    if(!storedUser){
+        alert('sesion no iniciada')
+        return <Navigate to="/login"/> //temporal
+    }
+    const userData = jwtDecode(storedUser) as UserData
+    const handleLogout = () =>{
+        localStorage.clear()
+        return <Navigate to="/login"/> //temporal
+    }
 
     return (
         <div className="admin-container">
             {/* Sidebar para desktop */}
             <aside className="admin-sidebar">
                 <div className="sidebar-header">
-                    <div className="sidebar-logo">AC</div>
-                    <div className="sidebar-title">Admin Canchas</div>
+                    <div className="sidebar-logo">{userData.name.substring(0,2)}</div>
+                    <div className="sidebar-title">{userData.name}</div>
                 </div>
                 
                 <nav className="sidebar-nav">
@@ -67,9 +81,11 @@ export function AdminLayout() {
                             `nav-item ${isActive ? 'active' : ''}`
                         }
                     >
-                        <div className="nav-icon"><FaTicketAlt /></div>
+                        <div className="nav-icon"><FaFutbol /></div>
                         <div className="nav-text">Canchas</div>
                     </NavLink>
+
+                    <a className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</a>
                 </nav>
             </aside>
 
@@ -79,8 +95,8 @@ export function AdminLayout() {
                     {mobileMenuOpen ? <FaTimes /> : <FaBars />}
                 </button>
                 <div className="mobile-logo">
-                    <div className="mobile-logo-icon">AC</div>
-                    <div className="mobile-logo-text">Admin Canchas</div>
+                    <div className="mobile-logo-icon">{userData.name.substring(0,2)}</div>
+                    <div className="mobile-logo-text">{userData.name}</div>
                 </div>
             </header>
 
@@ -126,9 +142,10 @@ export function AdminLayout() {
                         }
                         onClick={toggleMobileMenu}
                     >
-                        <div className="nav-icon"><FaTicketAlt /></div>
+                        <div className="nav-icon"><FaFutbol /></div>
                         <div className="nav-text">Canchas</div>
                     </NavLink>
+                    <a className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</a>
                 </nav>
             </div>
 
