@@ -20,8 +20,8 @@ export function AdminLayout() {
     }
     const userData = jwtDecode(storedUser) as UserData
     const handleLogout = () =>{
-        localStorage.clear()
-        return <Navigate to="/login"/> //temporal
+        localStorage.clear() //temporal
+        alert('sesion cerrada')
     }
 
     return (
@@ -85,7 +85,7 @@ export function AdminLayout() {
                         <div className="nav-text">Canchas</div>
                     </NavLink>
 
-                    <a className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</a>
+                    <NavLink to="../login/" className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</NavLink>
                 </nav>
             </aside>
 

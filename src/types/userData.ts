@@ -2,6 +2,8 @@ export type UserData = {
     email:string,
     password:string,
     name:string,
-    category:number
+    categoryId:number,
+    surname?:string,
+    phoneNumber?:string
 }
 

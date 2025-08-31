@@ -20,7 +20,7 @@
     background-color: #2c3e50;
     display:flex;
     width: 35vw;
-    height: 50vh;   
+    height: fit-content;   
     justify-content: center;
     align-items: center;
     border-radius: 4%;
@@ -87,4 +87,19 @@
 .logSubmit:hover{
     background-color: var(--accent-color);
     transition: 0.6s;
+}
+
+.otherMsg{
+    font-size: 1rem;
+    color: gray;
+    cursor: pointer;
+}
+
+.otherMsgs{
+    display:flex;
+    flex-direction: column;
+}
+
+.errorMsg{
+    color: rgb(252, 30, 30);
 }
