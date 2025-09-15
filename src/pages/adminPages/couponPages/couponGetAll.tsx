@@ -12,8 +12,14 @@ export default function CouponGetAll() {
             try{
                 setLoading(true)
                 setErrorGet(null)
-                const response = await fetch('http://localhost:3000/api/coupons/getAll',{method:"GET"}
-                )
+                const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+
+                const response = await fetch('http://localhost:3000/api/coupons/getAll',{
+                    method:"GET",
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
                 if(!response.ok){
                     throw new Error("HTTP Error! status: " + response.status)
                 }

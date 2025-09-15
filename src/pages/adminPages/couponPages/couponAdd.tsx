@@ -10,10 +10,15 @@ export default function CouponAdd(){
         try{
             setLoading(true)
             setError(null)
-            const response = await fetch('http://localhost:3000/api/coupons/add',{method:"POST",
-                headers: { 'Content-Type': 'application/json',}, 
-                body: JSON.stringify(coupon)}
-            )
+            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+            const response = await fetch('http://localhost:3000/api/coupons/add',{
+                method:"POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(coupon)
+            })
             if(!response.ok){
                 throw new Error("HTTP Error! status: " + response.status)
             }

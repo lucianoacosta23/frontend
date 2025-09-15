@@ -10,7 +10,13 @@ export default function CouponGetOne(){
         try{
             setLoading(true)
             setError(null)
-            const response = await fetch('http://localhost:3000/api/coupons/getOne/'+id)
+            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+            const response = await fetch('http://localhost:3000/api/coupons/getOne/'+id,{
+                method:"GET",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
             if(!response.ok){
                 throw new Error("HTTP Error! status: " + response.status)
             }
