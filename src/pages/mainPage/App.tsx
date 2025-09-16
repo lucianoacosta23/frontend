@@ -14,6 +14,7 @@ import PitchGetOne from '../adminPages/pitchPages/pitchGetOne.tsx';
 import PitchAdd from '../adminPages/pitchPages/pitchAdd.tsx';
 import PitchUpdate from '../adminPages/pitchPages/pitchUpdate.tsx';
 import { LoginPage } from '../loginPage.tsx';
+import UserHome from '../adminPages/userPages/userHome.tsx';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           </Route>
           <Route path="localities/" element={<LocalityHome />} />
           <Route path="categories/" element={<div>Categories Page</div>} />
+          <Route path="users/" element={<UserHome />} />
         </Route>
       </Routes>
   </BrowserRouter>
