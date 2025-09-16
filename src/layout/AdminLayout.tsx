@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Navigate } from "react-router-dom";
 import "../static/css/AdminLayout.css";
 import { useState } from "react";
-import { FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol } from "react-icons/fa";
+import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol } from "react-icons/fa";
 import type { UserData } from "../types/userData.js";
 import {jwtDecode} from 'jwt-decode'
 
@@ -76,6 +76,15 @@ export function AdminLayout() {
                         <div className="nav-text">Cupones</div>
                     </NavLink>
                     <NavLink 
+                        to="categories/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"><FaUserShield /></div>
+                        <div className="nav-text">Categorías</div>
+                    </NavLink>
+                    <NavLink 
                         to="pitchs/" 
                         className={({ isActive }) => 
                             `nav-item ${isActive ? 'active' : ''}`
@@ -134,6 +143,16 @@ export function AdminLayout() {
                     >
                         <div className="nav-icon"><FaTicketAlt /></div>
                         <div className="nav-text">Cupones</div>
+                    </NavLink>
+                    <NavLink 
+                        to="categories/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                        onClick={toggleMobileMenu}
+                    >
+                        <div className="nav-icon"><FaUserShield /></div>
+                        <div className="nav-text">Categorías</div>
                     </NavLink>
                     <NavLink 
                         to="pitchs/" 
