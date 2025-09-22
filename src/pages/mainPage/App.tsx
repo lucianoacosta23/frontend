@@ -16,11 +16,16 @@ import PitchUpdate from '../adminPages/pitchPages/pitchUpdate.tsx';
 import { LoginPage } from '../loginPage.tsx';
 import UserHome from '../adminPages/userPages/userHome.tsx';
 import CategoryHome from '../adminPages/categoryPages/categoryHome.tsx';
+import Homepage from "../homepage/homepage.tsx";
+import AboutUs from '../homepage/aboutUs.tsx';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path='/' element={<Homepage/>}/>
+        <Route path='about/' element={<AboutUs/>}/>
         <Route path='login/' element={<LoginPage/>}/>
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />

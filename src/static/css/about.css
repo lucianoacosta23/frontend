@@ -1,0 +1,540 @@
+/* CSS específico para About Us - Compatible con Tema Dark */
+.Content-About {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color, #1a1a1a);
+    color: var(--text-color, #e0e0e0);
+}
+
+/* Variables CSS para tema dark */
+.Content-About {
+    --background-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --card-bg: #2d2d2d;
+    --header-bg: #1b5e20;
+    --accent-color: #4caf50;
+    --secondary-color: #ff9800;
+    --border-color: #404040;
+}
+
+/* Reset y estilos base */
+.Content-About * {
+    box-sizing: border-box;
+}
+
+.Content-About body {
+    margin: 0;
+    padding: 0;
+    background-color: inherit;
+    color: inherit;
+}
+
+/* Header específico de About */
+.Content-About header {
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+.Content-About .Nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.Content-About .logo a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.Content-About .Nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Content-About .Nav li {
+    margin-left: 2rem;
+}
+
+.Content-About .Nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.Content-About .Nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Hero section About */
+.Content-About .about-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 4rem 2rem;
+    width: 100%;
+}
+
+.Content-About .about-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    margin-top: 0;
+    color: white;
+}
+
+.Content-About .about-hero p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0;
+    color: white;
+}
+
+/* Contenido principal */
+.Content-About main {
+    flex: 1;
+    width: 100%;
+    background-color: inherit;
+}
+
+.Content-About .about-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    width: 100%;
+}
+
+.Content-About .about-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-bottom: 4rem;
+    width: 100%;
+}
+
+.Content-About .about-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.Content-About .about-text h2 {
+    color: #4caf50;
+    margin-bottom: 1.5rem;
+    font-size: 2.2rem;
+    margin-top: 0;
+}
+
+.Content-About .about-text p {
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    color: var(--text-color, #e0e0e0);
+}
+
+.Content-About .project-details {
+    background: var(--card-bg, #2d2d2d);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 2rem;
+    border: 1px solid var(--border-color, #404040);
+}
+
+.Content-About .project-details h3 {
+    color: #4caf50;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.Content-About .project-details ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.Content-About .project-details li {
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+    margin: 0;
+    color: var(--text-color, #e0e0e0);
+}
+
+.Content-About .project-details li:before {
+    content: "✓";
+    color: #4caf50;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+.Content-About .about-image {
+    flex: 1;
+    min-width: 0;
+}
+
+.Content-About .about-image img {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    height: auto;
+    border: 1px solid var(--border-color, #404040);
+}
+
+/* Tecnologías */
+.Content-About .tech-stack {
+    margin-bottom: 4rem;
+    width: 100%;
+}
+
+.Content-About .tech-stack h2 {
+    text-align: center;
+    color: #4caf50;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    margin-top: 0;
+}
+
+.Content-About .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.Content-About .tech-category {
+    background: var(--card-bg, #2d2d2d);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    margin: 0;
+    border: 1px solid var(--border-color, #404040);
+}
+
+.Content-About .tech-category h3 {
+    color: #4caf50;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.Content-About .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.Content-About .tech-item {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+/* Objetivos de aprendizaje */
+.Content-About .learning-objectives {
+    margin-bottom: 4rem;
+    width: 100%;
+}
+
+.Content-About .learning-objectives h2 {
+    text-align: center;
+    color: #4caf50;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    margin-top: 0;
+}
+
+.Content-About .objectives-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.Content-About .objective-card {
+    background: var(--card-bg, #2d2d2d);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 0;
+    border: 1px solid var(--border-color, #404040);
+}
+
+.Content-About .objective-card h4 {
+    color: #4caf50;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.Content-About .objective-card p {
+    margin: 0;
+    color: var(--text-color, #e0e0e0);
+}
+
+/* Equipo */
+.Content-About .team-section {
+    margin-bottom: 4rem;
+    width: 100%;
+}
+
+.Content-About .team-section h2 {
+    text-align: center;
+    color: #4caf50;
+    margin-bottom: 1rem;
+    font-size: 2.2rem;
+    margin-top: 0;
+}
+
+.Content-About .team-description {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--text-color, #e0e0e0);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.Content-About .team-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.Content-About .team-member {
+    text-align: center;
+    padding: 2rem;
+    background: var(--card-bg, #2d2d2d);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    margin: 0;
+    border: 1px solid var(--border-color, #404040);
+}
+
+.Content-About .team-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.Content-About .member-photo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #4caf50;
+}
+
+.Content-About .member-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.Content-About .team-member h4 {
+    color: #4caf50;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.Content-About .team-member .role {
+    color: #ff9800;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.Content-About .team-member p {
+    color: var(--text-color, #e0e0e0);
+    margin: 0.5rem 0;
+}
+
+.Content-About .github-link a {
+    color: #4caf50;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.Content-About .github-link a:hover {
+    color: #ff9800;
+    text-decoration: underline;
+}
+
+.Content-About .github-section {
+    text-align: center;
+    background: var(--card-bg, #2d2d2d);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 0;
+    border: 1px solid var(--border-color, #404040);
+}
+
+.Content-About .repo-link {
+    color: #4caf50;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.Content-About .repo-link:hover {
+    color: #ff9800;
+    text-decoration: underline;
+}
+
+/* Información académica */
+.Content-About .academic-info {
+    margin-bottom: 4rem;
+    width: 100%;
+}
+
+.Content-About .academic-info h2 {
+    text-align: center;
+    color: #4caf50;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    margin-top: 0;
+}
+
+.Content-About .academic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.Content-About .academic-card {
+    background: var(--card-bg, #2d2d2d);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 0;
+    border: 1px solid var(--border-color, #404040);
+}
+
+.Content-About .academic-card h4 {
+    color: #4caf50;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    margin-top: 0;
+}
+
+.Content-About .academic-card p {
+    margin: 0;
+    color: var(--text-color, #e0e0e0);
+}
+
+/* Footer */
+.Content-About footer {
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin-top: auto;
+    width: 100%;
+}
+
+.Content-About .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.Content-About .footer-content p {
+    margin: 0.5rem 0;
+    color: white;
+}
+
+.Content-About .academic-footer {
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .Content-About .about-section {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .Content-About .Nav {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .Content-About .Nav ul {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .Content-About .Nav li {
+        margin: 0.5rem;
+    }
+    
+    .Content-About .about-hero {
+        padding: 3rem 1rem;
+    }
+    
+    .Content-About .about-hero h1 {
+        font-size: 2.2rem;
+    }
+    
+    .Content-About .about-content {
+        padding: 2rem 1rem;
+    }
+    
+    .Content-About .tech-grid,
+    .Content-About .objectives-grid,
+    .Content-About .team-cards,
+    .Content-About .academic-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .Content-About .about-hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .Content-About .about-hero p {
+        font-size: 1rem;
+    }
+    
+    .Content-About .about-text h2,
+    .Content-About .tech-stack h2,
+    .Content-About .learning-objectives h2,
+    .Content-About .team-section h2,
+    .Content-About .academic-info h2 {
+        font-size: 1.8rem;
+    }
+    
+    .Content-About .team-member,
+    .Content-About .objective-card,
+    .Content-About .tech-category {
+        padding: 1.5rem;
+    }
+}
