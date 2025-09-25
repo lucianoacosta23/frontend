@@ -1,15 +1,33 @@
+import { Link, Outlet } from "react-router";
+import '../../../static/css/userHome.css';
 
-function UserHome() {
+const UserHome = () => {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Página de Usuarios</h1>
-      <p>¡Bienvenido a la página de gestión de usuarios!</p>
-      <ul>
-        <li>Este es un ejemplo de lista de usuarios</li>
-        <li>Puedes agregar más contenido aquí</li>
-      </ul>
+    <div className="user-home-container">
+      <h1>Gestión de Usuarios</h1>
+      
+      <div className="menu-section">
+        <nav className="user-menu">
+          <Link to="getAll/" className="menu-item">
+            📋 Ver Usuarios
+          </Link>
+          <Link to="add-user" className="menu-item">
+            ➕ Agregar
+          </Link>
+          <Link to="user-reports" className="menu-item">
+            📊 Reportes
+          </Link>
+          <Link to="user-settings" className="menu-item">
+            ⚙️ Configuración
+          </Link>
+        </nav>
+      </div>
+
+      <div className="content-area">
+        <Outlet />
+      </div>
     </div>
   );
-}
+};
 
 export default UserHome;

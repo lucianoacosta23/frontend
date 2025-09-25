@@ -18,6 +18,9 @@ import UserHome from '../adminPages/userPages/userHome.tsx';
 import CategoryHome from '../adminPages/categoryPages/categoryHome.tsx';
 import Homepage from "../homepage/homepage.tsx";
 import AboutUs from '../homepage/aboutUs.tsx';
+import UserGetAll from '../adminPages/userPages/usersGetAll.tsx';
+import UserDetail from '../adminPages/userPages/userDetail.tsx';
+import UserUpdate from '../adminPages/userPages/userUpdate.tsx';
 
 
 function App() {
@@ -43,7 +46,11 @@ function App() {
           </Route>
           <Route path="localities/" element={<LocalityHome />} />
           <Route path="categories/" element={<CategoryHome />} />
-          <Route path="users/" element={<UserHome />} />
+          <Route path="users/" element={<UserHome />}>
+            <Route path="getAll/" element={<UserGetAll />} />
+            <Route path="detail/:id" element={<UserDetail />} />
+            <Route path="update/:id" element={<UserUpdate />} />
+          </Route>
         </Route>
       </Routes>
   </BrowserRouter>

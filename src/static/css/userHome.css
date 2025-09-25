@@ -1,0 +1,91 @@
+.user-home-container {
+  padding: 1.5rem;
+  background-color: #1e293b;
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+.user-home-container h1 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  color: #f1f5f9;
+}
+
+.menu-section {
+  margin-bottom: 1.5rem;
+}
+
+.user-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.menu-item {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #334155;
+  text-decoration: none;
+  color: #e2e8f0;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.menu-item:hover {
+  background-color: #475569;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  color: #f1f5f9;
+  border-color: #64748b;
+}
+
+.menu-item:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.content-area {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-top: 1px solid #475569;
+  background-color: #1e293b;
+  border-radius: 8px;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+  .user-menu {
+    flex-direction: column;
+  }
+  
+  .menu-item {
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .user-home-container {
+    padding: 1rem;
+  }
+}
+
+/* Estados activos para mejor UX */
+.menu-item:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para elementos hijos en content-area */
+.content-area h2,
+.content-area h3 {
+  color: #f1f5f9;
+}
+
+.content-area p {
+  color: #cbd5e1;
+}
