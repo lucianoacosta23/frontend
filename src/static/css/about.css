@@ -31,54 +31,6 @@
     color: inherit;
 }
 
-/* Header específico de About */
-.Content-About header {
-    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-    padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    width: 100%;
-}
-
-.Content-About .Nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.Content-About .logo a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.Content-About .Nav ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.Content-About .Nav li {
-    margin-left: 2rem;
-}
-
-.Content-About .Nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.Content-About .Nav a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
 /* Hero section About */
 .Content-About .about-hero {
     background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
@@ -385,6 +337,8 @@
 
 .Content-About .github-section {
     text-align: center;
+    display: flex;
+    flex-direction: column;
     background: var(--card-bg, #2d2d2d);
     padding: 1.5rem;
     border-radius: 10px;

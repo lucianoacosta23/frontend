@@ -1,0 +1,67 @@
+/* Header específico de Homepage */
+.homeHeader {
+    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.Nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px 10px;
+}
+.Nav ul {
+    display: flex;
+    justify-content: flex-end;
+    list-style: none;
+    padding: 0 2rem;
+}
+
+.Nav .companyName{
+    margin: 0;
+    cursor: pointer;
+}
+
+.Nav li {
+    margin-left: 2rem;
+}
+
+.Nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.Nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+.Nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #ffc107;
+    transition: all 0.3s ease;
+}
+
+.Nav a:hover::after {
+    width: 80%;
+    left: 10%;
+}
+
+.Nav .companyName{
+    display: flex;
+    flex-direction: row;
+}
+
+.companyName .navIcon{
+    margin-top: 5px;
+}

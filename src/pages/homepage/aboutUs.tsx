@@ -1,25 +1,10 @@
-import { Link } from "react-router-dom";
 import '../../static/css/about.css';
+import { HomePageNav } from "./homePageNav.tsx";
 
 export default function AboutUs() {
     return (
         <div className="Content-About">
-            <header>
-                <div className="Nav">
-                    <div className="logo">
-                        <Link to="/">FútbolYa</Link>
-                    </div>
-                    <ul>
-                        <li>
-                            <Link to="/">Inicio</Link>
-                        </li>
-                        <li>
-                            <Link to="/login">Ingresar</Link>
-                        </li>
-                    </ul>   
-                </div>
-            </header>
-
+            <HomePageNav />
             <main>
                 <div className="about-hero">
                     <h1>Sobre el Proyecto</h1>
@@ -157,12 +142,13 @@ export default function AboutUs() {
                             </div>
                         </div>
                         <div className="github-section">
-                            <p>
-                                <strong>Repositorio del proyecto:</strong> 
+                                <strong>Repositorios del proyecto</strong> 
                                 <a href="#" onClick={(e) => e.preventDefault()} className="repo-link">
-                                    GitHub (disponible próximamente)
+                                    Back-end
                                 </a>
-                            </p>
+                                <a href="#" onClick={(e) => e.preventDefault()} className="repo-link">
+                                    Front-end
+                                </a>
                         </div>
                     </div>
 
@@ -183,7 +169,7 @@ export default function AboutUs() {
                             </div>
                             <div className="academic-card">
                                 <h4>Año</h4>
-                                <p>2024</p>
+                                <p>2025</p>
                             </div>
                         </div>
                     </div>
@@ -192,7 +178,7 @@ export default function AboutUs() {
 
             <footer>
                 <div className="footer-content">
-                    <p>&copy; 2024 FútbolYa - Proyecto Académico. Todos los derechos reservados.</p>
+                    <p>&copy; 2025 FútbolYa - Proyecto Académico. Todos los derechos reservados.</p>
                     <p className="academic-footer">Desarrollado para la materia <strong>Desarrollo</strong></p>
                 </div>
             </footer>

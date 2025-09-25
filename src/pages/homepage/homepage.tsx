@@ -1,22 +1,12 @@
-import {Link} from "react-router-dom";
+import {Link } from "react-router-dom";
 import '../../static/css/homepage.css'
+import { HomePageNav } from "./homePageNav.tsx";
 
 export default function Homepage() {
+
     return (
         <div className="Content-Homepage">
-            <header>
-                <div className="Nav">
-                    <ul>
-                        <li>
-                            <Link to="/login">ingresar</Link>
-                        </li>
-                        <li>
-                            <Link to ="/about">Sobre nosotros</Link>
-                        </li>
-                    </ul>   
-                </div>
-            </header>
-
+            <HomePageNav />
             <main>
                 <div className="hero-section">
                     <h1>Alquiler de canchas de futbol de forma rapida y sencilla</h1>

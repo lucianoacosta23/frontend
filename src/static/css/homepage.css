@@ -5,55 +5,6 @@
     flex-direction: column;
 }
 
-/* Header específico de Homepage */
-.Content-Homepage header {
-    background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
-    padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.Content-Homepage .Nav ul {
-    display: flex;
-    justify-content: flex-end;
-    list-style: none;
-    padding: 0 2rem;
-}
-
-.Content-Homepage .Nav li {
-    margin-left: 2rem;
-}
-
-.Content-Homepage .Nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.Content-Homepage .Nav a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-
-.Content-Homepage .Nav a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 50%;
-    background-color: #ffc107;
-    transition: all 0.3s ease;
-}
-
-.Content-Homepage .Nav a:hover::after {
-    width: 80%;
-    left: 10%;
-}
-
 /* Hero section específica de Homepage */
 .Content-Homepage .hero-section {
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
