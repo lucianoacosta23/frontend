@@ -37,7 +37,7 @@ export default function AboutUs() {
                             </div>
                         </div>
                         <div className="about-image">
-                            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" 
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/UTN_logo.jpg" 
                                  alt="UTN" />
                         </div>
                     </div>
