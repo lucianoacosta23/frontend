@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol } from "react-icons/fa";
 import type { UserData } from "../types/userData.js";
 import {jwtDecode} from 'jwt-decode'
+import HomeFooter from "../pages/homepage/homeFooter.js";
 
 export function AdminLayout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,6 +26,7 @@ export function AdminLayout() {
     }
 
     return (
+        <div>
         <div className="admin-container">
             {/* Sidebar para desktop */}
             <aside className="admin-sidebar">
@@ -178,6 +180,9 @@ export function AdminLayout() {
             <main className="admin-content">
                 <Outlet />
             </main>
+            
+        </div>
+        <HomeFooter />
         </div>
     );
 }

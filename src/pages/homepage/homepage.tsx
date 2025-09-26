@@ -1,12 +1,10 @@
 import {Link } from "react-router-dom";
 import '../../static/css/homepage.css'
-import { HomePageNav } from "./homePageNav.tsx";
 
 export default function Homepage() {
 
     return (
         <div className="Content-Homepage">
-            <HomePageNav />
             <main>
                 <div className="hero-section">
                     <h1>Alquiler de canchas de futbol de forma rapida y sencilla</h1>
@@ -38,13 +36,6 @@ export default function Homepage() {
                     
                 </div>
             </main>
-
-
-            <footer>
-                <div className="footer-content">
-                    <p>&copy; 2024 TuEmpresa. Todos los derechos reservados.</p>
-                </div>
-            </footer>
         </div>
 
     );

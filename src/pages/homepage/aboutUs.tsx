@@ -1,10 +1,8 @@
 import '../../static/css/about.css';
-import { HomePageNav } from "./homePageNav.tsx";
 
 export default function AboutUs() {
     return (
         <div className="Content-About">
-            <HomePageNav />
             <main>
                 <div className="about-hero">
                     <h1>Sobre el Proyecto</h1>
@@ -175,13 +173,6 @@ export default function AboutUs() {
                     </div>
                 </div>
             </main>
-
-            <footer>
-                <div className="footer-content">
-                    <p>&copy; 2025 FútbolYa - Proyecto Académico. Todos los derechos reservados.</p>
-                    <p className="academic-footer">Desarrollado para la materia <strong>Desarrollo</strong></p>
-                </div>
-            </footer>
         </div>
     );
 }
