@@ -23,7 +23,7 @@ export function LoginPage(){
             localStorage.setItem('user', JSON.stringify(token))
             
             alert('Sesión iniciada con éxito')
-            navigate('/admin')
+            navigate('/')
         }catch(err:unknown){
             if (isApiError(err)) {
             if (Array.isArray(err.errors)) {
@@ -74,8 +74,6 @@ export function LoginPage(){
             const user:UserData = {
                 email:String(formData.get("mail")),
                 password:String(formData.get("pass")),
-                name:'',
-                categoryId:0
             }
             if(user) {
                 login(user);
@@ -91,7 +89,7 @@ export function LoginPage(){
                 name:String(formData.get("name")),
                 surname:String(formData.get("surname")),
                 phoneNumber:String(formData.get("phone")) || undefined,
-                categoryId:1
+                category:'cliente'
             }
             if(user) {
                 register(user);
