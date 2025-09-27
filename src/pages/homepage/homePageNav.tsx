@@ -43,7 +43,10 @@ export function HomePageNav(){
                         <li>
                             <Link to="/admin">Admin Dashboard</Link>
                         </li>}
-                        
+                        {(userData?.category == 'business_owner') &&
+                        <li>
+                            <Link to="/myBusiness">Mi negocio</Link> 
+                        </li>}  
                     </ul>   
                 </div>
             </header>
