@@ -41,16 +41,14 @@ export function LoginPage(){
 
     async function register(user:UserData){
         try{
-        const response = await fetch('http://localhost:3000/api/users/add',{method:"POST",
-                headers: { 'Content-Type': 'application/json',}, 
+        const response = await fetch('http://localhost:3000/api/login/register',{method:"POST",
+                headers: { 'Content-Type': 'application/json',
+                }, 
                 body: JSON.stringify(user)})
                 if(!response.ok){
                 const errors: ApiError = await response.json()
                 throw errors
             }
-            const token = await response.json()
-            delete token.surname;
-            delete token.phoneNumber;
             alert('Usuario creado con éxito')
             login(user)
         }catch(err:unknown){
@@ -89,7 +87,7 @@ export function LoginPage(){
                 name:String(formData.get("name")),
                 surname:String(formData.get("surname")),
                 phoneNumber:String(formData.get("phone")) || undefined,
-                category:'cliente'
+                category:'client'
             }
             if(user) {
                 register(user);
