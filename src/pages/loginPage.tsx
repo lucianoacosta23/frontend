@@ -87,7 +87,7 @@ export function LoginPage(){
                 name:String(formData.get("name")),
                 surname:String(formData.get("surname")),
                 phoneNumber:String(formData.get("phone")) || undefined,
-                category:'client'
+                category:'client' // por defecto, el register hace un usuario de tipo cliente
             }
             if(user) {
                 register(user);
