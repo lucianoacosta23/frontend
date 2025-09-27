@@ -38,16 +38,6 @@ export function AdminLayout() {
                 
                 <nav className="sidebar-nav">
                     <NavLink 
-                        to="/" 
-                        end
-                        className={({ isActive }) => 
-                            `nav-item ${isActive ? 'active' : ''}`
-                        }
-                    >
-                        <div className="nav-icon"><FaHome /></div>
-                        <div className="nav-text">Inicio</div>
-                    </NavLink>
-                    <NavLink 
                         to="" 
                         end
                         className={({ isActive }) => 
@@ -57,7 +47,16 @@ export function AdminLayout() {
                         <div className="nav-icon"><FaBars /></div>
                         <div className="nav-text">Dashboard</div>
                     </NavLink>
-
+                    <NavLink 
+                        to="/" 
+                        end
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"><FaHome /></div>
+                        <div className="nav-text">Inicio</div>
+                    </NavLink>
                     <NavLink 
                         to="users/" 
                         className={({ isActive }) => 
