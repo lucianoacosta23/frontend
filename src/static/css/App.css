@@ -1,4 +1,17 @@
-nav{
-  display:flex;
+/* Reset básico global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Fuente global */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navegación principal */
+nav {
+  display: flex;
   gap: 15px;
 }

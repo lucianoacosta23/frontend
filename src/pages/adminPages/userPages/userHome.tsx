@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router";
-import '../../../static/css/userHome.css';
+import '../../../static/css/users/userHome.css';
 
 const UserHome = () => {
   return (
@@ -9,16 +9,10 @@ const UserHome = () => {
       <div className="menu-section">
         <nav className="user-menu">
           <Link to="getAll/" className="menu-item">
-            📋 Ver Usuarios
+            Ver Usuarios
           </Link>
-          <Link to="add-user" className="menu-item">
-            ➕ Agregar
-          </Link>
-          <Link to="user-reports" className="menu-item">
-            📊 Reportes
-          </Link>
-          <Link to="user-settings" className="menu-item">
-            ⚙️ Configuración
+          <Link to="createUser/" className="menu-item">
+            Agregar Usuario
           </Link>
         </nav>
       </div>

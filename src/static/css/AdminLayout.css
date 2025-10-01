@@ -5,6 +5,15 @@
     --light-color: #ecf0f1;
     --text-color: #333;
     --sidebar-width: 280px;
+    
+    /* Variaciones adicionales */
+    --primary-hover: #27ae60;
+    --secondary-hover: #2980b9;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --surface: #ffffff;
+    --border: #bdc3c7;
 }
 
 /* Estilos generales */
@@ -12,38 +21,51 @@
     display: flex;
     min-height: 100vh;
     position: relative;
+    background-color: var(--light-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Sidebar para desktop */
 .admin-sidebar {
     width: var(--sidebar-width);
-    background-color: var(--dark-color);
-    color: white;
-    padding: 20px 0;
-    transition: all 0.3s;
+    background: linear-gradient(180deg, var(--dark-color) 0%, #34495e 100%);
+    color: var(--surface);
+    padding: 0;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 10px rgba(44, 62, 80, 0.15);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Header móvil (oculto por defecto) */
 .mobile-header {
     display: none;
-    background-color: var(--dark-color);
-    color: white;
-    padding: 15px;
+    background: linear-gradient(90deg, var(--dark-color) 0%, #34495e 100%);
+    color: var(--surface);
+    padding: 15px 20px;
     justify-content: space-between;
     align-items: center;
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 15px rgba(44, 62, 80, 0.2);
+    border-bottom: 2px solid var(--primary-color);
 }
 
 .mobile-menu-toggle {
     background: none;
     border: none;
-    color: white;
+    color: var(--surface);
     font-size: 24px;
     cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
 }
 
 .mobile-logo {
@@ -52,21 +74,24 @@
 }
 
 .mobile-logo-icon {
-    width: 30px;
-    height: 30px;
-    background-color: var(--primary-color);
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 10px;
+    margin-right: 12px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 16px;
+    color: var(--surface);
+    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
 }
 
 .mobile-logo-text {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
+    color: var(--surface);
 }
 
 /* Sidebar para móvil (oculto por defecto) */
@@ -77,11 +102,12 @@
     left: -280px;
     width: 280px;
     height: calc(100vh - 60px);
-    background-color: var(--dark-color);
-    color: white;
-    transition: all 0.3s;
+    background: linear-gradient(180deg, var(--dark-color) 0%, #34495e 100%);
+    color: var(--surface);
+    transition: all 0.3s ease;
     z-index: 999;
     overflow-y: auto;
+    box-shadow: 2px 0 15px rgba(44, 62, 80, 0.2);
 }
 
 .mobile-sidebar.active {
@@ -96,8 +122,9 @@
     left: 0;
     width: 100%;
     height: calc(100vh - 60px);
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(44, 62, 80, 0.7);
     z-index: 998;
+    transition: opacity 0.3s ease;
 }
 
 .menu-overlay.active {
@@ -106,77 +133,188 @@
 
 /* Estilos comunes para sidebar (ambas versiones) */
 .sidebar-header {
-    padding: 0 20px 20px;
+    padding: 25px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 20px;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-logo {
-    width: 40px;
-    height: 40px;
-    background-color: var(--primary-color);
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 10px;
+    margin-right: 15px;
     font-weight: bold;
-    color: white;
+    color: var(--surface);
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
 }
 
 .sidebar-title {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
+    color: var(--surface);
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
+    padding: 15px 0;
 }
 
 .nav-item {
-    padding: 12px 25px;
+    padding: 15px 25px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     border-left: 4px solid transparent;
-    margin: 5px 0;
-    color: white;
+    margin: 2px 0;
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, rgba(46, 204, 113, 0.1), rgba(46, 204, 113, 0.05));
+    transition: width 0.3s ease;
+}
+
+.nav-item:hover::before {
+    width: 100%;
 }
 
 .nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(46, 204, 113, 0.1);
+    border-left: 4px solid var(--primary-color);
+    color: var(--surface);
+    padding-left: 35px;
 }
 
 .nav-item.active {
-    background-color: rgba(52, 152, 219, 0.2);
-    border-left: 4px solid var(--secondary-color);
+    background-color: rgba(46, 204, 113, 0.15);
+    border-left: 4px solid var(--primary-color);
+    color: var(--surface);
+    padding-left: 35px;
+}
+
+.nav-item.active::before {
+    width: 100%;
+}
+
+/* Estilos específicos para diferentes tipos de navegación */
+.nav-item[href*="users"] {
+    border-left-color: var(--secondary-color);
+}
+
+.nav-item[href*="users"]:hover,
+.nav-item[href*="users"].active {
+    border-left-color: var(--secondary-color);
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.nav-item[href*="products"] {
+    border-left-color: var(--warning);
+}
+
+.nav-item[href*="products"]:hover,
+.nav-item[href*="products"].active {
+    border-left-color: var(--warning);
+    background-color: rgba(243, 156, 18, 0.1);
+}
+
+.nav-item[href*="orders"] {
+    border-left-color: var(--danger);
+}
+
+.nav-item[href*="orders"]:hover,
+.nav-item[href*="orders"].active {
+    border-left-color: var(--danger);
+    background-color: rgba(231, 76, 60, 0.1);
 }
 
 .nav-icon {
     width: 24px;
-    margin-right: 12px;
+    margin-right: 15px;
     text-align: center;
     font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.nav-item:hover .nav-icon {
+    transform: scale(1.1);
 }
 
 .nav-text {
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 /* Contenido principal */
 .admin-content {
     flex: 1;
     padding: 30px;
-    transition: margin-left 0.3s;
+    transition: margin-left 0.3s ease;
+    background-color: var(--light-color);
+    min-height: 100vh;
 }
+
+/* Scrollbar personalizado para sidebar móvil */
+.mobile-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mobile-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-color), var(--primary-hover));
+    border-radius: 3px;
+}
+
+.mobile-sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--primary-hover), #1e8449);
+}
+
+/* Animaciones de entrada */
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.nav-item {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+.nav-item:nth-child(1) { animation-delay: 0.1s; }
+.nav-item:nth-child(2) { animation-delay: 0.2s; }
+.nav-item:nth-child(3) { animation-delay: 0.3s; }
+.nav-item:nth-child(4) { animation-delay: 0.4s; }
+.nav-item:nth-child(5) { animation-delay: 0.5s; }
 
 /* Media queries para responsive */
 @media (max-width: 992px) {
@@ -194,6 +332,96 @@
     
     .admin-content {
         margin-left: 0;
+        padding: 20px 15px;
         padding-top: 80px;
     }
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 15px 10px;
+        padding-top: 75px;
+    }
+    
+    .sidebar-header {
+        padding: 20px 15px;
+    }
+    
+    .nav-item {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+    
+    .nav-item:hover,
+    .nav-item.active {
+        padding-left: 30px;
+    }
+    
+    .mobile-logo-text {
+        font-size: 18px;
+    }
+    
+    .mobile-logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-content {
+        padding: 10px 8px;
+        padding-top: 70px;
+    }
+    
+    .mobile-header {
+        padding: 12px 15px;
+    }
+    
+    .mobile-logo-text {
+        font-size: 16px;
+    }
+    
+    .mobile-logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+        margin-right: 10px;
+    }
+    
+    .nav-item {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .nav-icon {
+        font-size: 16px;
+        margin-right: 12px;
+    }
+}
+
+/* Efectos adicionales para mejor UX */
+.admin-sidebar,
+.mobile-sidebar {
+    backdrop-filter: blur(10px);
+}
+
+.nav-item:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+}
+
+/* Estados de loading para navegación */
+.nav-item.loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.nav-item.loading .nav-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }

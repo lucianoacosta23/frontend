@@ -1,39 +1,517 @@
-.crudTable {
-  border-collapse: collapse; 
-  margin-top: 1rem;
-  font-family: Arial, sans-serif;
-  font-size: 18px;
+:root {
+    --primary-color: #2ecc71;
+    --secondary-color: #3498db;
+    --dark-color: #2c3e50;
+    --light-color: #ecf0f1;
+    --text-color: #333;
+    --sidebar-width: 280px;
+    
+    /* Variaciones adicionales */
+    --primary-hover: #27ae60;
+    --secondary-hover: #2980b9;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --surface: #ffffff;
+    --border: #bdc3c7;
 }
 
+/* ============ CONTENEDORES GENERALES ============ */
+
+/* Contenedor principal para páginas con tabla */
+.table-page-container {
+  background-color: var(--light-color);
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Contenedor para tabla que ocupa toda la pantalla */
+.table-fullscreen-container {
+  background-color: var(--light-color);
+  height: 100vh;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Wrapper interno */
+.table-wrapper {
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  background-color: var(--surface);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-wrapper-normal {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--surface);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(44, 62, 80, 0.1);
+  padding: 20px;
+}
+
+/* ============ TÍTULOS ============ */
+
+.table-title {
+  color: var(--dark-color);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--primary-color);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* ============ CONTENEDOR DE TABLA ============ */
+
+/* Para tabla que ocupa toda la pantalla */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+  border: 1px solid var(--border);
+}
+
+/* Para tabla normal */
+.table-container-normal {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+/* ============ TABLA PRINCIPAL ============ */
+
+.crudTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--surface);
+}
+
+/* Para tabla fullscreen */
+.crudTable.fullscreen {
+  height: 100%;
+}
+
+/* Para tabla normal */
+.crudTable.normal {
+  min-width: 800px;
+}
+
+/* ============ HEADER DE TABLA ============ */
+
 .crudTable thead {
-  background-color: #025a06;
+  background: linear-gradient(135deg, var(--dark-color), #34495e);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .crudTable thead th {
-  padding: 10px;
+  padding: 15px 12px;
   text-align: left;
-  border-bottom: 2px solid #ddd;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--light-color);
+  border: none;
+  white-space: nowrap;
+  letter-spacing: 0.025em;
 }
+
+/* Columnas especiales */
+.crudTable thead th.col-id {
+  width: 80px;
+  text-align: center;
+}
+
+.crudTable thead th.col-actions {
+  width: 220px;
+  text-align: center;
+}
+
+.crudTable thead th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.crudTable thead th:last-child {
+  border-top-right-radius: 8px;
+}
+
+/* ============ FILAS Y CELDAS ============ */
 
 .crudTable tbody tr {
-  border-bottom: 1px solid #ddd;
-}
-
-.crudTable tbody td {
-  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.2s ease;
 }
 
 .crudTable tbody tr:hover {
-  background-color: #006525;
+  background-color: rgba(46, 204, 113, 0.05);
 }
 
-form{
-  display:flex;
-  flex-direction: column;
-  gap: 7px;
+.crudTable tbody tr:last-child {
+  border-bottom: none;
 }
 
-form input, button{
-  height: 3vh;
+.crudTable tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.crudTable tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+.crudTable tbody td {
+  padding: 12px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  vertical-align: middle;
+  border: none;
+}
+
+/* Celdas especiales */
+.crudTable tbody td.col-id {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+  width: 80px;
+}
+
+.crudTable tbody td.col-actions {
+  text-align: center;
+  width: 220px;
+}
+
+/* ============ BOTONES DE ACCIÓN ============ */
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.action-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  text-align: center;
+  min-width: 65px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.view-button,
+.action-button.view {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.view-button:hover,
+.action-button.view:hover {
+  background-color: var(--secondary-hover);
+}
+
+.edit-button,
+.action-button.edit {
+  background-color: var(--warning);
+  color: white;
+}
+
+.edit-button:hover,
+.action-button.edit:hover {
+  background-color: #e67e22;
+}
+
+.delete-button,
+.action-button.delete {
+  background-color: var(--danger);
+  color: white;
+  border: none;
   cursor: pointer;
 }
+
+.delete-button:hover,
+.action-button.delete:hover {
+  background-color: #c0392b;
+}
+
+/* Botón personalizado */
+.action-button.custom {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.action-button.custom:hover {
+  background-color: var(--primary-hover);
+}
+
+/* ============ ESTADOS DE TABLA ============ */
+
+.table-loading,
+.table-error,
+.table-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+}
+
+.table-loading {
+  color: var(--secondary-color);
+}
+
+.table-error {
+  color: var(--danger);
+}
+
+.table-empty {
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* ============ FORMULARIOS ============ */
+
+.crud-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: var(--surface);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 15px rgba(44, 62, 80, 0.1);
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+.crud-form input,
+.crud-form select,
+.crud-form textarea {
+  padding: 0.875rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--surface);
+  color: var(--text-color);
+  font-size: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+}
+
+.crud-form input:focus,
+.crud-form select:focus,
+.crud-form textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+}
+
+.crud-form input:hover:not(:focus),
+.crud-form select:hover:not(:focus),
+.crud-form textarea:hover:not(:focus) {
+  border-color: var(--primary-hover);
+}
+
+.crud-form label {
+  color: var(--dark-color);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.025em;
+}
+
+.crud-form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.crud-form button {
+  padding: 0.875rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.crud-form button.primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white;
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.crud-form button.primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover), #1e8449);
+  box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+}
+
+.crud-form button.secondary {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  color: white;
+  box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+}
+
+.crud-form button.secondary:hover {
+  background: linear-gradient(135deg, #7f8c8d, #6c7b7d);
+  box-shadow: 0 6px 15px rgba(149, 165, 166, 0.4);
+}
+
+/* ============ SCROLLBAR PERSONALIZADO ============ */
+
+.table-container::-webkit-scrollbar,
+.table-container-normal::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track,
+.table-container-normal::-webkit-scrollbar-track {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb,
+.table-container-normal::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover,
+.table-container-normal::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-hover);
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 768px) {
+  .table-page-container {
+    padding: 10px;
+  }
+  
+  .table-fullscreen-container .table-wrapper {
+    padding: 10px;
+  }
+  
+  .table-wrapper-normal {
+    padding: 15px;
+    margin: 0 10px;
+  }
+  
+  .table-title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .crudTable thead th,
+  .crudTable tbody td {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .action-button {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    min-width: 50px;
+  }
+  
+  .action-buttons {
+    gap: 4px;
+  }
+  
+  .crud-form {
+    padding: 1.5rem;
+    margin: 1rem 10px;
+  }
+  
+  .crud-form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .crud-form button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-page-container {
+    padding: 8px;
+  }
+  
+  .table-fullscreen-container .table-wrapper {
+    padding: 8px;
+  }
+  
+  .table-wrapper-normal {
+    padding: 12px;
+    margin: 0;
+  }
+  
+  .table-title {
+    font-size: 1.3rem;
+  }
+  
+  .crudTable thead th,
+  .crudTable tbody td {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .action-button {
+    padding: 4px 6px;
+    font-size: 0.7rem;
+    min-width: 45px;
+  }
+  
+  .action-buttons {
+    gap: 3px;
+  }
+  
+  .crud-form {
+    padding: 1rem;
+  }
+}
+
+/* ============ UTILIDADES ============ */
+
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }

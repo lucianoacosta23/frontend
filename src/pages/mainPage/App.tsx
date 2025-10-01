@@ -21,6 +21,7 @@ import AboutUs from '../homepage/aboutUs.tsx';
 import UserGetAll from '../adminPages/userPages/usersGetAll.tsx';
 import UserDetail from '../adminPages/userPages/userDetail.tsx';
 import UserUpdate from '../adminPages/userPages/userUpdate.tsx';
+import UserCreate from '../adminPages/userPages/userCreate.tsx';
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
             <Route path="getAll/" element={<UserGetAll />} />
             <Route path="detail/:id" element={<UserDetail />} />
             <Route path="update/:id" element={<UserUpdate />} />
+            <Route path="createUser/" element={<UserCreate />} />
           </Route>
         </Route>
       </Routes>

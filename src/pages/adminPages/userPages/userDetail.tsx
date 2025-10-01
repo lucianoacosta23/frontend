@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import '../../../static/css/userDetail.css';
+import '../../../static/css/users/userDetail.css';
 
 interface User {
   id?: number;
