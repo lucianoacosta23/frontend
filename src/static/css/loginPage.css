@@ -1,13 +1,13 @@
-:root{
+:root {
     --background-color: #1e293b;
     --accent-color: #2d6cf4;
     --button-color: #0ea5e9;
     --font-color: #d1e5fa;
 }
 
-.logBody{
+.logBody {
     background-color: var(--background-color);
-    display:flex;
+    display: flex;
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -16,90 +16,187 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-.logForm{
+.logForm {
     background-color: #2c3e50;
-    display:flex;
+    display: flex;
+    flex-direction: column; /* 🎯 Agregado para mejor estructura */
     width: 35vw;
+    min-width: 400px; /* 🎯 Ancho mínimo para responsive */
     height: fit-content;   
     justify-content: center;
     align-items: center;
     border-radius: 4%;
     gap: 25px;
+    padding: 30px; /* 🎯 Agregado padding */
     font-size: 1.6rem;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.262);
     color: var(--font-color);
 }
 
-.logInputs{
+.logInputs {
     display: flex;
     flex-direction: column;
     gap: 25px;
+    width: 100%;
+    align-items: center; /* 🎯 AGREGADO: Centrar los inputs */
 }
 
-.logInput{
+.logInput {
     position: relative;
+    width: 100%;
+    max-width: 350px; /* 🎯 MOVIDO: max-width al contenedor padre */
+    display: flex;
+    justify-content: center; /* 🎯 AGREGADO: Centrar contenido */
 }
 
-.logInput input{
+.logInput input {
     padding: 20px 20px 20px 10px;
     display: block;
-    width: 25vw;
+    width: 100%; /* 🎯 CAMBIADO: 100% del contenedor padre */
+    /* max-width: 350px; */ /* 🎯 REMOVIDO: Se maneja en el padre */
     outline: none;
     background: transparent;
     border: none;
     border-bottom: 1px solid gray;
+    color: var(--font-color); /* 🎯 Color del texto */
+    font-size: 1.2rem; /* 🎯 Tamaño de fuente */
+    box-sizing: border-box; /* 🎯 Para padding correcto */
 }
 
-.logInput label{
+.logInput input::placeholder {
+    color: transparent; /* 🎯 Placeholder transparente para labels flotantes */
+}
+
+.logInput label {
     position: absolute;
-    left: 5px;
-    top: 5px;
-    transition: ease 0.4s;
+    left: 10px; /* 🎯 Ajustado para alinear con el padding del input */
+    top: 20px; /* 🎯 Ajustado para centrar verticalmente */
+    transition: all 0.4s ease; /* 🎯 Transición más suave */
     font-size: 1.4rem;
     cursor: pointer;
+    color: #94a3b8; /* 🎯 Color gris suave */
+    pointer-events: none; /* 🎯 Para que no interfiera con clicks */
 }
 
-.logInput input:focus~label, .logInput input:not(:placeholder-shown)~label{
-    top: -1.2vh;
+.logInput input:focus ~ label, 
+.logInput input:not(:placeholder-shown) ~ label {
+    top: -5px; /* 🎯 Ajustado para mejor posicionamiento */
     font-size: 1rem;
     color: var(--accent-color);
     display: block;
     visibility: visible;
 }
 
-.logSubmitContainer{
-    display:flex;
-    flex-direction: row;
-    gap: 2vw;
+.logInput input:focus {
+    border-bottom: 2px solid var(--accent-color); /* 🎯 Borde más grueso en focus */
 }
 
-.logSubmit{
+.logSubmitContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 2vw;
+    width: 100%;
+    justify-content: center; /* 🎯 Centrar botones */
+    margin-top: 10px; /* 🎯 Espacio superior */
+}
+
+.logSubmit {
     height: 6vh;
+    min-height: 45px; /* 🎯 Altura mínima */
     width: 10vw;
+    min-width: 120px; /* 🎯 Ancho mínimo */
     font-size: 1.4rem;
     background-color: var(--button-color);
     outline: none;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    color: white; /* 🎯 Color del texto del botón */
+    font-weight: 600; /* 🎯 Texto más bold */
+    transition: all 0.3s ease; /* 🎯 Transición suave */
 }
 
-.logSubmit:hover{
+.logSubmit:hover {
     background-color: var(--accent-color);
-    transition: 0.6s;
+    transform: translateY(-2px); /* 🎯 Efecto hover sutil */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 🎯 Sombra en hover */
 }
 
-.otherMsg{
+.logSubmit:active {
+    transform: translateY(0); /* 🎯 Efecto click */
+}
+
+.otherMsg {
     font-size: 1rem;
-    color: gray;
+    color: #94a3b8; /* 🎯 Color gris más suave */
     cursor: pointer;
+    text-decoration: none; /* 🎯 Sin subrayado */
+    transition: color 0.3s ease; /* 🎯 Transición suave */
 }
 
-.otherMsgs{
-    display:flex;
+.otherMsg:hover {
+    color: var(--accent-color); /* 🎯 Color hover */
+    text-decoration: underline; /* 🎯 Subrayado en hover */
+}
+
+.otherMsgs {
+    display: flex;
     flex-direction: column;
+    gap: 10px; /* 🎯 Espacio entre mensajes */
+    text-align: center; /* 🎯 Centrar texto */
+    margin-top: 15px; /* 🎯 Espacio superior */
 }
 
-.errorMsg{
-    color: rgb(252, 30, 30);
+.errorMsg {
+    color: #ef4444; /* 🎯 Rojo más suave */
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 10px;
+    padding: 8px;
+    background-color: rgba(239, 68, 68, 0.1); /* 🎯 Fondo sutil para el error */
+    border-radius: 4px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* 🎯 RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .logForm {
+        width: 90vw;
+        min-width: 300px;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    
+    .logInput input {
+        max-width: none;
+        width: 100%;
+    }
+    
+    .logSubmitContainer {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .logSubmit {
+        width: 80%;
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logForm {
+        width: 95vw;
+        padding: 15px;
+        font-size: 1.4rem;
+    }
+    
+    .logInput label {
+        font-size: 1.2rem;
+    }
+    
+    .logSubmit {
+        font-size: 1.2rem;
+        width: 100%;
+    }
 }

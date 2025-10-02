@@ -2,18 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import '../../../static/css/users/userUpdate.css';
 
+// Actualizar la interface User para reflejar la entidad real:
 interface User {
   id?: number;
   name: string;
   surname: string;
   email: string;
-  phoneNumber?: string | null;
-  password?: string;
-  categoryName?: string;
-  category?: {
+  phoneNumber?: string;
+  category: {  // 🎯 NO es opcional, es obligatorio según la entidad
     id: number;
-    name: string;
-    usertype?: string;
+    description: string;
+    usertype: string;
   };
   createdAt?: string;
   updatedAt?: string;
@@ -21,8 +20,8 @@ interface User {
 
 interface Category {
   id: number;
-  name: string;
-  usertype?: string;
+  description: string;
+  usertype: string;
 }
 
 const UserUpdate = () => {
@@ -41,12 +40,12 @@ const UserUpdate = () => {
     surname: '',
     email: '',
     phoneNumber: '',
-    categoryId: '',
-    password: ''
+    categoryId: ''
   });
 
+  // 🎯 PRIMER useEffect: Cargar datos básicos (SIMPLIFICADO)
   useEffect(() => {
-    const fetchUserAndCategories = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -57,65 +56,80 @@ const UserUpdate = () => {
           throw new Error('No se encontró token de autenticación');
         }
 
-        // Obtener usuario
-        const userResponse = await fetch(`http://localhost:3000/api/users/findOne/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!userResponse.ok) {
-          throw new Error(`Error al cargar usuario: ${userResponse.status}`);
-        }
-
-        const userResponseData = await userResponse.json();
-        const userData = userResponseData.data || userResponseData;
-
-        // Intentar obtener categorías
-        let categoriesData = [];
-        try {
-          const categoriesResponse = await fetch('http://localhost:3000/api/categories/findAll', {
-            method: 'GET',
+        // Cargar en paralelo usando Promise.all
+        const [categoryResponse, userResponse] = await Promise.all([
+          fetch('http://localhost:3000/api/category/getAll', {
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             }
-          });
+          }),
+          fetch(`http://localhost:3000/api/users/findOne/${id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          })
+        ]);
 
-          if (categoriesResponse.ok) {
-            const categoriesResponseData = await categoriesResponse.json();
-            categoriesData = categoriesResponseData.data || categoriesResponseData;
+        // Procesar categorías
+        let categoriesArray = [];
+        if (categoryResponse.ok) {
+          const categoryData = await categoryResponse.json();
+          
+          if (Array.isArray(categoryData)) {
+            categoriesArray = categoryData;
+          } else if (categoryData.categories && Array.isArray(categoryData.categories)) {
+            categoriesArray = categoryData.categories;
+          } else if (categoryData.data && Array.isArray(categoryData.data)) {
+            categoriesArray = categoryData.data;
           }
-        } catch (categoriesError) {
-          // Continuar sin categorías si hay error
+          
+          setCategories(categoriesArray);
         }
 
-        setUser(userData);
-        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        // Procesar usuario
+        if (!userResponse.ok) {
+          throw new Error('Error al cargar usuario');
+        }
 
-        // Rellenar el formulario con los datos del usuario
-        const initialFormData = {
-          name: userData.name || '',
-          surname: userData.surname || '',
-          email: userData.email || '',
-          phoneNumber: userData.phoneNumber || '',
-          categoryId: userData.category?.id?.toString() || '',
-          password: ''
-        };
+        const userData = await userResponse.json();
+        const user = userData.data || userData;
+        
+        console.log('🎯 DATOS DEL USUARIO RECIBIDOS:', user);
+        setUser(user);
 
-        setFormData(initialFormData);
+        // 🎯 LÓGICA SIMPLIFICADA: El usuario SIEMPRE tiene category según la entidad
+        let currentCategoryId = '';
+        
+        if (user.category && user.category.id) {
+          currentCategoryId = String(user.category.id);
+          console.log('🎯 CategoryId encontrado:', currentCategoryId);
+          console.log('🎯 Categoría completa:', user.category);
+        } else {
+          console.log('🎯 ⚠️ Usuario sin categoría (esto no debería pasar según la entidad)');
+        }
+
+        // Establecer form data
+        setFormData({
+          name: user.name || '',
+          surname: user.surname || '',
+          email: user.email || '',
+          phoneNumber: user.phoneNumber || '',
+          categoryId: currentCategoryId // 🎯 Directamente desde user.category.id
+        });
 
       } catch (err) {
+        console.error('🎯 ERROR EN FETCH:', err);
         setError(err instanceof Error ? err.message : 'Error al cargar datos');
+        setCategories([]);
       } finally {
         setLoading(false);
       }
     };
 
     if (id) {
-      fetchUserAndCategories();
+      fetchData();
     }
   }, [id]);
 
@@ -140,23 +154,16 @@ const UserUpdate = () => {
         throw new Error('No se encontró token de autenticación');
       }
 
-      // Preparar datos para enviar
-      const updateData: any = {
+      // 🎯 DATOS PARA ENVIAR: categoryId como número
+      const updateData = {
         name: formData.name.trim(),
         surname: formData.surname.trim(),
         email: formData.email.trim(),
-        phoneNumber: formData.phoneNumber.trim() || null,
+        phoneNumber: formData.phoneNumber.trim() || undefined,
+        categoryId: formData.categoryId ? parseInt(formData.categoryId) : undefined // 🎯 Enviar como número
       };
 
-      // Solo incluir categoryId si hay una seleccionada y es válida
-      if (formData.categoryId && !isNaN(parseInt(formData.categoryId))) {
-        updateData.categoryId = parseInt(formData.categoryId);
-      }
-
-      // Solo incluir password si se proporcionó
-      if (formData.password.trim()) {
-        updateData.password = formData.password.trim();
-      }
+      console.log('🎯 Datos a enviar al backend:', updateData);
 
       const response = await fetch(`http://localhost:3000/api/users/update/${id}`, {
         method: 'PUT',
@@ -181,7 +188,7 @@ const UserUpdate = () => {
       }
 
       alert('Usuario actualizado con éxito');
-      navigate('/admin/users/getAll');
+      navigate(`/admin/users/detail/${id}`);
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al actualizar usuario');
@@ -191,13 +198,14 @@ const UserUpdate = () => {
   };
 
   const handleCancel = () => {
-    navigate('/admin/users/getAll');
+    navigate(`/admin/users/detail/${id}`);
   };
+
 
   if (loading) {
     return (
       <div className="update-container">
-        <h2 className="update-title">Editar Usuario</h2>
+        <h2 className="update-title">Actualizar Usuario</h2>
         <div className="loading-message">
           <p>Cargando datos del usuario...</p>
         </div>
@@ -208,31 +216,65 @@ const UserUpdate = () => {
   if (error && !user) {
     return (
       <div className="update-container">
-        <h2 className="update-title">Editar Usuario</h2>
+        <h2 className="update-title">Actualizar Usuario</h2>
         <div className="error-message">
           <p>❌ Error: {error}</p>
-          <button onClick={() => navigate('/admin/users/getAll')} className="cancel-button">
-            Volver a la lista
-          </button>
         </div>
+        <button onClick={() => navigate('/admin/users/getAll')} className="cancel-button">
+          Volver a la lista
+        </button>
       </div>
     );
   }
 
   return (
     <div className="update-container">
-      <h2 className="update-title">✏️ Editar Usuario</h2>
+      <h2 className="update-title">
+        ✏️ Actualizar Usuario: {user?.name} {user?.surname}
+      </h2>
+      
+      {/* 🎯 MOSTRAR CATEGORÍA EN SUBTÍTULO */}
+      {user?.category && (
+        <div className="user-subtitle">
+          <span className="current-category-subtitle">
+            📋 Categoría actual: <strong>{user.category.description}</strong> ({user.category.usertype})
+          </span>
+        </div>
+      )}
       
       {error && (
         <div className="error-message">
-          <p>❌ {error}</p>
+          <p>{error}</p>
+        </div>
+      )}
+
+      {/* 🎯 MOSTRAR CATEGORÍA ACTUAL COMO TARJETA */}
+      {user?.category && (
+        <div className="current-user-info">
+          <h3>📊 Información Actual del Usuario</h3>
+          <div className="info-card">
+            <div className="info-item">
+              <span className="info-label">Nombre Completo:</span>
+              <span className="info-value">{user.name} {user.surname}</span>
+            </div>
+            <div className="info-item">
+              <span className="info-label">Email:</span>
+              <span className="info-value">{user.email}</span>
+            </div>
+            <div className="info-item">
+              <span className="info-label">Categoría Actual:</span>
+              <span className="info-value category-highlight">
+                {user.category.description} ({user.category.usertype})
+              </span>
+            </div>
+          </div>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="update-form">
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="name">Nombre *</label>
+            <label htmlFor="name">Nombre</label>
             <input
               type="text"
               id="name"
@@ -246,7 +288,7 @@ const UserUpdate = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="surname">Apellido *</label>
+            <label htmlFor="surname">Apellido</label>
             <input
               type="text"
               id="surname"
@@ -262,7 +304,7 @@ const UserUpdate = () => {
 
         <div className="form-row">
           <div className="form-group">
-            <label htmlFor="email">Email *</label>
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
@@ -271,12 +313,12 @@ const UserUpdate = () => {
               onChange={handleInputChange}
               required
               className="form-input"
-              placeholder="usuario@ejemplo.com"
+              placeholder="ejemplo@correo.com"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="phoneNumber">Teléfono</label>
+            <label htmlFor="phoneNumber">Teléfono (opcional)</label>
             <input
               type="tel"
               id="phoneNumber"
@@ -284,54 +326,42 @@ const UserUpdate = () => {
               value={formData.phoneNumber}
               onChange={handleInputChange}
               className="form-input"
-              placeholder="Ingrese el teléfono (opcional)"
+              placeholder="+54 11 1234-5678"
             />
           </div>
         </div>
 
+        {/* Campo de categoría */}
         <div className="form-row">
-          {categories.length > 0 ? (
-            <div className="form-group">
-              <label htmlFor="categoryId">Categoría</label>
-              <select
-                id="categoryId"
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleInputChange}
-                className="form-select"
-              >
-                <option value="">Mantener categoría actual</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.usertype || category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ) : (
-            <div className="form-group">
-              <label>Categoría Actual</label>
-              <div className="current-category">
-                {user?.categoryName || user?.category?.usertype || 'Sin categoría'}
-              </div>
-              <small className="form-help">
-                No se pudieron cargar las categorías disponibles
-              </small>
-            </div>
-          )}
-
           <div className="form-group">
-            <label htmlFor="password">Nueva Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
+            <label htmlFor="categoryId">Categoría del Usuario</label>
+            
+            <select
+              id="categoryId"
+              name="categoryId"
+              value={formData.categoryId}
               onChange={handleInputChange}
-              className="form-input"
-              placeholder="Dejar vacío para mantener la actual"
-            />
-            <small className="form-help">Dejar vacío para no cambiar la contraseña</small>
+              className="form-select"
+            >
+              <option value="">Cambiar a: Sin categoría</option>
+              {Array.isArray(categories) && categories.length > 0 ? (
+                categories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    Cambiar a: {category.description} ({category.usertype})
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  {categories.length === 0 ? 'No hay categorías disponibles' : 'Cargando categorías...'}
+                </option>
+              )}
+            </select>
+            
+            <small className="form-help">
+              <span className="input-help">
+                Seleccione una nueva categoría si desea cambiarla
+              </span>
+            </small>
           </div>
         </div>
 
@@ -347,9 +377,9 @@ const UserUpdate = () => {
           <button
             type="submit"
             className="save-button"
-            disabled={saving}
+            disabled={saving || !formData.name.trim() || !formData.surname.trim() || !formData.email.trim()}
           >
-            {saving ? 'Guardando...' : 'Guardar Cambios'}
+            {saving ? 'Actualizando...' : 'Actualizar Usuario'}
           </button>
         </div>
       </form>

@@ -1,0 +1,402 @@
+/* static/css/usersGetAll.css */
+
+:root {
+    --primary-color: #2ecc71;
+    --secondary-color: #3498db;
+    --dark-color: #2c3e50;
+    --light-color: #ecf0f1;
+    --text-color: #333;
+    --sidebar-width: 280px;
+    
+    /* Variaciones adicionales */
+    --primary-hover: #27ae60;
+    --secondary-hover: #2980b9;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --surface: #ffffff;
+    --border: #bdc3c7;
+}
+
+/* Estilos generales */
+.categories-getall-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.categories-getall-container {
+  background-color: var(--light-color);
+  height: 100vh;
+  padding: 0;
+  overflow: hidden;
+}
+
+.categories-container {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  background-color: var(--surface);
+  padding: 5px 10px; /* 🎯 REDUCIDO */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Título principal */
+.categories-title {
+  color: var(--dark-color);
+  margin-bottom: 8px; /* 🎯 REDUCIDO */
+  padding-bottom: 6px; /* 🎯 REDUCIDO */
+  border-bottom: 3px solid var(--secondary-color);
+  font-size: 1.6rem; /* 🎯 REDUCIDO */
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Resumen de categorías */
+.categories-summary {
+  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-hover));
+  color: white;
+  padding: 6px 12px; /* 🎯 REDUCIDO */
+  border-radius: 6px;
+  margin-bottom: 8px; /* 🎯 REDUCIDO */
+  font-size: 0.9rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+  flex-shrink: 0;
+}
+
+.categories-summary strong {
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* Contenedor de la tabla - 🎯 CLAVE: altura automática */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+  border: 1px solid var(--border);
+  max-height: calc(100vh - 120px); /* 🎯 AGREGADO: altura máxima */
+}
+
+/* Tabla de categorías - 🎯 CLAVE: sin altura fija */
+.categories-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* 🎯 REMOVIDO: height: 100%; */
+}
+
+/* Cabecera de la tabla */
+.table-header {
+  background: linear-gradient(135deg, var(--dark-color), #34495e);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-header th {
+  padding: 10px 12px; /* 🎯 REDUCIDO */
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem; /* 🎯 REDUCIDO */
+  color: var(--light-color);
+  border: none;
+  white-space: nowrap;
+}
+
+.table-header th:first-child {
+  width: 60px; /* 🎯 MÁS COMPACTO */
+  text-align: center;
+}
+
+.table-header th:last-child {
+  width: 200px; /* 🎯 MÁS COMPACTO */
+  text-align: center;
+}
+
+/* Filas de la tabla */
+.table-row {
+  border-bottom: 1px solid var(--border);
+}
+
+.table-row:hover {
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+/* Celdas de la tabla - 🎯 CLAVE: padding reducido */
+.table-cell {
+  padding: 8px 12px; /* 🎯 REDUCIDO de 12px */
+  font-size: 0.85rem; /* 🎯 REDUCIDO */
+  color: var(--text-color);
+  border: none;
+  vertical-align: middle;
+}
+
+.table-cell:first-child {
+  font-weight: 600;
+  color: var(--secondary-color);
+  text-align: center;
+  width: 60px; /* 🎯 MÁS COMPACTO */
+}
+
+.table-cell:last-child {
+  text-align: center;
+  width: 200px; /* 🎯 MÁS COMPACTO */
+}
+
+/* Botones de acción */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.action-button {
+  padding: 6px 8px; /* 🎯 REDUCIDO el padding horizontal */
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  text-align: center;
+  width: 55px; /* 🎯 CAMBIADO: ancho fijo en lugar de min-width */
+  height: 28px; /* 🎯 AGREGADO: altura fija */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: hidden; /* 🎯 AGREGADO: para textos largos */
+}
+
+.view-button {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.view-button:hover {
+  background-color: var(--secondary-hover);
+}
+
+.edit-button {
+  background-color: var(--warning);
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #e67e22;
+}
+
+.delete-button {
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+/* Estados de carga */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1; /* 🎯 CAMBIADO: usar flex en lugar de height fija */
+  background: var(--surface);
+}
+
+.loading-text {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-top: 15px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.loading-spinner {
+  border: 3px solid var(--border);
+  border-top: 3px solid var(--secondary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Estados de error */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1; /* 🎯 CAMBIADO: usar flex en lugar de height fija */
+  background: var(--surface);
+  padding: 20px;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #fdeaea, #fadbd8);
+  border-left: 4px solid var(--danger);
+  padding: 15px;
+  margin: 20px 0;
+  text-align: left;
+  border-radius: 6px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.error-message p {
+  color: var(--danger);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.retry-button {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+.retry-button:hover {
+  background-color: var(--secondary-hover);
+}
+
+/* Estado sin categorías */
+.no-categories-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1; /* 🎯 CAMBIADO: usar flex */
+  font-size: 1.1rem;
+  color: var(--text-color);
+  background: var(--light-color);
+  border-radius: 8px;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* Efectos de transición para la tabla */
+.categories-table {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .categories-container {
+    padding: 4px 8px; /* 🎯 MÁS COMPACTO */
+  }
+  
+  .categories-title {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+  }
+  
+  .categories-summary {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    margin-bottom: 6px;
+  }
+  
+  .table-header th {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+  
+  .table-cell {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .action-button {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    width: 45px; /* 🎯 Más pequeño en móviles */
+    height: 24px;
+  }
+  
+  .action-buttons {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-button {
+    width: 40px;
+    height: 22px;
+    font-size: 0.65rem;
+    padding: 3px 4px;
+  }
+  
+  /* 🎯 OPCIONAL: Usar solo iconos en pantallas muy pequeñas */
+  .action-button span {
+    display: none; /* Ocultar texto */
+  }
+  
+  .view-button::before {
+    content: '👁️';
+  }
+  
+  .edit-button::before {
+    content: '✏️';
+  }
+  
+  .delete-button::before {
+    content: '🗑️';
+  }
+}
+
+/* Scrollbar personalizado */
+.table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-color);
+  border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--secondary-hover);
+}

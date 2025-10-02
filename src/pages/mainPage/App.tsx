@@ -22,6 +22,10 @@ import UserGetAll from '../adminPages/userPages/usersGetAll.tsx';
 import UserDetail from '../adminPages/userPages/userDetail.tsx';
 import UserUpdate from '../adminPages/userPages/userUpdate.tsx';
 import UserCreate from '../adminPages/userPages/userCreate.tsx';
+import CategoryGetAll from '../adminPages/categoryPages/categoryGetAll.tsx';
+import CategoryCreate from '../adminPages/categoryPages/categoryCreate.tsx';
+import CategoryDetail from '../adminPages/categoryPages/categoryDetail.tsx';
+import CategoryUpdate from '../adminPages/categoryPages/categoryUpdate.tsx';
 
 
 function App() {
@@ -46,7 +50,12 @@ function App() {
             <Route path='update/' element={<PitchUpdate />}/>
           </Route>
           <Route path="localities/" element={<LocalityHome />} />
-          <Route path="categories/" element={<CategoryHome />} />
+          <Route path="categories/" element={<CategoryHome />} >
+            <Route path="getAll/" element={<CategoryGetAll />} />
+            <Route path="create/" element={<CategoryCreate />} />
+            <Route path="detail/:id" element={<CategoryDetail />} />
+            <Route path="update/:id" element={<CategoryUpdate />} />
+          </Route>
           <Route path="users/" element={<UserHome />}>
             <Route path="getAll/" element={<UserGetAll />} />
             <Route path="detail/:id" element={<UserDetail />} />

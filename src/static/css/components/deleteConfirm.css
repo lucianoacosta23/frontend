@@ -1,0 +1,247 @@
+/* Verifica que este archivo exista y tenga el CSS que te di antes */
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+/* Modal principal */
+.delete-confirm-modal {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+  overflow: hidden;
+}
+
+/* Header del modal */
+.delete-confirm-header {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  padding: 20px 24px;
+  text-align: center;
+  color: white;
+}
+
+.delete-confirm-icon {
+  font-size: 3rem;
+  margin-bottom: 8px;
+  animation: pulse 2s infinite;
+}
+
+.delete-confirm-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenido del modal */
+.delete-confirm-content {
+  padding: 24px;
+}
+
+.delete-confirm-message {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Información del elemento */
+.delete-confirm-item {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.05));
+  border: 2px solid rgba(231, 76, 60, 0.2);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.item-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  font-weight: 600;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.item-name {
+  display: block;
+  font-size: 1.1rem;
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+/* Advertencia */
+.delete-confirm-warning {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+  border: 2px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.warning-icon {
+  font-size: 1.2rem;
+}
+
+.warning-text {
+  color: #f39c12;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Botones de acción */
+.delete-confirm-actions {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px 24px 24px;
+}
+
+.cancel-button,
+.confirm-button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+}
+
+.cancel-button {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  color: white;
+  box-shadow: 0 4px 10px rgba(149, 165, 166, 0.3);
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #7f8c8d, #6c7b7d);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(149, 165, 166, 0.4);
+}
+
+.confirm-button {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+
+.confirm-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+}
+
+.confirm-button:disabled,
+.cancel-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.confirm-icon {
+  font-size: 1.1rem;
+}
+
+/* Spinner de carga */
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .delete-confirm-modal {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .delete-confirm-header {
+    padding: 16px 20px;
+  }
+  
+  .delete-confirm-icon {
+    font-size: 2.5rem;
+  }
+  
+  .delete-confirm-title {
+    font-size: 1.2rem;
+  }
+  
+  .delete-confirm-content {
+    padding: 20px;
+  }
+  
+  .delete-confirm-actions {
+    flex-direction: column;
+    padding: 0 20px 20px 20px;
+  }
+  
+  .cancel-button,
+  .confirm-button {
+    width: 100%;
+  }
+}
