@@ -10,8 +10,12 @@ export default function PitchUpdate(){
         try{
             setLoading(true)
             setError(null)
+            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
             const response = await fetch('http://localhost:3000/api/pitchs/update/' + String(pitch.id),{method:"PATCH",
-                headers: { 'Content-Type': 'application/json',}, 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(pitch)}
             )
             if(!response.ok){
@@ -31,7 +35,7 @@ export default function PitchUpdate(){
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const pitch:Pitch = {
-            id:0,
+            id:Number(formData.get("id")),
             businessId:Number(formData.get("businessId")),
             rating:Number(formData.get("rating")),
             price:Number(formData.get("price")),
@@ -45,24 +49,46 @@ export default function PitchUpdate(){
       };
 
     return (
-    <div>
-            <h2>Actualizar cupón</h2>
-            <form onSubmit={handleSubmit}>
-                <label>ID</label>
-                <input type="number" name="id" required />
-                <label>Discount</label>
-                <input name="discount" type="number" required step="0.01" max={1}/>
-                <label>Status</label>
-                <input type="text" name="status" required />
-                <label>Expiring Date</label>
-                <input type="date" name="expiringDate" required />
-                <button type="submit">Actualizar</button>
+    <div className='crud-form-container'>
+            <h2 className='crud-form-title'>Actualizar cupón</h2>
+            <form onSubmit={handleSubmit} className='crud-form'>
+                <div className='crud-form-item'>
+                    <label>ID de cancha</label>
+                    <input type="number" name="id" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>ID de negocio asociado</label>
+                    <input name="businessId" type="number" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Rating</label>
+                    <input name="rating" type="number" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Precio</label>
+                    <input name="price" type="number" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Tamaño</label>
+                    <input type="text" name="size" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Tipo de suelo</label>
+                    <input type="text" name="groundType" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Techo</label>
+                    <input type="checkbox" name="roof" />
+                </div>
+                <div className='crud-form-actions'>
+                <button type="submit" className='primary'>Actualizar</button>
+                </div>
             </form>
             <pre>
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
             {data && (
-                <table className='couponTable'>
+                <table className='crudTable'>
                 <thead>
                     <tr>
                         <th>ID</th>

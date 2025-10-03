@@ -47,18 +47,29 @@ export default function CouponUpdate(){
       };
 
     return (
-    <div>
-            <h2>Actualizar cupón</h2>
-            <form onSubmit={handleSubmit}>
-                <label>ID</label>
-                <input type="number" name="id" required />
-                <label>Discount</label>
-                <input name="discount" type="number" required step="0.01" max={1}/>
-                <label>Status</label>
-                <input type="text" name="status" required />
-                <label>Expiring Date</label>
-                <input type="date" name="expiringDate" required />
-                <button type="submit">Actualizar</button>
+    <div className='crud-form-container'>
+            <h2 className='crud-form-title'>Actualizar cupón</h2>
+            <form onSubmit={handleSubmit} className='crud-form'>
+                <div className='crud-form-item'>
+                    <label>ID</label>
+                    <input type="number" name="id" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Discount</label>
+                    <input name="discount" type="number" required step="0.01" max={1}/>
+                </div>
+                <div className='crud-form-item'>
+                    <label>Status</label>
+                    <input type="text" name="status" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Expiring Date</label>
+                    <input type="date" name="expiringDate" required />
+                </div>
+                <div className='crud-form-actions'>
+                    <button className='secondary' type="submit">Cancelar</button>
+                    <button className='primary' type="submit">Actualizar</button>
+                </div>
             </form>
             <pre>
             {loading && <p>Loading...</p>}

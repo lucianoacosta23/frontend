@@ -12,7 +12,11 @@ export default function PitchGetAll() {
             try{
                 setLoading(true)
                 setErrorGet(null)
-                const response = await fetch('http://localhost:3000/api/pitchs/getAll',{method:"GET"}
+                const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+                const response = await fetch('http://localhost:3000/api/pitchs/getAll',{method:"GET", headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }}
                 )
                 if(!response.ok){
                     throw new Error("HTTP Error! status: " + response.status)
@@ -64,7 +68,7 @@ export default function PitchGetAll() {
   return (
     <div>
         <pre>
-            <table className='couponTable'>
+            <table className='crudTable'>
                 <thead>
                     <th>ID</th>
                     <th>Business ID</th>

@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import type {Coupon} from '../../../types/couponType.ts'
+import { useNavigate } from 'react-router';
 
 export default function CouponAdd(){
     const [data, setData] = useState<CouponResponse | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const navigate = useNavigate();
     
     const add = async (coupon:Coupon) =>{
         try{
@@ -46,17 +49,30 @@ export default function CouponAdd(){
         }
       };
 
+      const cancel = () => {
+        navigate('/admin/coupons')
+      }
+
     return (
-    <div>
-            <h2>Crear cupón</h2>
-            <form onSubmit={handleSubmit}>
-                <label>Discount</label>
-                <input name="discount" type="number" required step="0.01" max={1}/>
-                <label>Status</label>
-                <input type="text" name="status" required />
-                <label>Expiring Date</label>
-                <input type="date" name="expiringDate" required />
-                <button type="submit">Crear</button>
+    <div className='crud-form-container'>
+            <h2 className='crud-form-title'>Crear cupón</h2>
+            <form onSubmit={handleSubmit} className='crud-form'>
+                <div className='crud-form-item'>
+                    <label>Discount</label>
+                    <input name="discount" type="number" required step="0.01" max={1}/>
+                </div>
+                <div className='crud-form-item'>
+                    <label>Status</label>
+                    <input type="text" name="status" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Expiring Date</label>
+                    <input type="date" name="expiringDate" required />
+                </div>
+                <div className='crud-form-actions'>
+                    <button onClick={cancel} className='secondary'>Cancelar</button>
+                    <button type="submit" className='primary'>Crear</button>
+                </div>
             </form>
             <pre>
             {loading && <p>Loading...</p>}

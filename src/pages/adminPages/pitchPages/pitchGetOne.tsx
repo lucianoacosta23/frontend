@@ -10,7 +10,11 @@ export default function PitchGetOne(){
         try{
             setLoading(true)
             setError(null)
-            const response = await fetch('http://localhost:3000/api/pitchs/getOne/'+id)
+            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+            const response = await fetch('http://localhost:3000/api/pitchs/getOne/'+id, {headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }})
             if(!response.ok){
                 throw new Error("HTTP Error! status: " + response.status)
             }
@@ -33,18 +37,22 @@ export default function PitchGetOne(){
   };
     
     return (
-        <div>
-            <h2>Conseguir cancha</h2>
-            <form onSubmit={handleSubmit}>
-                <label>ID de la cancha</label>
-                <input name="id" type="number" required />
-                <button type="submit">Conseguir cancha</button>
+        <div className='crud-form-container'>
+            <h2 className='crud-form-title'>Conseguir cancha</h2>
+            <form onSubmit={handleSubmit} className='crud-form'>
+                <div className='crud-form-item'>
+                    <label>ID de la cancha</label>
+                    <input name="id" type="number" required />
+                </div>
+                    <div className='crud-form-actions'>
+                    <button type="submit" className='primary'>Conseguir cancha</button>
+                </div>
             </form>
             <pre>
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
             {data && (
-                <table className='couponTable'>
+                <table className='crudTable'>
                 <thead>
                     <tr>
                         <th>ID</th>

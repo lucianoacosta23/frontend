@@ -39,12 +39,16 @@ export default function CouponGetOne(){
   };
     
     return (
-        <div>
-            <h2>Conseguir cupón</h2>
-            <form onSubmit={handleSubmit}>
+        <div className='crud-form-container'>
+            <h2 className='crud-form-title'>Conseguir cupón</h2>
+            <form onSubmit={handleSubmit} className='crud-form'>
+                <div className='crud-form-item'>
                 <label>ID del cupón</label>
                 <input name="id" type="number" required />
-                <button type="submit">Conseguir cupón</button>
+                </div>
+                <div className='crud-form-actions'>
+                <button type="submit" className='primary'>Conseguir cupón</button>
+                </div>
             </form>
             <pre>
             {loading && <p>Loading...</p>}

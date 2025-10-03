@@ -10,8 +10,12 @@ export default function PitchAdd(){
         try{
             setLoading(true)
             setError(null)
+            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
             const response = await fetch('http://localhost:3000/api/pitchs/add',{method:"POST",
-                headers: { 'Content-Type': 'application/json',}, 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }, 
                 body: JSON.stringify(pitch)}
             )
             if(!response.ok){
@@ -45,28 +49,42 @@ export default function PitchAdd(){
       };
 
     return (
-    <div>
-            <h2>Crear cancha</h2>
-            <form onSubmit={handleSubmit}>
-                <label>ID de negocio asociado: </label>
-                <input name="businessId" type="number" required />
-                <label>Rating: </label>
-                <input name="rating" type="number" required />
-                <label>Precio: </label>
-                <input name="price" type="number" required />
-                <label>Tamaño: </label>
-                <input type="text" name="size" required />
-                <label>Tipo de suelo: </label>
-                <input type="text" name="groundType" required />
-                <label>Techo: </label>
-                <input type="checkbox" name="roof" required />
-                <button type="submit">Crear</button>
+    <div className='crud-form-container'>
+            <h2 className='crud-form-title'>Crear cancha</h2>
+            <form onSubmit={handleSubmit} className='crud-form'>
+                <div className='crud-form-item'>
+                    <label>ID de negocio asociado</label>
+                    <input name="businessId" type="number" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Rating</label>
+                    <input name="rating" type="number" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Precio</label>
+                    <input name="price" type="number" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Tamaño</label>
+                    <input type="text" name="size" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Tipo de suelo</label>
+                    <input type="text" name="groundType" required />
+                </div>
+                <div className='crud-form-item'>
+                    <label>Techo</label>
+                    <input type="checkbox" name="roof" />
+                </div>
+                <div className='crud-form-actions'>
+                    <button type="submit" className='primary'>Crear</button>
+                </div>
             </form>
             <pre>
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
             {data && (
-                <table className='couponTable'>
+                <table className='crudTable'>
                 <thead>
                     <tr>
                         <th>ID</th>
