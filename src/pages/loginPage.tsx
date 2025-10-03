@@ -148,15 +148,6 @@ export function LoginPage(){
             <aside className="logSubmitContainer">
                 <input type="submit" className="logSubmit" value="Iniciar sesión" />
             </aside>
-            <div className='errorBox'>
-            {errorMessages.length > 0 && (
-                    <ul>
-                    {errorMessages.map((err, idx) => (
-                        <li key={idx} className="errorMsg">{err}</li>
-                    ))}
-                    </ul>
-                )}
-            </div>
         </form>
         </div>}
             {!loginPage && <div className='logBody'>
