@@ -3,8 +3,11 @@ import { FaFutbol } from "react-icons/fa";
 import '../../static/css/homePageNav.css'
 import { jwtDecode } from "jwt-decode";
 import type { UserData } from "../../types/userData";
+interface HomePageNavProps {
+  showNotification: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
+}
 
-export function HomePageNav(){
+export function HomePageNav({ showNotification }: HomePageNavProps){
     const navigate = useNavigate()
     const toHome = () => {
         navigate('/')
@@ -16,9 +19,9 @@ export function HomePageNav(){
     }
     const handleLogout = () =>{
         localStorage.clear() 
-        alert('sesion cerrada')
-        toHome()
+        showNotification("Sesión cerrada con éxito", "success");
     }
+    
     return(
         <header className="homeHeader">
                 <div className="Nav">
