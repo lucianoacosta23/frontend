@@ -23,7 +23,7 @@ export function LoginPage(){
             localStorage.setItem('user', JSON.stringify(token))
             
             alert('Sesión iniciada con éxito')
-            navigate('/admin')
+            navigate('/')
         }catch(err:unknown){
             if (isApiError(err)) {
             if (Array.isArray(err.errors)) {
@@ -41,16 +41,14 @@ export function LoginPage(){
 
     async function register(user:UserData){
         try{
-        const response = await fetch('http://localhost:3000/api/users/add',{method:"POST",
-                headers: { 'Content-Type': 'application/json',}, 
+        const response = await fetch('http://localhost:3000/api/login/register',{method:"POST",
+                headers: { 'Content-Type': 'application/json',
+                }, 
                 body: JSON.stringify(user)})
                 if(!response.ok){
                 const errors: ApiError = await response.json()
                 throw errors
             }
-            const token = await response.json()
-            delete token.surname;
-            delete token.phoneNumber;
             alert('Usuario creado con éxito')
             login(user)
         }catch(err:unknown){
@@ -74,8 +72,6 @@ export function LoginPage(){
             const user:UserData = {
                 email:String(formData.get("mail")),
                 password:String(formData.get("pass")),
-                name:'',
-                categoryId:0
             }
             if(user) {
                 login(user);
@@ -91,7 +87,7 @@ export function LoginPage(){
                 name:String(formData.get("name")),
                 surname:String(formData.get("surname")),
                 phoneNumber:String(formData.get("phone")) || undefined,
-                categoryId:1
+                category:'client' // por defecto, el register hace un usuario de tipo cliente
             }
             if(user) {
                 register(user);

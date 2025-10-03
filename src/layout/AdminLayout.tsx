@@ -1,13 +1,14 @@
-import { NavLink, Outlet, Navigate } from "react-router-dom";
+import { NavLink, Outlet, Navigate, useNavigate } from "react-router-dom";
 import "../static/css/AdminLayout.css";
 import { useState } from "react";
-import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol } from "react-icons/fa";
+import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol, FaHome } from "react-icons/fa";
 import type { UserData } from "../types/userData.js";
 import {jwtDecode} from 'jwt-decode'
+import HomeFooter from "../pages/homepage/homeFooter.js";
 
 export function AdminLayout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+    const navigate = useNavigate();
 
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!mobileMenuOpen);
@@ -22,19 +23,20 @@ export function AdminLayout() {
     const handleLogout = () =>{
         localStorage.clear() //temporal
         alert('sesion cerrada')
+        navigate('/')
     }
 
     return (
+        <div>
         <div className="admin-container">
             {/* Sidebar para desktop */}
             <aside className="admin-sidebar">
                 <div className="sidebar-header">
-                    <div className="sidebar-logo">{userData.name.substring(0,2)}</div>
+                    <div className="sidebar-logo">{userData.name && userData.name.substring(0,2)}</div>
                     <div className="sidebar-title">{userData.name}</div>
                 </div>
                 
                 <nav className="sidebar-nav">
-
                     <NavLink 
                         to="" 
                         end
@@ -45,7 +47,16 @@ export function AdminLayout() {
                         <div className="nav-icon"><FaBars /></div>
                         <div className="nav-text">Dashboard</div>
                     </NavLink>
-
+                    <NavLink 
+                        to="/" 
+                        end
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"><FaHome /></div>
+                        <div className="nav-text">Inicio</div>
+                    </NavLink>
                     <NavLink 
                         to="users/" 
                         className={({ isActive }) => 
@@ -104,7 +115,7 @@ export function AdminLayout() {
                     {mobileMenuOpen ? <FaTimes /> : <FaBars />}
                 </button>
                 <div className="mobile-logo">
-                    <div className="mobile-logo-icon">{userData.name.substring(0,2)}</div>
+                    <div className="mobile-logo-icon">{userData.name && userData.name.substring(0,2)}</div>
                     <div className="mobile-logo-text">{userData.name}</div>
                 </div>
             </header>
@@ -112,6 +123,17 @@ export function AdminLayout() {
             {/* Sidebar móvil */}
             <div className={`mobile-sidebar ${mobileMenuOpen ? 'active' : ''}`}>
                 <nav className="sidebar-nav">
+                    <NavLink 
+                        to="/" 
+                        end
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                        onClick={toggleMobileMenu}
+                    >
+                        <div className="nav-icon"><FaHome /></div>
+                        <div className="nav-text">Inicio</div>
+                    </NavLink>
                     <NavLink 
                         to="users/" 
                         className={({ isActive }) => 
@@ -178,6 +200,9 @@ export function AdminLayout() {
             <main className="admin-content">
                 <Outlet />
             </main>
+            
+        </div>
+        <HomeFooter />
         </div>
     );
 }

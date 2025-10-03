@@ -1,11 +1,23 @@
 import {Link, useNavigate } from "react-router-dom";
-import '../../static/css/homePageNav.css'
 import { FaFutbol } from "react-icons/fa";
+import '../../static/css/homePageNav.css'
+import { jwtDecode } from "jwt-decode";
+import type { UserData } from "../../types/userData";
 
 export function HomePageNav(){
     const navigate = useNavigate()
     const toHome = () => {
         navigate('/')
+    }
+    let userData = undefined
+    const storedUser = localStorage.getItem('user')
+    if(storedUser){
+        userData = jwtDecode(storedUser) as UserData
+    }
+    const handleLogout = () =>{
+        localStorage.clear() 
+        alert('sesion cerrada')
+        toHome()
     }
     return(
         <header className="homeHeader">
@@ -16,11 +28,25 @@ export function HomePageNav(){
                     </h1>
                     <ul>
                         <li>
-                            <Link to="/login">Iniciar sesión</Link>
+                            {!storedUser && 
+                            <Link to="/login">Iniciar sesión</Link>}
+                            {storedUser &&
+                            <Link to="/" onClick={handleLogout}>Cerrar sesión</Link>}
                         </li>
                         <li>
                             <Link to ="/about">Sobre nosotros</Link>
                         </li>
+                        <li>
+                            <Link to="/pitchs">Lista de Canchas</Link>
+                        </li>
+                        {(userData?.category == 'admin') &&
+                        <li>
+                            <Link to="/admin">Admin Dashboard</Link>
+                        </li>}
+                        {(userData?.category == 'business_owner') &&
+                        <li>
+                            <Link to="/myBusiness">Mi negocio</Link> 
+                        </li>}  
                     </ul>   
                 </div>
             </header>

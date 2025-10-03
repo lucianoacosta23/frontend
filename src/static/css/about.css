@@ -402,30 +402,6 @@
     color: var(--text-color, #e0e0e0);
 }
 
-/* Footer */
-.Content-About footer {
-    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-    color: white;
-    padding: 2rem;
-    text-align: center;
-    margin-top: auto;
-    width: 100%;
-}
-
-.Content-About .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.Content-About .footer-content p {
-    margin: 0.5rem 0;
-    color: white;
-}
-
-.Content-About .academic-footer {
-    opacity: 0.8;
-    font-size: 0.9rem;
-}
 
 /* Responsive */
 @media (max-width: 768px) {

@@ -21,6 +21,7 @@ import AboutUs from '../homepage/aboutUs.tsx';
 import UserGetAll from '../adminPages/userPages/usersGetAll.tsx';
 import UserDetail from '../adminPages/userPages/userDetail.tsx';
 import UserUpdate from '../adminPages/userPages/userUpdate.tsx';
+import { HomeLayout } from '../../layout/HomeLayout.tsx';
 import UserCreate from '../adminPages/userPages/userCreate.tsx';
 import CategoryGetAll from '../adminPages/categoryPages/categoryGetAll.tsx';
 import CategoryCreate from '../adminPages/categoryPages/categoryCreate.tsx';
@@ -32,8 +33,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Homepage/>}/>
-        <Route path='about/' element={<AboutUs/>}/>
+        <Route element={<HomeLayout />}>
+          <Route index path='/' element={<Homepage/>}/>
+          <Route path='about/' element={<AboutUs/>}/>
+        </Route>
         <Route path='login/' element={<LoginPage/>}/>
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />

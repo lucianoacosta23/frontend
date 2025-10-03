@@ -120,19 +120,6 @@
     line-height: 1.6;
 }
 
-/* Footer específico de Homepage */
-.Content-Homepage footer {
-    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-    color: white;
-    padding: 2rem;
-    text-align: center;
-}
-
-.Content-Homepage .footer-content p {
-    margin: 0;
-    opacity: 0.9;
-}
-
 /* Responsive Design específico para Homepage */
 @media (max-width: 768px) {
     .Content-Homepage .Nav ul {
