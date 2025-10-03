@@ -1,6 +1,6 @@
 .toast {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   min-width: 320px;
   max-width: 500px;
