@@ -6,7 +6,7 @@
 }
 
 .logBody {
-    background-color: var(--background-color);
+    background-color: #1e293b; /* temp */
     display: flex;
     margin: 0;
     padding: 0;
