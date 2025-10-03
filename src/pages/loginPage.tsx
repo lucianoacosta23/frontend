@@ -1,13 +1,40 @@
 import { useNavigate } from 'react-router-dom';
 import '../static/css/loginPage.css'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { UserData } from '../types/userData.js';
+import Toast from '../components/Toast.js';
 
 
 export function LoginPage(){
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const navigate = useNavigate();
     const [loginPage, changePage] = useState<boolean>(true);
+
+    // 🎯 NUEVOS ESTADOS PARA EL TOAST
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
+
+    // 🎯 FUNCIÓN PARA MOSTRAR TOAST
+    const showNotification = (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
+        setToastMessage(message);
+        setToastType(type);
+        setShowToast(true);
+    };
+
+    // 🎯 FUNCIÓN PARA CERRAR TOAST
+    const closeToast = () => {
+        setShowToast(false);
+    };
+
+    useEffect(()=>{
+        if(errorMessages.length > 0){
+                errorMessages.map((err) => (
+                    showNotification(err,'error') 
+                ))
+            
+        }
+    },[errorMessages])
 
     async function login(user:UserData){
         try{
@@ -22,7 +49,6 @@ export function LoginPage(){
 
             localStorage.setItem('user', JSON.stringify(token))
             
-            alert('Sesión iniciada con éxito')
             navigate('/')
         }catch(err:unknown){
             if (isApiError(err)) {
@@ -167,17 +193,15 @@ export function LoginPage(){
             <aside className="logSubmitContainer">
                 <input type="submit" className="logSubmit" value="Registrarse" />
             </aside>
-            <div className='errorBox'>
-            {errorMessages.length > 0 && (
-                    <ul>
-                    {errorMessages.map((err, idx) => (
-                        <li key={idx} className="errorMsg">{err}</li>
-                    ))}
-                    </ul>
-                )}
-            </div>
         </form>
         </div>}
+        <Toast
+        message={toastMessage}
+        type={toastType}
+        isVisible={showToast}
+        onClose={closeToast}
+        duration={4000}
+      />
         </>
     )
 }
