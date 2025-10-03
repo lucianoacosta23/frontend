@@ -5,10 +5,28 @@ import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaA
 import type { UserData } from "../types/userData.js";
 import {jwtDecode} from 'jwt-decode'
 import HomeFooter from "../pages/homepage/homeFooter.js";
+import Toast from "../components/Toast.js";
 
 export function AdminLayout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+
+    // 🎯 NUEVOS ESTADOS PARA EL TOAST
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
+    
+    // 🎯 FUNCIÓN PARA MOSTRAR TOAST
+    const showNotification = (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
+        setToastMessage(message);
+        setToastType(type);
+        setShowToast(true);
+    };
+    
+    // 🎯 FUNCIÓN PARA CERRAR TOAST
+    const closeToast = () => {
+        setShowToast(false);
+    };
 
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!mobileMenuOpen);
@@ -198,11 +216,18 @@ export function AdminLayout() {
 
             {/* Contenido principal */}
             <main className="admin-content">
-                <Outlet />
+                <Outlet context={{showNotification}}/>
             </main>
             
         </div>
         <HomeFooter />
+        <Toast
+            message={toastMessage}
+            type={toastType}
+            isVisible={showToast}
+            onClose={closeToast}
+            duration={4000}
+            />
         </div>
     );
 }

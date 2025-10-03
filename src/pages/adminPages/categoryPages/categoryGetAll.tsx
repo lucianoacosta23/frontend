@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import '../../../static/css/categories/categoryGetAll.css';
 import DeleteConfirm from '../../../components/deleteConfirm';
-import Toast from '../../../components/Toast'; // 🎯 IMPORTAR TOAST
 
 interface Category {
   id?: number;
@@ -20,22 +19,8 @@ const CategoryGetAll = () => {
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // 🎯 NUEVOS ESTADOS PARA EL TOAST
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
-
-  // 🎯 FUNCIÓN PARA MOSTRAR TOAST
-  const showNotification = (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
-    setToastMessage(message);
-    setToastType(type);
-    setShowToast(true);
-  };
-
-  // 🎯 FUNCIÓN PARA CERRAR TOAST
-  const closeToast = () => {
-    setShowToast(false);
-  };
+  // Contexto para usar la funcion del Toast
+  const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -287,15 +272,6 @@ const CategoryGetAll = () => {
         confirmText="Eliminar Categoría"
         cancelText="Cancelar"
         isLoading={isDeleting}
-      />
-
-      {/* 🎯 TOAST DE NOTIFICACIÓN */}
-      <Toast
-        message={toastMessage}
-        type={toastType}
-        isVisible={showToast}
-        onClose={closeToast}
-        duration={4000}
       />
     </div>
   );
