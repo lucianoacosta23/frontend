@@ -81,7 +81,7 @@ export default function CouponGetAll() {
               <td>{coupon.discount}</td>
               <td>{coupon.status}</td>
               <td>{coupon.expiringDate}</td>
-              <td><button className='delete-button' onClick={handleDeleteSubmit} value={coupon.id}>Eliminar</button></td>
+              <td><button className='action-button delete' onClick={handleDeleteSubmit} value={coupon.id}>Eliminar</button></td>
             </tr>
           ))}
                 </tbody>

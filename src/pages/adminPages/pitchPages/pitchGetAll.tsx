@@ -86,7 +86,7 @@ export default function PitchGetAll() {
               <td>{pitch.size}</td>
               <td>{pitch.groundType}</td>
               <td>{pitch.roof ? 'Techado':'Sin techo'}</td>
-              <td><button className='delete-button' onClick={handleDeleteSubmit} value={pitch.id}>Eliminar</button></td>
+              <td><button className='action-button delete' onClick={handleDeleteSubmit} value={pitch.id}>Eliminar</button></td>
             </tr>
           ))}
                 </tbody>
