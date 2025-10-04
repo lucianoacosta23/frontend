@@ -5,6 +5,8 @@ import { useOutletContext } from 'react-router';
 export default function PitchGetAll() {
     const [data, setData] = useState<PitchResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [ error, setError ] = useState<boolean>(false);
+
 
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
 
@@ -24,6 +26,7 @@ export default function PitchGetAll() {
                 setData(json)
             }catch(error){
                 showNotification('Error: ' + error, 'error')
+                setError(true)
                 setLoading(false)
             }finally{
                 setLoading(false)
@@ -31,7 +34,9 @@ export default function PitchGetAll() {
         }
 
         useEffect(()=>{
-            getAll();
+            if(!error){
+                getAll();
+            }
         })
     
     const remove = async (id:number) =>{
