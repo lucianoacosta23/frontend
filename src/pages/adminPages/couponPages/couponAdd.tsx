@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import type {Coupon} from '../../../types/couponType.ts'
-import { useNavigate } from 'react-router';
+import { useNavigate, useOutletContext } from 'react-router';
 
 export default function CouponAdd(){
     const [data, setData] = useState<CouponResponse | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
+    const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const navigate = useNavigate();
     
     const add = async (coupon:Coupon) =>{
@@ -27,7 +28,8 @@ export default function CouponAdd(){
             }
             const json:CouponResponse = await response.json()
             setData(json)
-            alert('Cupón creado con éxito')
+            showNotification('Cupón actualizado con éxito!', 'success')
+            navigate('/admin/coupons/getAll')
         }catch(error){
             setError(error as Error)
             setLoading(false)
