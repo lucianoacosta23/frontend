@@ -49,6 +49,10 @@ export function HomePageNav({ showNotification }: HomePageNavProps){
                         {(userData?.category == 'business_owner') &&
                         <li>
                             <Link to="/myBusiness">Mi negocio</Link> 
+                        </li>}
+                        {(userData?.category == 'client') &&
+                        <li>
+                            <Link to="/registerBusiness">Registrar negocio</Link> 
                         </li>}  
                     </ul>   
                 </div>
