@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
+import { useOutletContext } from 'react-router';
 
 export default function PitchGetAll() {
     const [data, setData] = useState<PitchResponse | null>(null);
-    const [errorGet, setErrorGet] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const [errorDelete, setErrorDelete] = useState<Error | null>(null);
+    const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
 
     const getAll = async () =>{
             try{
                 setLoading(true)
-                setErrorGet(null)
                 const token = JSON.parse(localStorage.getItem('user') || '{}').token;
                 const response = await fetch('http://localhost:3000/api/pitchs/getAll',{method:"GET", headers: {
                     'Content-Type': 'application/json',
@@ -24,7 +23,7 @@ export default function PitchGetAll() {
                 const json:PitchResponse = await response.json()
                 setData(json)
             }catch(error){
-                setErrorGet(error as Error)
+                showNotification('Error: ' + error, 'error')
                 setLoading(false)
             }finally{
                 setLoading(false)
@@ -33,21 +32,20 @@ export default function PitchGetAll() {
 
         useEffect(()=>{
             getAll();
-        }, [])
+        })
     
     const remove = async (id:number) =>{
             try{
                 setLoading(true)
-                setErrorGet(null)
                 const response = await fetch('http://localhost:3000/api/pitchs/remove/'+id,{method:"DELETE"}
                 )
                 if(!response.ok){
                     throw new Error("HTTP Error! status: " + response.status)
                 }
-                alert('Cancha eliminada con éxito')
+                showNotification('Cancha eliminada con éxito!', 'success')
                 getAll();
             }catch(error){
-                setErrorDelete(error as Error)
+                showNotification('Error: ' + error, 'error')
             }
         }
 
@@ -59,12 +57,6 @@ export default function PitchGetAll() {
         }
       };
      if (loading) return 'Loading...';
-     if (errorGet) {
-        return <div>Error: {errorGet.message}</div>
-    }
-    if(errorDelete){
-        alert('No se ha podido eliminar la cancha')
-    }
   return (
     <div>
         <pre>

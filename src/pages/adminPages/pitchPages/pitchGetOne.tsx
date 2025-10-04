@@ -1,15 +1,16 @@
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useState } from 'react';
+import { useOutletContext } from 'react-router';
 
 export default function PitchGetOne(){
     const [data, setData] = useState<PitchResponse | null>(null);
-    const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
 
     const getOne = async (id:string) =>{
         try{
             setLoading(true)
-            setError(null)
             const token = JSON.parse(localStorage.getItem('user') || '{}').token;
             const response = await fetch('http://localhost:3000/api/pitchs/getOne/'+id, {headers: {
                     'Content-Type': 'application/json',
@@ -21,7 +22,7 @@ export default function PitchGetOne(){
             const json:PitchResponse = await response.json()
             setData(json)
         }catch(error){
-            setError(error as Error)
+            showNotification('Error: ' + error, 'error')
             setLoading(false)
         }finally{
             setLoading(false)
@@ -50,7 +51,6 @@ export default function PitchGetOne(){
             </form>
             <pre>
             {loading && <p>Loading...</p>}
-            {error && <p>Error: {error.message}</p>}
             {data && (
                 <table className='crudTable'>
                 <thead>

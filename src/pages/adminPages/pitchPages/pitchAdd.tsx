@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
+import { useNavigate, useOutletContext } from 'react-router';
 
 export default function PitchAdd(){
     const [data, setData] = useState<PitchResponse | null>(null);
-    const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     
+        
+    const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
+    const navigate = useNavigate();
+
     const add = async (pitch:Pitch) =>{
         try{
             setLoading(true)
-            setError(null)
             const token = JSON.parse(localStorage.getItem('user') || '{}').token;
             const response = await fetch('http://localhost:3000/api/pitchs/add',{method:"POST",
                 headers: {
@@ -23,9 +26,10 @@ export default function PitchAdd(){
             }
             const json:PitchResponse = await response.json()
             setData(json)
-            alert('Cancha creada con éxito')
+            showNotification('Cancha creada con éxito', 'success')
+            navigate('/admin/pitchs/getAll')
         }catch(error){
-            setError(error as Error)
+            showNotification('Error: ' + error, 'error')
             setLoading(false)
         }finally{
             setLoading(false)
@@ -82,7 +86,6 @@ export default function PitchAdd(){
             </form>
             <pre>
             {loading && <p>Loading...</p>}
-            {error && <p>Error: {error.message}</p>}
             {data && (
                 <table className='crudTable'>
                 <thead>
