@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useOutletContext } from 'react-router';
 
@@ -10,7 +10,7 @@ export default function PitchGetAll() {
 
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
 
-    const getAll = async () =>{
+    const getAll = useCallback(async () =>{
             try{
                 setLoading(true)
                 const token = JSON.parse(localStorage.getItem('user') || '{}').token;
@@ -31,13 +31,13 @@ export default function PitchGetAll() {
             }finally{
                 setLoading(false)
             }
-        }
+        }, [showNotification])
 
         useEffect(()=>{
             if(!error){
                 getAll();
             }
-        })
+        }, [error, getAll])
     
     const remove = async (id:number) =>{
             try{
@@ -74,7 +74,7 @@ export default function PitchGetAll() {
                     <th>Size</th>
                     <th>Ground type</th>
                     <th>Roof</th>
-                    <th>Eliminar</th>
+                    <th></th>
                 </thead>
                 <tbody>
                     {data?.data.map((pitch) => (
@@ -86,7 +86,7 @@ export default function PitchGetAll() {
               <td>{pitch.size}</td>
               <td>{pitch.groundType}</td>
               <td>{pitch.roof ? 'Techado':'Sin techo'}</td>
-              <td><button onClick={handleDeleteSubmit} value={pitch.id}>❌</button></td>
+              <td><button className='delete-button' onClick={handleDeleteSubmit} value={pitch.id}>Eliminar</button></td>
             </tr>
           ))}
                 </tbody>

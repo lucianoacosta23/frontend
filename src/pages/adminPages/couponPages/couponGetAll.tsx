@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import type {Coupon} from '../../../types/couponType.ts'
 import { useOutletContext } from 'react-router';
 
@@ -9,7 +9,7 @@ export default function CouponGetAll() {
 
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
 
-    const getAll = async () =>{
+    const getAll = useCallback(async () =>{
             try{
                 setLoading(true)
                 const token = JSON.parse(localStorage.getItem('user') || '{}').token;
@@ -32,13 +32,13 @@ export default function CouponGetAll() {
             }finally{
                 setLoading(false)
             }
-        }
+        }, [showNotification])
 
         useEffect(()=>{
             if(!error){
                 getAll();
             }
-        })
+        }, [error, getAll])
     
     const remove = async (id:number) =>{
             try{
@@ -72,7 +72,7 @@ export default function CouponGetAll() {
                     <th>Discount</th>
                     <th>Status</th>
                     <th>Expiring Date</th>
-                    <th>Eliminar</th>
+                    <th></th>
                 </thead>
                 <tbody>
                     {data?.data.map((coupon) => (
@@ -81,7 +81,7 @@ export default function CouponGetAll() {
               <td>{coupon.discount}</td>
               <td>{coupon.status}</td>
               <td>{coupon.expiringDate}</td>
-              <td><button onClick={handleDeleteSubmit} value={coupon.id}>❌</button></td>
+              <td><button className='delete-button' onClick={handleDeleteSubmit} value={coupon.id}>Eliminar</button></td>
             </tr>
           ))}
                 </tbody>
