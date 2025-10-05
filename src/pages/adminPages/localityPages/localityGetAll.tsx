@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import '../../../static/css/users/usersGetAll.css';
-import DeleteConfirm from '../../../components/DeleteConfirm';
+import DeleteConfirm from '../../../components/deleteConfirm';
 import Toast from '../../../components/Toast'; // Ajusta la ruta según tu estructura
 
 interface Locality {
