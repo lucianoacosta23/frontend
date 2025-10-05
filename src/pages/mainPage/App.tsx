@@ -27,6 +27,10 @@ import CategoryGetAll from '../adminPages/categoryPages/categoryGetAll.tsx';
 import CategoryCreate from '../adminPages/categoryPages/categoryCreate.tsx';
 import CategoryDetail from '../adminPages/categoryPages/categoryDetail.tsx';
 import CategoryUpdate from '../adminPages/categoryPages/categoryUpdate.tsx';
+import LocalitiesGetAll from '../adminPages/localityPages/localityGetAll.tsx';
+import LocalityDetail from '../adminPages/localityPages/localityDetail.tsx';
+import LocalityUpdate from '../adminPages/localityPages/localityUpdate.tsx';
+import LocalityCreate from '../adminPages/localityPages/localityCreate.tsx';
 
 
 function App() {
@@ -52,7 +56,14 @@ function App() {
             <Route path='add/' element={<PitchAdd />}/>
             <Route path='update/' element={<PitchUpdate />}/>
           </Route>
-          <Route path="localities/" element={<LocalityHome />} />
+          <Route path="localities/" element={<LocalityHome />} >
+            <Route path="getAll/" element={<LocalitiesGetAll />} />
+            <Route path="create/" element={<LocalityCreate />} />
+            <Route path="getOne/:id" element={<LocalityDetail />} />
+            <Route path="update/:id" element={<LocalityUpdate />} />
+            <Route path="remove/:id" element={<LocalityHome />} />
+          </Route>
+
           <Route path="categories/" element={<CategoryHome />} >
             <Route path="getAll/" element={<CategoryGetAll />} />
             <Route path="create/" element={<CategoryCreate />} />

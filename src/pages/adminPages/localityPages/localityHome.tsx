@@ -1,15 +1,27 @@
+import { Link, Outlet } from "react-router";
+import '../../../static/css/users/userHome.css';
 
-function LocalityHome() {
+const UserHome = () => {
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Página de Localidades</h1>
-      <p>¡Bienvenido a la página de gestión de localidades!</p>
-      <ul>
-        <li>Este es un ejemplo de lista de localidades</li>
-        <li>Puedes agregar más contenido aquí</li>
-      </ul>
+    <div className="user-home-container">
+      <h1>Gestión de Localidades</h1>
+      
+      <div className="menu-section">
+        <nav className="user-menu">
+          <Link to="getAll/" className="menu-item">
+            Ver Localidades
+          </Link>
+          <Link to="create/" className="menu-item">
+            Agregar Localidad
+          </Link>
+        </nav>
+      </div>
+
+      <div className="content-area">
+        <Outlet />
+      </div>
     </div>
   );
-}
+};
 
-export default LocalityHome;
+export default UserHome;
