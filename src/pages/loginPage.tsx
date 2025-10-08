@@ -113,7 +113,7 @@ export function LoginPage(){
                 name:String(formData.get("name")),
                 surname:String(formData.get("surname")),
                 phoneNumber:String(formData.get("phone")) || undefined,
-                category:'client' // por defecto, el register hace un usuario de tipo cliente
+                category:'user' // por defecto, el register hace un usuario de tipo user
             }
             if(user) {
                 register(user);
