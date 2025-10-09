@@ -4,6 +4,7 @@ export type UserData = {
     name?:string,
     category?:string,
     surname?:string,
-    phoneNumber?:string
+    phoneNumber?:string,
+    id?:number
 }
 

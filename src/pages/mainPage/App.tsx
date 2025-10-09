@@ -33,6 +33,7 @@ import LocalityUpdate from '../adminPages/localityPages/localityUpdate.tsx';
 import LocalityCreate from '../adminPages/localityPages/localityCreate.tsx';
 
 import CourtsPage from '../reservationPage/CourtsPage.tsx';
+import { RegisterBusinessPage } from '../registerBusiness.tsx';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
         <Route element={<HomeLayout />}>
           <Route index path='/' element={<Homepage/>}/>
           <Route path='about/' element={<AboutUs/>}/>
+          <Route path='registerBusiness/' element={<RegisterBusinessPage/>}/>
           <Route path='reservation/' element={<CourtsPage/>}/>
         </Route>
         <Route path='login/' element={<LoginPage/>}/>

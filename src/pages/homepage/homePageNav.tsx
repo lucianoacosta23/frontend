@@ -73,12 +73,6 @@ export function HomePageNav({ showNotification }: HomePageNavProps){
                     </h1>
                     <ul>
                         <li>
-                            {!storedUser && 
-                            <Link to="/login">Iniciar sesión</Link>}
-                            {storedUser &&
-                            <Link to="/" onClick={handleLogout}>Cerrar sesión</Link>}
-                        </li>
-                        <li>
                             <Link to="/about">Sobre nosotros</Link>
                         </li>
                         
@@ -96,7 +90,13 @@ export function HomePageNav({ showNotification }: HomePageNavProps){
                         {(userData?.category === 'user') &&
                         <li>
                             <Link to="/registerBusiness">Registrar negocio</Link> 
-                        </li>}  
+                        </li>}
+                        <li>
+                            {!storedUser && 
+                            <Link to="/login">Iniciar sesión</Link>}
+                            {storedUser &&
+                            <Link to="/" onClick={handleLogout}>Cerrar sesión</Link>}
+                        </li>  
                     </ul>   
                 </div>
             </header>
