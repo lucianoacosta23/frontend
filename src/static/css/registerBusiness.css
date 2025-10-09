@@ -40,10 +40,15 @@
     height: fit-content;
 }
 
+.input{
+  display: flex;
+  flex-direction: column;
+}
+
 .registerMainContent input,
 .registerMainContent select,
 .registerMainContent textarea {
-  padding: 0.875rem;
+  padding: 0.575rem 1rem;
   border: 2px solid var(--border);
   border-radius: 8px;
   background-color: var(--surface);
@@ -66,33 +71,6 @@
 .registerMainContenttextarea:hover:not(:focus) {
   border-color: var(--primary-hover);
 }
-
-.input{
-  display: flex;
-  flex-direction: column; /* label arriba, input abajo */
-  gap: 0.4rem;
-}
-
-.input label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text-color);
-}
-
-.input input {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: border-color 0.2s;
-}
-
-.input input:focus {
-  outline: none;
-  border-color: #0077ff;
-  box-shadow: 0 0 0 2px rgba(0,119,255,0.2);
-}
-
 
 .submit {
   display: flex;

@@ -14,7 +14,8 @@ interface Locality {
 
 export function RegisterBusinessPage(){
     const [localidad, setLocalidad] = useState("")
-    const handleLocalityChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const [hasBusiness, setHasBusiness] = useState(false)
+    const handleLocalityChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
         setLocalidad(e.target.value);
      };
 
@@ -25,6 +26,30 @@ export function RegisterBusinessPage(){
     const navigate = useNavigate();
 
     useEffect(() => {
+        const previousBusiness = async () =>{
+        try{
+            setLoading(true)
+            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+            const data = jwtDecode(token) as UserData;
+            const response = await fetch('http://localhost:3000/api/users/hasBusiness/'+data.id,{method:"GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },}
+            )
+            if(!response.ok){
+                throw new Error("HTTP Error! status: " + response.status)
+            }
+            const responseData = await response.json();
+            setHasBusiness(responseData.response);
+        }catch(error){
+            showNotification('Error: ' + error, 'error')
+            setLoading(false)
+        }finally{
+            setLoading(false)
+        }
+      }
+      previousBusiness();
         const fetchLocalities = async () => {
           try {
             setLoading(true);
@@ -75,10 +100,15 @@ export function RegisterBusinessPage(){
         fetchLocalities();
       }, [showNotification]);
 
+    const storedUser = localStorage.getItem('user')
+    if(!storedUser){
+        return <Navigate to="/"/>
+    }
+
     const create = async (business:BusinessData) =>{
         try{
             setLoading(true)
-            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+            const token = JSON.parse(storedUser).token;
             const response = await fetch('http://localhost:3000/api/business/add',{method:"POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,7 +120,7 @@ export function RegisterBusinessPage(){
                 throw new Error("HTTP Error! status: " + response.status)
             }
             showNotification('Formulario enviado con éxito', 'success')
-            navigate('/home')
+            navigate('/')
         }catch(error){
             showNotification('Error: ' + error, 'error')
             setLoading(false)
@@ -105,7 +135,7 @@ export function RegisterBusinessPage(){
                 const locId = localities.find(loc => loc.name === String(formData.get("businessLocality")))?.id;
                 if(locId){
                 const business:BusinessData = {
-                    adress:String(formData.get("businessAdress")),
+                    address:String(formData.get("businessAdress")),
                     businessName:String(formData.get("businessName")),
                     reservationDepositPercentage:Number(formData.get("businessPercentage")),
                     averageRating:0,
@@ -114,15 +144,15 @@ export function RegisterBusinessPage(){
                     owner:ownerId,
                     active:false,
                 }
-                if(business) {
+                if(business && !hasBusiness) {
                     create(business);
-                }}
+                }
+                if(hasBusiness){
+                  showNotification('Ya hay una solicitud de negocio a tu nombre', 'warning')
+                }
+              }
         };
 
-    const storedUser = localStorage.getItem('user')
-    if(!storedUser){
-        return <Navigate to="/"/>
-    }
     const userData = jwtDecode(storedUser) as UserData
  
     const ownerId = userData.id;
@@ -151,21 +181,17 @@ export function RegisterBusinessPage(){
                     </div>
                     <div className="input">
                     <label htmlFor="businessLocality">Localidad del negocio</label>
-                    <input
-                        list="localidades"
+                    <select
                         required
                         id="businessLocality"
                         name="businessLocality"
-                        placeholder="Seleccioná una localidad..."
                         onChange={handleLocalityChange}
-                        value={localidad}
-                    />
-                            <datalist id="localidades">
+                        value={localidad}>
                                 {localities.length > 0 &&
                                 localities.map((item, index) => (
-                                    <option key={index} value={item.name} />
+                                    <option key={index} value={item.name}>{item.name}</option>
                                 ))}
-                            </datalist>
+                            </select>
                     </div>
                     <div className='input'>
                         <label htmlFor="businessPercentage">Porcentaje de reserva</label>
