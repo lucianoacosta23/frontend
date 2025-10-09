@@ -6,4 +6,5 @@ export type BusinessData = {
   averageRating: number; 
   reservationDepositPercentage:number,
   active:boolean;
+  locality:number;
 };
