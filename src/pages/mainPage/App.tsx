@@ -34,6 +34,8 @@ import LocalityCreate from '../adminPages/localityPages/localityCreate.tsx';
 
 import CourtsPage from '../reservationPage/CourtsPage.tsx';
 import { RegisterBusinessPage } from '../registerBusiness.tsx';
+import BusinessHome from '../adminPages/business/businessHome.tsx';
+import BusinessGetAll from '../adminPages/business/businessGetAll.tsx';
 
 
 function App() {
@@ -61,6 +63,14 @@ function App() {
             <Route path='add/' element={<PitchAdd />}/>
             <Route path='update/' element={<PitchUpdate />}/>
           </Route>
+
+          <Route path="business/" element={<BusinessHome />}>
+            <Route path="getAll/" element={<BusinessGetAll />}/>
+            {/*<Route path='getOne/' element={<BusinessGetOne />}/>
+            <Route path='add/' element={<BusinessAdd />}/>
+            {/* <Route path='update/' element={<BusinessUpdate />}/> */}
+          </Route>
+
           <Route path="localities/" element={<LocalityHome />} >
             <Route path="getAll/" element={<LocalitiesGetAll />} />
             <Route path="create/" element={<LocalityCreate />} />

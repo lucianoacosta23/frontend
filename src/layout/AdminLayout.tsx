@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Navigate, useNavigate } from "react-router-dom";
 import "../static/css/AdminLayout.css";
 import { useState } from "react";
-import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol, FaHome } from "react-icons/fa";
+import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol, FaHome, FaStore } from "react-icons/fa";
 import type { UserData } from "../types/userData.js";
 import {jwtDecode} from 'jwt-decode'
 import HomeFooter from "../pages/homepage/homeFooter.js";
@@ -112,6 +112,15 @@ export function AdminLayout() {
                     >
                         <div className="nav-icon"><FaUserShield /></div>
                         <div className="nav-text">Categorías</div>
+                    </NavLink>
+                    <NavLink 
+                        to="business/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"><FaStore /></div>
+                        <div className="nav-text">Business</div>
                     </NavLink>
                     <NavLink 
                         to="pitchs/" 
