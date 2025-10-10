@@ -6,7 +6,6 @@
 }
 
 .logBody {
-    background-color: #1e293b; /* temp */
     display: flex;
     margin: 0;
     padding: 0;
@@ -17,7 +16,7 @@
 }
 
 .logForm {
-    background-color: #2c3e50;
+    background-color: #ffffff;
     display: flex;
     flex-direction: column; /* 🎯 Agregado para mejor estructura */
     width: 35vw;
@@ -30,7 +29,8 @@
     padding: 30px; /* 🎯 Agregado padding */
     font-size: 1.6rem;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.262);
-    color: var(--font-color);
+    border: 1px solid #bdc3c7;
+    color: #333;
 }
 
 .logInputs {

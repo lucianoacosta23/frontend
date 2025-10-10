@@ -42,11 +42,11 @@ function App() {
       <Routes>
         <Route element={<HomeLayout />}>
           <Route index path='/' element={<Homepage/>}/>
+          <Route path='login/' element={<LoginPage/>}/>
           <Route path='about/' element={<AboutUs/>}/>
           <Route path='registerBusiness/' element={<RegisterBusinessPage/>}/>
           <Route path='reservation/' element={<CourtsPage/>}/>
         </Route>
-        <Route path='login/' element={<LoginPage/>}/>
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="coupons/" element={<CouponHome />}>
