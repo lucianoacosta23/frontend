@@ -143,6 +143,8 @@ export function RegisterBusinessPage(){
                     id:0,
                     owner:ownerId,
                     active:false,
+                    openingAt:String(formData.get("businessOpen")),
+                    closingAt:String(formData.get("businessClose"))
                 }
                 if(business && !hasBusiness) {
                     create(business);
@@ -197,6 +199,14 @@ export function RegisterBusinessPage(){
                         <label htmlFor="businessPercentage">Porcentaje de reserva</label>
                         <input type='number' required id="businessPercentage" step="0.01" name="businessPercentage" max={0.5} />
                     </div>
+                    <div className='input'>
+                          <label htmlFor='businessOpen'>Horario de apertura</label>
+                          <input type='time' required id="businessOpen" name="businessOpen"/>
+                        </div>
+                        <div className='input'>
+                          <label htmlFor='businessClose'>Horario de cierre</label>
+                          <input type='time' required id="businessClose" name="businessClose"/>
+                        </div>
                 </div>}
                 {loading && <div>Cargando...</div>}
                 <div className="submit">

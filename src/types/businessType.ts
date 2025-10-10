@@ -7,4 +7,6 @@ export type BusinessData = {
   reservationDepositPercentage:number,
   active:boolean;
   locality:number;
+  openingAt:string;
+  closingAt:string;
 };
