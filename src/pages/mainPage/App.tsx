@@ -34,6 +34,7 @@ import LocalityCreate from '../adminPages/localityPages/localityCreate.tsx';
 
 import CourtsPage from '../reservationPage/CourtsPage.tsx';
 import { RegisterBusinessPage } from '../registerBusiness.tsx';
+import InactiveBusinesses from '../adminPages/inactiveBusinesses/inactiveBusinesses.tsx';
 
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
             <Route path='add/' element={<CouponAdd />}/>
             <Route path='update/' element={<CouponUpdate />}/>
           </Route>
+          <Route path="inactiveBusinesses/" element={<InactiveBusinesses />} />
           <Route path="pitchs/" element={<PitchHome />}>
             <Route path="getAll/" element={<PitchGetAll />}/>
             <Route path='getOne/' element={<PitchGetOne />}/>
