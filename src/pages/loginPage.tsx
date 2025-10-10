@@ -48,7 +48,6 @@ export function LoginPage(){
             const token = await response.json()
 
             localStorage.setItem('user', JSON.stringify(token))
-            
             navigate('/')
         }catch(err:unknown){
             if (isApiError(err)) {

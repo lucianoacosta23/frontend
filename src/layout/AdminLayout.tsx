@@ -131,6 +131,15 @@ export function AdminLayout() {
                         <div className="nav-icon"><FaFutbol /></div>
                         <div className="nav-text">Canchas</div>
                     </NavLink>
+                    <NavLink 
+                        to="inactiveBusinesses/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"></div>
+                        <div className="nav-text">Habilitar negocios</div>
+                    </NavLink>
 
                     <NavLink to="../login/" className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</NavLink>
                 </nav>
@@ -212,6 +221,16 @@ export function AdminLayout() {
                     >
                         <div className="nav-icon"><FaFutbol /></div>
                         <div className="nav-text">Canchas</div>
+                    </NavLink>
+                    <NavLink 
+                        to="inactiveBusinesses/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                        onClick={toggleMobileMenu}
+                    >
+                        <div className="nav-icon"></div>
+                        <div className="nav-text">Habilitar negocios</div>
                     </NavLink>
                     <a className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</a>
                 </nav>
