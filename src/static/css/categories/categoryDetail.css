@@ -9,6 +9,17 @@
   font-size: 1.5rem;
 }
 
+.info-label {
+  font-weight: 600;
+  color: var(#ecf0f1);
+  font-size: 0.95rem;
+}
+
+.info-value {
+  font-weight: 500;
+  color: var(#ecf0f1);
+}
+
 .detail-card {
   background-color: #334155;
   border-radius: 8px;

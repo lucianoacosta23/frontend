@@ -3,6 +3,17 @@ import { Link, useOutletContext } from "react-router-dom";
 import '../../../static/css/categories/categoryGetAll.css';
 import DeleteConfirm from '../../../components/deleteConfirm';
 
+interface Locality {
+  id: number;
+  name: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
 interface Business {
   id?: number;
   businessName: string;
@@ -13,19 +24,14 @@ interface Business {
   activatedAt?: Date;
   openingAt: string;
   closingAt: string;
-  locality: {
-    id: number;
-    name: string;
-  };
-  owner: {
-    id: number;
-    name: string;
-    email: string;
-  };
+  locality: number | Locality; // Puede ser ID u objeto
+  owner: number | User; // Puede ser ID u objeto
 }
 
 const BusinessGetAll = () => {
   const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [localities, setLocalities] = useState<Locality[]>([]);
+  const [owners, setOwners] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -37,8 +43,74 @@ const BusinessGetAll = () => {
   // Contexto para usar la funcion del Toast
   const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
 
+  // Función para obtener el nombre de la localidad
+  const getLocalityName = (locality: number | Locality): string => {
+    if (typeof locality === 'object' && locality !== null) {
+      return locality.name;
+    } else if (typeof locality === 'number') {
+      const foundLocality = localities.find(l => l.id === locality);
+      return foundLocality?.name || 'N/A';
+    }
+    return 'N/A';
+  };
+
+  // Función para obtener el nombre del dueño
+  const getOwnerName = (owner: number | User): string => {
+    if (typeof owner === 'object' && owner !== null) {
+      return owner.name || owner.email || 'N/A';
+    } else if (typeof owner === 'number') {
+      const foundOwner = owners.find(o => o.id === owner);
+      return foundOwner?.name || foundOwner?.email || 'N/A';
+    }
+    return 'N/A';
+  };
+
+  // Cargar localidades
+  const fetchLocalities = async (token: string) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/localities/getAll', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const localitiesData = await response.json();
+        const localitiesArray = Array.isArray(localitiesData) ? localitiesData : 
+                              localitiesData.data || localitiesData.localities || [];
+        setLocalities(localitiesArray);
+      }
+    } catch (err) {
+      console.error('Error cargando localidades:', err);
+    }
+  };
+
+  // Cargar usuarios
+  const fetchOwners = async (token: string) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/users/findAll', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const ownersData = await response.json();
+        const ownersArray = Array.isArray(ownersData) ? ownersData : 
+                          ownersData.data || ownersData.users || [];
+        setOwners(ownersArray);
+      }
+    } catch (err) {
+      console.error('Error cargando usuarios:', err);
+    }
+  };
+
   useEffect(() => {
-    const fetchBusinesses = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -48,23 +120,28 @@ const BusinessGetAll = () => {
         if (!token) {
           throw new Error('No se encontró token de autenticación');
         }
+
+        // Cargar negocios, localidades y usuarios en paralelo
+        const [businessesResponse] = await Promise.all([
+          fetch('http://localhost:3000/api/business/findAll', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          }),
+          fetchLocalities(token),
+          fetchOwners(token)
+        ]);
         
-        const response = await fetch('http://localhost:3000/api/business/findAll', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (!response.ok) {
-          if (response.status === 401) {
+        if (!businessesResponse.ok) {
+          if (businessesResponse.status === 401) {
             throw new Error('Token de autenticación inválido o expirado');
           }
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
+          throw new Error(`Error: ${businessesResponse.status} ${businessesResponse.statusText}`);
         }
         
-        const responseData = await response.json();
+        const responseData = await businessesResponse.json();
         
         let businessData: Business[] = [];
         
@@ -86,7 +163,7 @@ const BusinessGetAll = () => {
       }
     };
 
-    fetchBusinesses();
+    fetchData();
   }, []);
 
   const handleRetry = () => {
@@ -260,10 +337,10 @@ const BusinessGetAll = () => {
                       <td className="table-cell">{business.id || 'N/A'}</td>
                       <td className="table-cell">{business.businessName}</td>
                       <td className="table-cell">{business.address}</td>
-                      <td className="table-cell">{business.locality?.name || 'N/A'}</td>
-                      <td className="table-cell">
-                        {business.owner?.name || business.owner?.email || 'N/A'}
-                      </td>
+                      {/* CORREGIDO: Usar función helper para obtener nombre de localidad */}
+                      <td className="table-cell">{getLocalityName(business.locality)}</td>
+                      {/* CORREGIDO: Usar función helper para obtener nombre del dueño */}
+                      <td className="table-cell">{getOwnerName(business.owner)}</td>
                       <td className="table-cell">{business.averageRating?.toFixed(1) || '0.0'}</td>
                       <td className="table-cell">{formatPercentage(business.reservationDepositPercentage)}</td>
                       <td className="table-cell">{business.openingAt} - {business.closingAt}</td>
@@ -271,14 +348,14 @@ const BusinessGetAll = () => {
                       <td className="table-cell">
                         <div className="action-buttons">
                           <Link 
-                            to={`/admin/businesses/detail/${business.id}`} 
+                            to={`/admin/business/detail/${business.id}`} 
                             className="action-button view-button"
                             title="Ver detalles"
                           >
                             Ver
                           </Link>
                           <Link 
-                            to={`/admin/businesses/update/${business.id}`} 
+                            to={`/admin/business/update/${business.id}`} 
                             className="action-button edit-button"
                             title="Editar negocio"
                           >
@@ -309,7 +386,7 @@ const BusinessGetAll = () => {
         isOpen={showDeleteModal}
         title="Eliminar Negocio"
         message="¿Estás seguro de que quieres eliminar este negocio? Esta acción afectará a todas las canchas asociadas y no se puede deshacer."
-        itemName={businessToDelete ? `${businessToDelete.businessName} (${businessToDelete.locality?.name})` : undefined}
+        itemName={businessToDelete ? `${businessToDelete.businessName} (${getLocalityName(businessToDelete.locality)})` : undefined}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
         confirmText="Eliminar Negocio"
