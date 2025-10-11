@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
+import { isApiError } from '../../../types/apiError.ts';
 
 export default function PitchUpdate(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -49,9 +50,8 @@ export default function PitchUpdate(){
             })
             
             if(!response.ok){
-                const errorText = await response.text();
-                console.error('🎯 Error response:', errorText); // DEBUG
-                throw new Error(`HTTP Error! status: ${response.status} - ${errorText}`);
+                const errors = await response.json()
+                throw errors
             }
             
             const json: PitchResponse = await response.json()
@@ -59,8 +59,13 @@ export default function PitchUpdate(){
             showNotification('Cancha actualizada con éxito!', 'success')
             navigate('/admin/pitchs/getAll')
         }catch(error){
-            console.error('🎯 Error completo:', error); // DEBUG
-            showNotification(`Error: ${error instanceof Error ? error.message : 'Error desconocido'}`, 'error')
+            if (isApiError(error)) {
+                if (error instanceof Error) {
+                    showNotification(error.message,'error');
+                } 
+                }else {
+                    showNotification("Error desconocido",'error');
+                }
         }finally{
             setLoading(false)
         }

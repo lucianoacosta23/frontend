@@ -1,6 +1,7 @@
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useState } from 'react';
 import { useOutletContext } from 'react-router';
+import { isApiError } from '../../../types/apiError.ts';
 
 export default function PitchGetOne(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -17,12 +18,19 @@ export default function PitchGetOne(){
                     'Authorization': `Bearer ${token}`
                 }})
             if(!response.ok){
-                throw new Error("HTTP Error! status: " + response.status)
+                const errors = await response.json()
+                throw errors
             }
             const json:PitchResponse = await response.json()
             setData(json)
         }catch(error){
-            showNotification('Error: ' + error, 'error')
+            if (isApiError(error)) {
+                    if (error instanceof Error) {
+                        showNotification(error.message,'error');
+                        } 
+                    }else {
+                        showNotification("Error desconocido",'error');
+                }
             setLoading(false)
         }finally{
             setLoading(false)
