@@ -1,6 +1,6 @@
-import { Outlet } from "react-router"
+import { Outlet, useNavigate } from "react-router"
 import { HomePageNav } from "../pages/homepage/homePageNav"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import HomeFooter from "../pages/homepage/homeFooter"
 import Toast from "../components/Toast"
 
@@ -21,6 +21,15 @@ export function HomeLayout(){
         const closeToast = () => {
             setShowToast(false);
         };
+
+        const navigate = useNavigate();
+        
+        useEffect( () =>{
+        const user = localStorage.getItem('user');
+        if (user && location.pathname === '/login') {
+            navigate('/')
+        }}, [navigate])
+        
     return (
         <section className="homeLayout">
             <HomePageNav showNotification={showNotification}/>

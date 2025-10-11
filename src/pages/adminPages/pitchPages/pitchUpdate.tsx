@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function PitchUpdate(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -49,9 +50,8 @@ export default function PitchUpdate(){
             })
             
             if(!response.ok){
-                const errorText = await response.text();
-                console.error('🎯 Error response:', errorText); // DEBUG
-                throw new Error(`HTTP Error! status: ${response.status} - ${errorText}`);
+                const errors = await response.json()
+                throw errors
             }
             
             const json: PitchResponse = await response.json()
@@ -59,8 +59,7 @@ export default function PitchUpdate(){
             showNotification('Cancha actualizada con éxito!', 'success')
             navigate('/admin/pitchs/getAll')
         }catch(error){
-            console.error('🎯 Error completo:', error); // DEBUG
-            showNotification(`Error: ${error instanceof Error ? error.message : 'Error desconocido'}`, 'error')
+            showNotification(errorHandler(error),'error');
         }finally{
             setLoading(false)
         }
@@ -219,6 +218,7 @@ export default function PitchUpdate(){
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>ID de negocio asociado</th>
                                 <th>Rating</th>
                                 <th>Precio</th>
                                 <th>Tamaño</th>
@@ -229,6 +229,7 @@ export default function PitchUpdate(){
                         <tbody>
                             <tr>
                                 <td>{data.updatedPitch.id}</td>
+                                <td>{data.updatedPitch.business?.id ?? '-'}</td>
                                 <td>{('⭐️').repeat(Math.floor(data.updatedPitch.rating))} ({data.updatedPitch.rating})</td>
                                 <td>${data.updatedPitch.price.toLocaleString()}</td>
                                 <td>{data.updatedPitch.size}</td>

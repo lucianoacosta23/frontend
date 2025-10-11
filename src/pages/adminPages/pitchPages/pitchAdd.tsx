@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function PitchAdd(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -22,14 +23,15 @@ export default function PitchAdd(){
                 body: JSON.stringify(pitch)}
             )
             if(!response.ok){
-                throw new Error("HTTP Error! status: " + response.status)
+                const errors = await response.json()
+                throw errors
             }
             const json:PitchResponse = await response.json()
             setData(json)
             showNotification('Cancha creada con éxito', 'success')
             navigate('/admin/pitchs/getAll')
         }catch(error){
-            showNotification('Error: ' + error, 'error')
+            showNotification(errorHandler(error),'error');
             setLoading(false)
         }finally{
             setLoading(false)
@@ -40,7 +42,7 @@ export default function PitchAdd(){
         const formData = new FormData(e.currentTarget);
         const pitch:Pitch = {
             id:0,
-            businessId:Number(formData.get("businessId")),
+            business:Number(formData.get("businessId")),
             rating:Number(formData.get("rating")),
             price:Number(formData.get("price")),
             size:String(formData.get("size")),
@@ -57,31 +59,71 @@ export default function PitchAdd(){
             <h2 className='crud-form-title'>Crear cancha</h2>
             <form onSubmit={handleSubmit} className='crud-form'>
                 <div className='crud-form-item'>
-                    <label>ID de negocio asociado</label>
-                    <input name="businessId" type="number" required />
+                    <label>ID de negocio *</label>
+                    <input 
+                        type="number" 
+                        name="businessId" 
+                        required 
+                        min="1"
+                        placeholder="Ingrese el ID del negocio"
+                    />
                 </div>
+                
                 <div className='crud-form-item'>
-                    <label>Rating</label>
-                    <input name="rating" type="number" required />
+                    <label>Rating (1-5)</label>
+                    <input 
+                        name="rating" 
+                        type="number" 
+                        min="1" 
+                        max="5" 
+                        step="0.1"
+                        placeholder="Opcional - Rating de 1 a 5" 
+                    />
                 </div>
+                
                 <div className='crud-form-item'>
-                    <label>Precio</label>
-                    <input name="price" type="number" required />
+                    <label>Precio ($)</label>
+                    <input 
+                        name="price" 
+                        type="number" 
+                        min="0" 
+                        step="100"
+                        placeholder="Opcional - Precio por hora" 
+                    />
                 </div>
+                
                 <div className='crud-form-item'>
                     <label>Tamaño</label>
-                    <input type="text" name="size" required />
+                    <select name="size">
+                        <option value="">Seleccionar tamaño (opcional)</option>
+                        <option value="5v5">futbol 5</option>
+                        <option value="7v7">futbol 7</option>
+                        <option value="11v11">futbol 11</option>
+                    </select>
                 </div>
+                
                 <div className='crud-form-item'>
                     <label>Tipo de suelo</label>
-                    <input type="text" name="groundType" required />
+                    <select name="groundType">
+                        <option value="">Seleccionar tipo (opcional)</option>
+                        <option value="Césped natural">Césped natural</option>
+                        <option value="Césped sintético">Césped sintético</option>
+                        <option value="Cemento">Cemento</option>
+                        <option value="Tierra">Tierra</option>
+                    </select>
                 </div>
+                
                 <div className='crud-form-item'>
-                    <label>Techo</label>
-                    <input type="checkbox" name="roof" />
+                    <label>
+                        <input type="checkbox" name="roof" />
+                        Tiene techo
+                    </label>
                 </div>
+                
                 <div className='crud-form-actions'>
-                    <button type="submit" className='primary'>Crear</button>
+                    <button type="submit" className='primary' disabled={loading}>
+                        {loading ? 'Creando...' : 'Crear'}
+                    </button>
                 </div>
             </form>
             <pre>
@@ -101,14 +143,14 @@ export default function PitchAdd(){
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{data.data.id}</td>
-                        <td>{data.data.businessId}</td>
-                        <td>{('⭐️').repeat(data.data.rating)}</td>
-                        <td>${data.data.price}</td>
-                        <td>{data.data.size}</td>
-                        <td>{data.data.groundType}</td>
-                        <td>{data.data.roof ? 'Techado':'Sin techo'}</td>
-                    </tr>
+                    <td>{data.data.id}</td>
+                    <td>{data.data.business?.id ?? '—'}</td>
+                    <td>{'⭐️'.repeat(data.data.rating || 0)}</td>
+                    <td>${data.data.price}</td>
+                    <td>{data.data.size}</td>
+                    <td>{data.data.groundType}</td>
+                    <td>{data.data.roof ? 'Techado' : 'Sin techo'}</td>
+                </tr>
                 </tbody>
                 </table>)}
                 </pre>
