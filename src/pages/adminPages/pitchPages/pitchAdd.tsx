@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
+import { isApiError } from '../../../types/apiError.ts';
 
 export default function PitchAdd(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -22,14 +23,21 @@ export default function PitchAdd(){
                 body: JSON.stringify(pitch)}
             )
             if(!response.ok){
-                throw new Error("HTTP Error! status: " + response.status)
+                const errors = await response.json()
+                throw errors
             }
             const json:PitchResponse = await response.json()
             setData(json)
             showNotification('Cancha creada con éxito', 'success')
             navigate('/admin/pitchs/getAll')
         }catch(error){
-            showNotification('Error: ' + error, 'error')
+            if (isApiError(error)) {
+                        if (error instanceof Error) {
+                            showNotification(error.message,'error');
+                        } 
+                }else {
+                            showNotification("Error desconocido",'error');
+                        }
             setLoading(false)
         }finally{
             setLoading(false)
@@ -57,13 +65,13 @@ export default function PitchAdd(){
             <h2 className='crud-form-title'>Crear cancha</h2>
             <form onSubmit={handleSubmit} className='crud-form'>
                 <div className='crud-form-item'>
-                    <label>ID de cancha *</label>
+                    <label>ID de negocio *</label>
                     <input 
                         type="number" 
-                        name="id" 
+                        name="businessId" 
                         required 
                         min="1"
-                        placeholder="Ingrese el ID de la cancha"
+                        placeholder="Ingrese el ID del negocio"
                     />
                 </div>
                 
@@ -120,7 +128,7 @@ export default function PitchAdd(){
                 
                 <div className='crud-form-actions'>
                     <button type="submit" className='primary' disabled={loading}>
-                        {loading ? 'Actualizando...' : 'Actualizar'}
+                        {loading ? 'Creando...' : 'Crear'}
                     </button>
                 </div>
             </form>
