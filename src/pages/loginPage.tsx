@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import '../static/css/loginPage.css'
 import { useEffect, useState } from 'react';
 import type { UserData } from '../types/userData.js';
@@ -7,7 +6,6 @@ import Toast from '../components/Toast.js';
 
 export function LoginPage(){
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
-    const navigate = useNavigate();
     const [loginPage, changePage] = useState<boolean>(true);
     
     // 🎯 NUEVOS ESTADOS PARA EL TOAST
@@ -48,7 +46,7 @@ export function LoginPage(){
             const token = await response.json()
 
             localStorage.setItem('user', JSON.stringify(token))
-            navigate('/')
+            window.location.reload(); // recarga para que detecte el nuevo token
         }catch(err:unknown){
             if (isApiError(err)) {
             if (Array.isArray(err.errors)) {
