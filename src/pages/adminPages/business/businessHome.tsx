@@ -15,6 +15,9 @@ function BusinessHome() {
           <Link to="create/" className="menu-item">
             Agregar Negocio
           </Link>
+          <Link to="inactiveBusinesses/" className="menu-item">
+            habilitar Negocio
+          </Link>
         </nav>
       </div>
 
