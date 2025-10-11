@@ -57,31 +57,71 @@ export default function PitchAdd(){
             <h2 className='crud-form-title'>Crear cancha</h2>
             <form onSubmit={handleSubmit} className='crud-form'>
                 <div className='crud-form-item'>
-                    <label>ID de negocio asociado</label>
-                    <input name="businessId" type="number" required />
+                    <label>ID de cancha *</label>
+                    <input 
+                        type="number" 
+                        name="id" 
+                        required 
+                        min="1"
+                        placeholder="Ingrese el ID de la cancha"
+                    />
                 </div>
+                
                 <div className='crud-form-item'>
-                    <label>Rating</label>
-                    <input name="rating" type="number" required />
+                    <label>Rating (1-5)</label>
+                    <input 
+                        name="rating" 
+                        type="number" 
+                        min="1" 
+                        max="5" 
+                        step="0.1"
+                        placeholder="Opcional - Rating de 1 a 5" 
+                    />
                 </div>
+                
                 <div className='crud-form-item'>
-                    <label>Precio</label>
-                    <input name="price" type="number" required />
+                    <label>Precio ($)</label>
+                    <input 
+                        name="price" 
+                        type="number" 
+                        min="0" 
+                        step="100"
+                        placeholder="Opcional - Precio por hora" 
+                    />
                 </div>
+                
                 <div className='crud-form-item'>
                     <label>Tamaño</label>
-                    <input type="text" name="size" required />
+                    <select name="size">
+                        <option value="">Seleccionar tamaño (opcional)</option>
+                        <option value="5v5">futbol 5</option>
+                        <option value="7v7">futbol 7</option>
+                        <option value="11v11">futbol 11</option>
+                    </select>
                 </div>
+                
                 <div className='crud-form-item'>
                     <label>Tipo de suelo</label>
-                    <input type="text" name="groundType" required />
+                    <select name="groundType">
+                        <option value="">Seleccionar tipo (opcional)</option>
+                        <option value="Césped natural">Césped natural</option>
+                        <option value="Césped sintético">Césped sintético</option>
+                        <option value="Cemento">Cemento</option>
+                        <option value="Tierra">Tierra</option>
+                    </select>
                 </div>
+                
                 <div className='crud-form-item'>
-                    <label>Techo</label>
-                    <input type="checkbox" name="roof" />
+                    <label>
+                        <input type="checkbox" name="roof" />
+                        Tiene techo
+                    </label>
                 </div>
+                
                 <div className='crud-form-actions'>
-                    <button type="submit" className='primary'>Crear</button>
+                    <button type="submit" className='primary' disabled={loading}>
+                        {loading ? 'Actualizando...' : 'Actualizar'}
+                    </button>
                 </div>
             </form>
             <pre>
