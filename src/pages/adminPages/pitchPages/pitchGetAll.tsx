@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useOutletContext } from 'react-router';
-import { isApiError } from '../../../types/apiError.ts';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function PitchGetAll() {
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -27,13 +27,7 @@ export default function PitchGetAll() {
                 const json:PitchResponse = await response.json()
                 setData(json)
             }catch(error){
-                if (isApiError(error)) {
-                    if (error instanceof Error) {
-                        showNotification(error.message,'error');
-                        } 
-                    }else {
-                        showNotification("Error desconocido",'error');
-                }
+                showNotification(errorHandler(error),'error');
                 setError(true)
                 setLoading(false)
             }finally{
@@ -59,13 +53,7 @@ export default function PitchGetAll() {
                 showNotification('Cancha eliminada con éxito!', 'success')
                 getAll();
             }catch(error){
-                if (isApiError(error)) {
-                    if (error instanceof Error) {
-                        showNotification(error.message,'error');
-                        } 
-                    }else {
-                        showNotification("Error desconocido",'error');
-                }
+                showNotification(errorHandler(error),'error');
             }
         }
 
@@ -95,7 +83,7 @@ export default function PitchGetAll() {
                     {data?.data.map((pitch) => (
             <tr key={pitch.id}>
               <td>{pitch.id}</td>
-              <td>{pitch.businessId}</td>
+              <td>{pitch.business?.id ?? '-'}</td>
               <td>{('⭐️').repeat(pitch.rating)}</td>
               <td>${pitch.price}</td>
               <td>{pitch.size}</td>

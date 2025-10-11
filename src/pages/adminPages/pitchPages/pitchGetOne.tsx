@@ -1,7 +1,7 @@
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useState } from 'react';
 import { useOutletContext } from 'react-router';
-import { isApiError } from '../../../types/apiError.ts';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function PitchGetOne(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -24,13 +24,7 @@ export default function PitchGetOne(){
             const json:PitchResponse = await response.json()
             setData(json)
         }catch(error){
-            if (isApiError(error)) {
-                    if (error instanceof Error) {
-                        showNotification(error.message,'error');
-                        } 
-                    }else {
-                        showNotification("Error desconocido",'error');
-                }
+            showNotification(errorHandler(error),'error');
             setLoading(false)
         }finally{
             setLoading(false)
@@ -75,7 +69,7 @@ export default function PitchGetOne(){
                 <tbody>
                     <tr>
                         <td>{data.data.id}</td>
-                        <td>{data.data.businessId}</td>
+                        <td>{data.data.business?.id ?? '-'}</td>
                         <td>{('⭐️').repeat(data.data.rating)}</td>
                         <td>${data.data.price}</td>
                         <td>{data.data.size}</td>

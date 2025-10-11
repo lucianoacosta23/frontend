@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
-import { isApiError } from '../../../types/apiError.ts';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function PitchUpdate(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -59,13 +59,7 @@ export default function PitchUpdate(){
             showNotification('Cancha actualizada con éxito!', 'success')
             navigate('/admin/pitchs/getAll')
         }catch(error){
-            if (isApiError(error)) {
-                if (error instanceof Error) {
-                    showNotification(error.message,'error');
-                } 
-                }else {
-                    showNotification("Error desconocido",'error');
-                }
+            showNotification(errorHandler(error),'error');
         }finally{
             setLoading(false)
         }
@@ -224,6 +218,7 @@ export default function PitchUpdate(){
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>ID de negocio asociado</th>
                                 <th>Rating</th>
                                 <th>Precio</th>
                                 <th>Tamaño</th>
@@ -234,6 +229,7 @@ export default function PitchUpdate(){
                         <tbody>
                             <tr>
                                 <td>{data.updatedPitch.id}</td>
+                                <td>{data.updatedPitch.business?.id ?? '-'}</td>
                                 <td>{('⭐️').repeat(Math.floor(data.updatedPitch.rating))} ({data.updatedPitch.rating})</td>
                                 <td>${data.updatedPitch.price.toLocaleString()}</td>
                                 <td>{data.updatedPitch.size}</td>

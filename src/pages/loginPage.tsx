@@ -1,13 +1,12 @@
 import '../static/css/loginPage.css'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { UserData } from '../types/userData.js';
 import Toast from '../components/Toast.js';
 import type { ApiError } from '../types/apiError.js';
-import { isApiError } from '../types/apiError.js';
+import { errorHandler } from '../types/apiError.js';
 
 
 export function LoginPage(){
-    const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [loginPage, changePage] = useState<boolean>(true);
     
     // 🎯 NUEVOS ESTADOS PARA EL TOAST
@@ -27,15 +26,6 @@ export function LoginPage(){
         setShowToast(false);
     };
 
-    useEffect(()=>{
-        if(errorMessages.length > 0){
-                errorMessages.map((err) => (
-                    showNotification(err,'error') 
-                ))
-            
-        }
-    },[errorMessages])
-
     async function login(user:UserData){
         try{
         const response = await fetch('http://localhost:3000/api/login',{method:"POST",
@@ -50,18 +40,7 @@ export function LoginPage(){
             localStorage.setItem('user', JSON.stringify(token))
             window.location.reload(); // recarga para que detecte el nuevo token
         }catch(err:unknown){
-            if (isApiError(err)) {
-            if (Array.isArray(err.errors)) {
-            setErrorMessages(err.errors.map(e => e.msg));
-            } else {
-            setErrorMessages([err.message]);
-            }
-            } else if (err instanceof Error) {
-                setErrorMessages([err.message]);
-            } else {
-                setErrorMessages(["Error desconocido"]);
-            }
-            }
+            showNotification(errorHandler(err),'error');}
     }
 
     async function register(user:UserData){
@@ -77,17 +56,7 @@ export function LoginPage(){
             alert('Usuario creado con éxito')
             login(user)
         }catch(err:unknown){
-            if (isApiError(err)) {
-                if (Array.isArray(err.errors)) {
-                setErrorMessages(err.errors.map(e => e.msg)); // si es array lo mapea
-                } else {
-                setErrorMessages([err.message]); // si es unico, lo devuelve
-                }
-            } else if (err instanceof Error) {
-                setErrorMessages([err.message]); // si no es error de api y es de tipo Error, lo devuelve
-            } else {
-                setErrorMessages(["Error desconocido"]); // no pudo identificarlo
-            }
+            showNotification(errorHandler(err), 'error');
         }
     }
 

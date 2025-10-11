@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
-import { isApiError } from '../../../types/apiError.ts';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function PitchAdd(){
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -31,13 +31,7 @@ export default function PitchAdd(){
             showNotification('Cancha creada con éxito', 'success')
             navigate('/admin/pitchs/getAll')
         }catch(error){
-            if (isApiError(error)) {
-                        if (error instanceof Error) {
-                            showNotification(error.message,'error');
-                        } 
-                }else {
-                            showNotification("Error desconocido",'error');
-                        }
+            showNotification(errorHandler(error),'error');
             setLoading(false)
         }finally{
             setLoading(false)
@@ -48,7 +42,7 @@ export default function PitchAdd(){
         const formData = new FormData(e.currentTarget);
         const pitch:Pitch = {
             id:0,
-            businessId:Number(formData.get("businessId")),
+            business:Number(formData.get("businessId")),
             rating:Number(formData.get("rating")),
             price:Number(formData.get("price")),
             size:String(formData.get("size")),
@@ -149,14 +143,14 @@ export default function PitchAdd(){
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{data.data.id}</td>
-                        <td>{data.data.businessId}</td>
-                        <td>{('⭐️').repeat(data.data.rating)}</td>
-                        <td>${data.data.price}</td>
-                        <td>{data.data.size}</td>
-                        <td>{data.data.groundType}</td>
-                        <td>{data.data.roof ? 'Techado':'Sin techo'}</td>
-                    </tr>
+                    <td>{data.data.id}</td>
+                    <td>{data.data.business?.id ?? '—'}</td>
+                    <td>{'⭐️'.repeat(data.data.rating || 0)}</td>
+                    <td>${data.data.price}</td>
+                    <td>{data.data.size}</td>
+                    <td>{data.data.groundType}</td>
+                    <td>{data.data.roof ? 'Techado' : 'Sin techo'}</td>
+                </tr>
                 </tbody>
                 </table>)}
                 </pre>

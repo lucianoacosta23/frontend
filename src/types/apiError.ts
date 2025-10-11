@@ -3,8 +3,15 @@ export interface ApiError {
   errors?: ValidationError[];
 }
 
-export function isApiError(error: unknown): error is ApiError {
-  return typeof error === "object" && error !== null && "message" in error; // verifica si es error de api
+export function errorHandler(error: unknown): string {
+  if (typeof error === "object" && error !== null) {
+    if ("message" in error) return (error.message) as string;
+    if ("error" in error) return (error.error) as string;
+    if ("errors" in error) return JSON.stringify((error).errors);
+  }
+
+  if (typeof error === "string") return error;
+  return "Error desconocido";
 }
 
 export interface ValidationError {

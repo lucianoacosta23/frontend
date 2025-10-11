@@ -5,6 +5,6 @@ export type Pitch = {
     groundType:string,
     roof:boolean,
     price:number,
-    businessId?:number,
+    business?:number,
     imgUrl?:string
 }
