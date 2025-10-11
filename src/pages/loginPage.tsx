@@ -2,6 +2,8 @@ import '../static/css/loginPage.css'
 import { useEffect, useState } from 'react';
 import type { UserData } from '../types/userData.js';
 import Toast from '../components/Toast.js';
+import type { ApiError } from '../types/apiError.js';
+import { isApiError } from '../types/apiError.js';
 
 
 export function LoginPage(){
@@ -192,17 +194,4 @@ export function LoginPage(){
       />
         </>
     )
-}
-
-function isApiError(error: unknown): error is ApiError {
-  return typeof error === "object" && error !== null && "message" in error; // verifica si es error de api
-}
-interface ValidationError {
-  field?: string;
-  msg: string; // tipo de error que devuelven los usuarios
-}
-
-interface ApiError {
-  message: string;
-  errors?: ValidationError[]; // define el tipo de error de API para no romper tipado estatico
 }
