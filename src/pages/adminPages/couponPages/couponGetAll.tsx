@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import type {Coupon} from '../../../types/couponType.ts'
 import { useOutletContext } from 'react-router';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function CouponGetAll() {
     const [data, setData] = useState<CouponResponse | null>(null);
@@ -21,12 +22,13 @@ export default function CouponGetAll() {
                     }
                 })
                 if(!response.ok){
-                    throw new Error("HTTP Error! status: " + response.status)
+                    const errors = await response.json();
+                    throw errors
                 }
                 const json:CouponResponse = await response.json()
                 setData(json)
             }catch(error){
-                showNotification('Error: '+error, 'error')
+                showNotification(errorHandler(error), 'error');
                 setError(true);
                 setLoading(false)
             }finally{
@@ -46,12 +48,13 @@ export default function CouponGetAll() {
                 const response = await fetch('http://localhost:3000/api/coupons/remove/'+id,{method:"DELETE"}
                 )
                 if(!response.ok){
-                    throw new Error("HTTP Error! status: " + response.status)
+                    const errors = await response.json()
+                    throw errors
                 }
                 showNotification('Cupón eliminado con éxito!', 'success')
                 getAll();
             }catch(error){
-                showNotification('Error: '+error, 'error')
+                 showNotification(errorHandler(error), 'error');
             }
         }
 

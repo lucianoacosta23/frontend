@@ -1,6 +1,7 @@
 import type {Coupon} from '../../../types/couponType.ts'
 import { useState } from 'react';
 import { useOutletContext } from 'react-router';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function CouponGetOne(){
     const [data, setData] = useState<CouponResponse | null>(null);
@@ -19,12 +20,13 @@ export default function CouponGetOne(){
                 }
             })
             if(!response.ok){
-                throw new Error("HTTP Error! status: " + response.status)
+                const errors = await response.json();
+                throw errors
             }
             const json:CouponResponse = await response.json()
             setData(json)
         }catch(error){
-            showNotification('Error: '+error, 'error')
+             showNotification(errorHandler(error), 'error');
             setLoading(false)
         }finally{
             setLoading(false)
