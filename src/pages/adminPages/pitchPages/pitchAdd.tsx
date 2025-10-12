@@ -13,9 +13,9 @@ export default function PitchAdd(){
 
     // Opciones válidas para el tamaño
     const sizeOptions = [
-        { value: 'pequeño', label: 'Pequeño' },
-        { value: 'mediano', label: 'Mediano' },
-        { value: 'grande', label: 'Grande' }
+        { value: '5v5', label: 'Fut 5' },
+        { value: '7v7', label: 'Fut 7' },
+        { value: '11v11', label: 'Fut 11' }
     ];
 
     // Opciones válidas para el tipo de suelo - probemos estas
