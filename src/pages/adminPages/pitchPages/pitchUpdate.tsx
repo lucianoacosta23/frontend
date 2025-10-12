@@ -174,10 +174,14 @@ export default function PitchUpdate(){
                     <label>Tamaño</label>
                     <select name="size">
                         <option value="">Seleccionar tamaño (opcional)</option>
-                        <option value="pequeño">Pequeño</option>
-                        <option value="mediano">Mediano</option>
-                        <option value="grande">Grande</option>
+                        {/* 🎯 ACTUALIZADO: Tamaños específicos para fútbol */}
+                        <option value="5v5">5v5 (Fútbol 5) - 20x40m</option>
+                        <option value="7v7">7v7 (Fútbol 7) - 40x60m</option>
+                        <option value="11v11">11v11 (Fútbol 11) - 90x120m</option>
                     </select>
+                    <small className="form-help">
+                        🏃 5v5: 20x40m | 7v7: 40x60m | 11v11: 90x120m
+                    </small>
                 </div>
                 
                 <div className='crud-form-item'>
@@ -232,7 +236,12 @@ export default function PitchUpdate(){
                                 <td>{data.updatedPitch.business?.id ?? '-'}</td>
                                 <td>{('⭐️').repeat(Math.floor(data.updatedPitch.rating))} ({data.updatedPitch.rating})</td>
                                 <td>${data.updatedPitch.price.toLocaleString()}</td>
-                                <td>{data.updatedPitch.size}</td>
+                                <td>
+                                    {data.updatedPitch.size === '5v5' && '5v5 (20x40m)'}
+                                    {data.updatedPitch.size === '7v7' && '7v7 (40x60m)'}
+                                    {data.updatedPitch.size === '11v11' && '11v11 (90x120m)'}
+                                    {!['5v5', '7v7', '11v11'].includes(data.updatedPitch.size) && data.updatedPitch.size}
+                                </td>
                                 <td>{data.updatedPitch.groundType}</td>
                                 <td>{data.updatedPitch.roof ? '✅ Con techo' : '❌ Sin techo'}</td>
                             </tr>
