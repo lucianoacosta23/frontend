@@ -175,9 +175,9 @@ export default function PitchUpdate(){
                     <label>Tamaño</label>
                     <select name="size">
                         <option value="">Seleccionar tamaño (opcional)</option>
-                        <option value="5v5">futbol 5</option>
-                        <option value="7v7">futbol 7</option>
-                        <option value="11v11">futbol 11</option>
+                        <option value="pequeño">Pequeño</option>
+                        <option value="mediano">Mediano</option>
+                        <option value="grande">Grande</option>
                     </select>
                 </div>
                 
@@ -185,10 +185,10 @@ export default function PitchUpdate(){
                     <label>Tipo de suelo</label>
                     <select name="groundType">
                         <option value="">Seleccionar tipo (opcional)</option>
-                        <option value="Césped natural">Césped natural</option>
-                        <option value="Césped sintético">Césped sintético</option>
-                        <option value="Cemento">Cemento</option>
-                        <option value="Tierra">Tierra</option>
+                        <option value="césped natural">Césped natural</option>
+                        <option value="césped sintético">Césped sintético</option>
+                        <option value="cemento">Cemento</option>
+                        <option value="arcilla">Arcilla</option>
                     </select>
                 </div>
                 

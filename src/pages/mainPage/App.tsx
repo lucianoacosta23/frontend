@@ -35,6 +35,7 @@ import LocalityCreate from '../adminPages/localityPages/localityCreate.tsx';
 import CourtsPage from '../reservationPage/CourtsPage.tsx';
 import { RegisterBusinessPage } from '../registerBusiness.tsx';
 import InactiveBusinesses from '../adminPages/inactiveBusinesses/inactiveBusinesses.tsx';
+import ReservePitchPage from '../ReservePitch.tsx';
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
           <Route path='about/' element={<AboutUs/>}/>
           <Route path='registerBusiness/' element={<RegisterBusinessPage/>}/>
           <Route path='reservation/' element={<CourtsPage/>}/>
+          <Route path='reserve-pitch/' element={<ReservePitchPage/>}/>
         </Route>
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />

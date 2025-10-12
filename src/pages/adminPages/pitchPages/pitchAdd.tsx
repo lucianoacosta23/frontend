@@ -69,12 +69,23 @@ export default function PitchAdd(){
                     <input name="price" type="number" required />
                 </div>
                 <div className='crud-form-item'>
-                    <label>Tamaño</label>
-                    <input type="text" name="size" required />
+                    <label>Tamaño de cancha</label>
+                    <select name="size" required>
+                        <option value="">Seleccionar tamaño</option>
+                        <option value="pequeño">Pequeño</option>
+                        <option value="mediano">Mediano</option>
+                        <option value="grande">Grande</option>
+                    </select>
                 </div>
                 <div className='crud-form-item'>
                     <label>Tipo de suelo</label>
-                    <input type="text" name="groundType" required />
+                    <select name="groundType" required>
+                        <option value="">Seleccionar tipo de suelo</option>
+                        <option value="césped natural">Césped natural</option>
+                        <option value="césped sintético">Césped sintético</option>
+                        <option value="cemento">Cemento</option>
+                        <option value="arcilla">Arcilla</option>
+                    </select>
                 </div>
                 <div className='crud-form-item'>
                     <label>Techo</label>

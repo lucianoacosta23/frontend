@@ -48,7 +48,7 @@ export function LoginPage(){
             const token = await response.json()
 
             localStorage.setItem('user', JSON.stringify(token))
-            navigate('/')
+            navigate('/reserve-pitch/')
         }catch(err:unknown){
             if (isApiError(err)) {
             if (Array.isArray(err.errors)) {

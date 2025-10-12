@@ -77,7 +77,7 @@ export function HomePageNav({ showNotification }: HomePageNavProps){
                         </li>
                         
                         <li>
-                            <Link to="/reservation">Lista de Canchas</Link>
+                            <Link to="/reserve-pitch">Lista de Canchas</Link>
                         </li>
                         {(userData?.category === 'admin') &&
                         <li>
