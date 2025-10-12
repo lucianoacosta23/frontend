@@ -1,6 +1,6 @@
-import { Outlet } from "react-router"
+import { Outlet, useNavigate } from "react-router"
 import { HomePageNav } from "../pages/homepage/homePageNav"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import HomeFooter from "../pages/homepage/homeFooter"
 import Toast from "../components/Toast"
 
@@ -21,6 +21,31 @@ export function HomeLayout(){
         const closeToast = () => {
             setShowToast(false);
         };
+
+        const navigate = useNavigate();
+        
+        useEffect( () =>{
+        const user = localStorage.getItem('user');
+        // Solo redirigir si está en login Y ya tiene sesión activa
+        // NO redirigir durante el proceso de login (cuando viene del formulario)
+        if (user && window.location.pathname === '/login') {
+            // Verificar si el token es válido antes de redirigir
+            try {
+                const parsed = JSON.parse(user);
+                if (parsed.token) {
+                    // Solo redirigir después de un delay para permitir que el login se complete
+                    const timer = setTimeout(() => {
+                        if (window.location.pathname === '/login') {
+                            navigate('/reserve-pitch/')
+                        }
+                    }, 500);
+                    return () => clearTimeout(timer);
+                }
+            } catch {
+                // Token inválido, no redirigir
+            }
+        }}, [navigate])
+        
     return (
         <section className="homeLayout">
             <HomePageNav showNotification={showNotification}/>

@@ -31,10 +31,15 @@ import LocalitiesGetAll from '../adminPages/localityPages/localityGetAll.tsx';
 import LocalityDetail from '../adminPages/localityPages/localityDetail.tsx';
 import LocalityUpdate from '../adminPages/localityPages/localityUpdate.tsx';
 import LocalityCreate from '../adminPages/localityPages/localityCreate.tsx';
+import BusinessHome from '../adminPages/business/businessHome.tsx';
+import BusinessGetAll from '../adminPages/business/businessGetAll.tsx';
 
 import CourtsPage from '../reservationPage/CourtsPage.tsx';
 import { RegisterBusinessPage } from '../registerBusiness.tsx';
 import InactiveBusinesses from '../adminPages/inactiveBusinesses/inactiveBusinesses.tsx';
+import BusinessCreate from '../adminPages/business/businessCreate.tsx';
+import BusinessUpdate from '../adminPages/business/businessUpdate.tsx';
+import BusinessDetail from '../adminPages/business/businessDetail.tsx';
 import ReservePitchPage from '../ReservePitch.tsx';
 
 
@@ -58,13 +63,24 @@ function App() {
             <Route path='add/' element={<CouponAdd />}/>
             <Route path='update/' element={<CouponUpdate />}/>
           </Route>
-          <Route path="inactiveBusinesses/" element={<InactiveBusinesses />} />
+
           <Route path="pitchs/" element={<PitchHome />}>
             <Route path="getAll/" element={<PitchGetAll />}/>
             <Route path='getOne/' element={<PitchGetOne />}/>
             <Route path='add/' element={<PitchAdd />}/>
             <Route path='update/' element={<PitchUpdate />}/>
           </Route>
+
+          <Route path="business/" element={<BusinessHome />}>
+            <Route path="getAll/" element={<BusinessGetAll />}/>
+            <Route path='create/' element={<BusinessCreate />}/>
+            {/*<Route path='add/' element={<BusinessAdd />}/> */}
+            <Route path='update/:id' element={<BusinessUpdate />}/>
+            <Route path='detail/:id' element={<BusinessDetail />}/>
+            <Route path="inactiveBusinesses/" element={<InactiveBusinesses />} />
+
+          </Route>
+
           <Route path="localities/" element={<LocalityHome />} >
             <Route path="getAll/" element={<LocalitiesGetAll />} />
             <Route path="create/" element={<LocalityCreate />} />

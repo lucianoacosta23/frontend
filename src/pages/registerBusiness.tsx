@@ -105,6 +105,19 @@ export function RegisterBusinessPage(){
         return <Navigate to="/"/>
     }
 
+    // Decode user data early to use throughout the component
+    const userData = jwtDecode(storedUser) as UserData;
+    const ownerId = userData.id;
+
+    if(!userData){
+        alert('No se puede recuperar el id del usuario. Redirigiendo...')
+        return <Navigate to="/"/> 
+    }
+    if(userData.category == "owner"){
+        alert("Usted ya tiene un negocio en su nombre")
+        return <Navigate to="/"/> 
+    }
+
     const create = async (business:BusinessData) =>{
         try{
             setLoading(true)
@@ -155,19 +168,6 @@ export function RegisterBusinessPage(){
               }
         };
 
-    const userData = jwtDecode(storedUser) as UserData
- 
-    const ownerId = userData.id;
-    if(!userData){
-        alert('No se puede recuperar el id del usuario. Redirigiendo...')
-        return <Navigate to="/"/> 
-    }
-    if(userData.category == "owner"){
-        alert("Usted ya tiene un negocio en su nombre")
-        return <Navigate to="/"/> 
-    }
-
-
     return(
         <div className="registerMainContent">
             <h1 className='formTitle'>Registrar negocio</h1>
@@ -189,6 +189,7 @@ export function RegisterBusinessPage(){
                         name="businessLocality"
                         onChange={handleLocalityChange}
                         value={localidad}>
+                                <option value="">Selecciona una localidad</option>
                                 {localities.length > 0 &&
                                 localities.map((item, index) => (
                                     <option key={index} value={item.name}>{item.name}</option>

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useOutletContext } from 'react-router';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function PitchGetAll() {
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -20,12 +21,13 @@ export default function PitchGetAll() {
                 }}
                 )
                 if(!response.ok){
-                    throw new Error("HTTP Error! status: " + response.status)
+                    const errors = await response.json()
+                    throw errors
                 }
                 const json:PitchResponse = await response.json()
                 setData(json)
             }catch(error){
-                showNotification('Error: ' + error, 'error')
+                showNotification(errorHandler(error),'error');
                 setError(true)
                 setLoading(false)
             }finally{
@@ -45,12 +47,13 @@ export default function PitchGetAll() {
                 const response = await fetch('http://localhost:3000/api/pitchs/remove/'+id,{method:"DELETE"}
                 )
                 if(!response.ok){
-                    throw new Error("HTTP Error! status: " + response.status)
+                    const errors = await response.json()
+                    throw errors
                 }
                 showNotification('Cancha eliminada con éxito!', 'success')
                 getAll();
             }catch(error){
-                showNotification('Error: ' + error, 'error')
+                showNotification(errorHandler(error),'error');
             }
         }
 
@@ -80,7 +83,7 @@ export default function PitchGetAll() {
                     {data?.data.map((pitch) => (
             <tr key={pitch.id}>
               <td>{pitch.id}</td>
-              <td>{pitch.businessId}</td>
+              <td>{pitch.business?.id ?? '-'}</td>
               <td>{('⭐️').repeat(pitch.rating)}</td>
               <td>${pitch.price}</td>
               <td>{pitch.size}</td>

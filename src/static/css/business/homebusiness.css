@@ -1,0 +1,435 @@
+/* static/css/usersGetAll.css */
+
+:root {
+    --primary-color: #2ecc71;
+    --secondary-color: #3498db;
+    --dark-color: #2c3e50;
+    --light-color: #ecf0f1;
+    --text-color: #333;
+    --sidebar-width: 280px;
+    
+    /* Variaciones adicionales */
+    --primary-hover: #27ae60;
+    --secondary-hover: #2980b9;
+    --success: #2ecc71;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --surface: #ffffff;
+    --border: #bdc3c7;
+}
+
+/* Estilos generales */
+.users-getall-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.users-getall-container {
+  background-color: var(--light-color);
+  height: 100vh;
+  padding: 0;
+  overflow: hidden;
+}
+
+.users-container {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  background-color: var(--surface);
+  box-shadow: none;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Título principal */
+.users-title {
+  color: var(--dark-color);
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--primary-color);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Resumen de usuarios */
+.users-summary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(46, 204, 113, 0.2);
+  flex-shrink: 0;
+}
+
+.users-summary strong {
+  font-size: 1.1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Contenedor de la tabla - ocupa todo el espacio restante */
+.table-container {
+  flex: 1;
+  overflow: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+  border: 1px solid var(--border);
+}
+
+/* Tabla de usuarios */
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  height: 100%;
+}
+
+/* Cabecera de la tabla */
+.table-header {
+  background: linear-gradient(135deg, var(--dark-color), #34495e);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-header th {
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--light-color);
+  border: none;
+  white-space: nowrap;
+}
+
+.table-header th:first-child {
+  width: 80px;
+  text-align: center;
+}
+
+.table-header th:last-child {
+  width: 220px;
+  text-align: center;
+}
+
+/* Filas de la tabla */
+.table-row {
+  border-bottom: 1px solid var(--border);
+}
+
+.table-row:hover {
+  background-color: rgba(46, 204, 113, 0.05);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+/* Celdas de la tabla */
+.table-cell {
+  padding: 12px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  border: none;
+  vertical-align: middle;
+}
+
+.table-cell:first-child {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+  width: 80px;
+}
+
+.table-cell:last-child {
+  text-align: center;
+  width: 220px;
+}
+
+/* Botones de acción - EN UNA FILA HORIZONTAL */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.action-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  text-align: center;
+  min-width: 65px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.view-button {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.view-button:hover {
+  background-color: var(--secondary-hover);
+}
+
+.edit-button {
+  background-color: var(--warning);
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #e67e22;
+}
+
+.delete-button {
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+/* Estados de carga */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--surface);
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-top: 15px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+/* Simulación de spinner de carga */
+.loading-spinner {
+  border: 3px solid var(--border);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Estados de error */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--surface);
+  padding: 20px;
+}
+
+.error-message {
+  background: linear-gradient(135deg, #fdeaea, #fadbd8);
+  border-left: 4px solid var(--danger);
+  padding: 15px;
+  margin: 20px 0;
+  text-align: left;
+  border-radius: 6px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.error-message p {
+  color: var(--danger);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.retry-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+.retry-button:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Estado sin usuarios */
+.no-users-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  background: var(--light-color);
+  border-radius: 8px;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* Efectos de transición para la tabla */
+.users-table {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .users-container {
+    padding: 15px;
+  }
+  
+  .action-button {
+    min-width: 60px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .users-container {
+    padding: 10px;
+  }
+  
+  .users-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .users-summary {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+  }
+  
+  .table-header th {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .table-cell {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+  }
+  
+  .table-header th:last-child {
+    width: 180px;
+  }
+  
+  .table-cell:last-child {
+    width: 180px;
+  }
+  
+  .action-button {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    min-width: 50px;
+  }
+  
+  .action-buttons {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .users-container {
+    padding: 8px;
+  }
+  
+  .users-title {
+    font-size: 1.3rem;
+  }
+  
+  /* Ocultar algunas columnas en móvil pero mantener botones en línea */
+  .table-header th:nth-child(5),
+  .table-cell:nth-child(5),
+  .table-header th:nth-child(6),
+  .table-cell:nth-child(6),
+  .table-header th:nth-child(7),
+  .table-cell:nth-child(7) {
+    display: none;
+  }
+  
+  .table-header th:last-child {
+    width: 160px;
+  }
+  
+  .table-cell:last-child {
+    width: 160px;
+  }
+  
+  .action-button {
+    padding: 4px 6px;
+    font-size: 0.7rem;
+    min-width: 45px;
+  }
+  
+  .action-buttons {
+    gap: 3px;
+  }
+}
+
+/* Scrollbar personalizado para la tabla */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-hover);
+}
+
+.table-container::-webkit-scrollbar-corner {
+  background: var(--border);
+}

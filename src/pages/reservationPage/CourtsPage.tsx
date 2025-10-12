@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 import CourtList from './CourtList';
 import type { Court } from '../../components/CourtCard';
-import type { UserData } from '../../types/userData';
 import '../../static/css/courtPages.css';
 
 const CourtsPage: React.FC = () => {
@@ -18,29 +16,21 @@ const CourtsPage: React.FC = () => {
   
   const navigate = useNavigate();
 
-  // 🎯 VERIFICAR SESIÓN COMO EN ADMINLAYOUT
+  // 🎯 VERIFICACIÓN SIMPLE: Solo si está logueado o no
   const storedUser = localStorage.getItem('user');
   if (!storedUser) {
     alert('sesion no iniciada');
     return <Navigate to="/login" />;
   }
 
-  let userData: UserData;
+  // 🎯 EXTRAER EL TOKEN CORRECTAMENTE
+  let token = '';
   try {
-    userData = jwtDecode(storedUser) as UserData;
-    
-    // Verificar si el token ha expirado
-    const currentTime = Date.now() / 1000;
-    if (userData.exp && userData.exp < currentTime) {
-      localStorage.removeItem('user');
-      alert('sesion expirada');
-      return <Navigate to="/login" />;
-    }
+    const userObject = JSON.parse(storedUser);
+    token = userObject.token || storedUser;
   } catch (error) {
-    console.error('Token inválido:', error);
-    localStorage.removeItem('user');
-    alert('sesion no válida');
-    return <Navigate to="/login" />;
+    // Si no es JSON válido, usar el string directo
+    token = storedUser;
   }
 
   useEffect(() => {
@@ -52,14 +42,13 @@ const CourtsPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${storedUser}`
-      };
-
+      // 🎯 USAR EL TOKEN EXTRAÍDO
       const response = await fetch('http://localhost:3000/api/pitchs/getAll', {
         method: 'GET',
-        headers
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Usar el token extraído
+        }
       });
 
       if (response.status === 401) {

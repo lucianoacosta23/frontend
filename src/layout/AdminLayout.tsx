@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Navigate, useNavigate } from "react-router-dom";
 import "../static/css/AdminLayout.css";
 import { useState } from "react";
-import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol, FaHome } from "react-icons/fa";
+import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol, FaHome, FaStore } from "react-icons/fa";
 import type { UserData } from "../types/userData.js";
 import {jwtDecode} from 'jwt-decode'
 import HomeFooter from "../pages/homepage/homeFooter.js";
@@ -114,6 +114,15 @@ export function AdminLayout() {
                         <div className="nav-text">Categorías</div>
                     </NavLink>
                     <NavLink 
+                        to="business/" 
+                        className={({ isActive }) => 
+                            `nav-item ${isActive ? 'active' : ''}`
+                        }
+                    >
+                        <div className="nav-icon"><FaStore /></div>
+                        <div className="nav-text">Business</div>
+                    </NavLink>
+                    <NavLink 
                         to="pitchs/" 
                         className={({ isActive }) => 
                             `nav-item ${isActive ? 'active' : ''}`
@@ -121,15 +130,6 @@ export function AdminLayout() {
                     >
                         <div className="nav-icon"><FaFutbol /></div>
                         <div className="nav-text">Canchas</div>
-                    </NavLink>
-                    <NavLink 
-                        to="inactiveBusinesses/" 
-                        className={({ isActive }) => 
-                            `nav-item ${isActive ? 'active' : ''}`
-                        }
-                    >
-                        <div className="nav-icon"></div>
-                        <div className="nav-text">Habilitar negocios</div>
                     </NavLink>
 
                     <NavLink to="../login/" className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</NavLink>
@@ -212,16 +212,6 @@ export function AdminLayout() {
                     >
                         <div className="nav-icon"><FaFutbol /></div>
                         <div className="nav-text">Canchas</div>
-                    </NavLink>
-                    <NavLink 
-                        to="inactiveBusinesses/" 
-                        className={({ isActive }) => 
-                            `nav-item ${isActive ? 'active' : ''}`
-                        }
-                        onClick={toggleMobileMenu}
-                    >
-                        <div className="nav-icon"></div>
-                        <div className="nav-text">Habilitar negocios</div>
                     </NavLink>
                     <a className="nav-item" onClick={handleLogout}><div className="nav-icon"><FaArrowAltCircleLeft /></div>Cerrar sesión</a>
                 </nav>
