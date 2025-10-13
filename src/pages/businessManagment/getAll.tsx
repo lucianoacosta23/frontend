@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import type {Pitch} from '../../types/pitchType.ts'
 import { useOutletContext, Navigate, useNavigate } from 'react-router';
 import { errorHandler } from '../../types/apiError.ts';
+import '../../static/css/MybusinessGetAll.css';
 
 export default function BusinessPitchGetAll() {
     const [data, setData] = useState<PitchResponse | null>(null);

@@ -1,12 +1,12 @@
 import { Link, Outlet, useOutletContext } from "react-router";
-import '../../static/css/crudTable.css'
+/*import '../../static/css/crudTable.css' */
 
 export default function BusinessPitchHome() {
   const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
   return (
     <div style={{ padding: '2rem' }}>
         <div className="crud-home-container">
-          <h1 className="crud-title">Gestión de Canchas</h1>
+          <h1 className="crud-title">Gestión de Negocio</h1>
           <div className="menu-section">
             <nav className="crud-menu">
               <Link to="/myBusiness" className="menu-item">
@@ -17,6 +17,9 @@ export default function BusinessPitchHome() {
               </Link>
               <Link to="/myBusiness/add/" className="menu-item">
                 Agregar Canchas
+              </Link>
+              <Link to="/myBusiness/getReservations/" className="menu-item">
+                Ver Reservas
               </Link>
             </nav>
           </div>
