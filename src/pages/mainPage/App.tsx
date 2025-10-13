@@ -42,6 +42,10 @@ import BusinessUpdate from '../adminPages/business/businessUpdate.tsx';
 import BusinessDetail from '../adminPages/business/businessDetail.tsx';
 import ReservePitchPage from '../ReservePitch.tsx';
 import MyReservations from '../homepage/myReservations.tsx';
+import BusinessPitchHome from '../businessManagment/home.tsx';
+import BusinessPitchAdd from '../businessManagment/add.tsx';
+import BusinessPitchEdit from '../businessManagment/edit.tsx';
+import BusinessPitchGetAll from '../businessManagment/getAll.tsx';
 
 
 function App() {
@@ -56,7 +60,14 @@ function App() {
           <Route path='reservation/' element={<CourtsPage/>}/>
           <Route path='reserve-pitch/' element={<ReservePitchPage/>}/>
           <Route path='myReservations/' element={<MyReservations/>}/>
+          <Route path='myBusiness/' element={<BusinessPitchHome />}>
+            <Route path='getAll/' element={<BusinessPitchGetAll />} />
+            <Route path='add/' element={<BusinessPitchAdd />} />
+            <Route path='update/:id' element={<BusinessPitchEdit />} />
+            <Route path='detail/:id' element={<BusinessDetail />} />
+          </Route>
         </Route>
+
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="coupons/" element={<CouponHome />}>
@@ -65,6 +76,7 @@ function App() {
             <Route path='add/' element={<CouponAdd />}/>
             <Route path='update/' element={<CouponUpdate />}/>
           </Route>
+
 
           <Route path="pitchs/" element={<PitchHome />}>
             <Route path="getAll/" element={<PitchGetAll />}/>
