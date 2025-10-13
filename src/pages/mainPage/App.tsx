@@ -41,6 +41,7 @@ import BusinessCreate from '../adminPages/business/businessCreate.tsx';
 import BusinessUpdate from '../adminPages/business/businessUpdate.tsx';
 import BusinessDetail from '../adminPages/business/businessDetail.tsx';
 import ReservePitchPage from '../ReservePitch.tsx';
+import MyReservations from '../homepage/myReservations.tsx';
 
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
           <Route path='registerBusiness/' element={<RegisterBusinessPage/>}/>
           <Route path='reservation/' element={<CourtsPage/>}/>
           <Route path='reserve-pitch/' element={<ReservePitchPage/>}/>
+          <Route path='myReservations/' element={<MyReservations/>}/>
         </Route>
         <Route path="admin/" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
