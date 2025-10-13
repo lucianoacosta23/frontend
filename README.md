@@ -44,7 +44,7 @@ Para las funcionalidades de negocio de la página deberá clonar el repositorio 
 - **TypeScript**: Lenguaje de programación
 - **JWT**: Autenticación
 - **React**: Librería de JS
-- **Vue**: Framework frontend de JS
+- **Vite**: Herramienta de desarrollo y servidor web
 
 ## 🤝 Contribuir
 
