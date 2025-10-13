@@ -286,7 +286,7 @@ export default function PitchAdd() {
         
         // Agregar campos individualmente
         pitchData.append('business', businessId.toString());
-        pitchData.append('rating', '1'); // 🎯 RATING FIJO EN 1
+        pitchData.append('rating', '1'); //    RATING FIJO EN 1
         pitchData.append('price', formData.get("price") as string);
         pitchData.append('size', selectedSize);
         pitchData.append('groundType', selectedGroundType);

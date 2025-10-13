@@ -185,7 +185,6 @@ const ReservePitchPage: React.FC = () => {
     console.log('Reservation data to send:', data);
     
     try {
-      // 🔧 FIX: Create date in local timezone without UTC conversion
       // Parse date as YYYY-MM-DD and keep it in local timezone
       const [year, month, day] = data.date.split('-').map(Number);
       const [hours, minutes] = data.time.split(':').map(Number);

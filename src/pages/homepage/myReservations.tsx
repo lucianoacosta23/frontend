@@ -57,17 +57,21 @@ export default function MyReservations() {
     
 
 
-    /*const remove = async (id:number) =>{
+    const remove = async (id:number) =>{
             try{
                 setLoading(true)
-                const response = await fetch('http://localhost:3000/api/reservations/cancel/'+id,{method:"PATCH"}
+                const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+                const response = await fetch('http://localhost:3000/api/reservations/remove/'+id,{
+                    method:"DELETE",
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }}
                 )
                 if(!response.ok){
                     const errors = await response.json()
                     throw errors
                 }
                 showNotification('Reserva cancelada con éxito!', 'success')
-                getAll();
             }catch(error){
                  showNotification(errorHandler(error), 'error');
             }
@@ -80,11 +84,10 @@ export default function MyReservations() {
             }
         }
       };
-      */
-     if (loading) return 'Loading...';
+    
   return (
     <div className='crud-home-container'>
-        <pre className='content-area'>
+         {!loading && <pre className='content-area'>
             <h1>Mis Reservas</h1>
             <table className='crudTable'>
                 <thead>
@@ -101,12 +104,13 @@ export default function MyReservations() {
               <td>{typeof(reservation.pitch.business) === "object" && reservation.pitch.business.businessName}</td>
               <td>{reservation.pitch.id}</td>  
               <td>{reservation.ReservationTime}</td>
-              <td><button className='action-button delete' value={reservation.id}>Cancelar</button></td>
+              <td><button className='action-button delete' value={reservation.id} onClick={handleDeleteSubmit}>Cancelar</button></td>
             </tr>
           ))}
                 </tbody>
             </table>
-        </pre>
+        </pre>}
+        {loading && <h3>Loading...</h3>}
     </div>
   );
 }

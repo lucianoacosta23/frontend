@@ -76,7 +76,7 @@ export default function AboutUs() {
                     </div>
 
                     <div className="learning-objectives">
-                        <h2>🎯 Contenidos de la Materia</h2>
+                        <h2> Contenidos de la Materia</h2>
                         <div className="objectives-grid">
                             <div className="objective-card">
                                 <h4>JavaScript</h4>
