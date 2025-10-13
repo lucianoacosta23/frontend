@@ -19,7 +19,6 @@ export default function PitchUpdate(){
                 throw new Error('Token de autenticación no encontrado');
             }
             
-            // 🎯 MEJOR VALIDACIÓN: Filtrar solo los campos que tienen valor válido
             const payload: Record<string, any> = {};
             
             if (pitch.rating !== undefined && pitch.rating > 0) {
@@ -38,7 +37,7 @@ export default function PitchUpdate(){
                 payload.roof = pitch.roof;
             }
 
-            console.log('🎯 Payload a enviar:', payload); // DEBUG
+            console.log(' Payload a enviar:', payload); // DEBUG
 
             const response = await fetch(`http://localhost:3000/api/pitchs/update/${pitch.id}`, {
                 method: "PATCH",
@@ -68,20 +67,14 @@ export default function PitchUpdate(){
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        
-        // 🎯 VALIDACIÓN MEJORADA: Solo el ID es obligatorio
         const pitchId = Number(formData.get("id"));
         if (!pitchId || isNaN(pitchId)) {
             showNotification('El ID de cancha debe ser un número válido', 'error');
             return;
         }
-
-        // 🎯 MEJOR MANEJO: Crear objeto pitch con solo los campos que tienen valor
         const pitch: Partial<Pitch> & { id: number } = {
             id: pitchId
         };
-
-        // 🎯 VALIDACIÓN MEJORADA: Solo agregar campos si tienen valor válido
         const ratingValue = formData.get("rating");
         if (ratingValue && ratingValue.toString().trim() !== '') {
             const rating = Number(ratingValue);
@@ -114,13 +107,12 @@ export default function PitchUpdate(){
             pitch.groundType = groundTypeValue.toString().trim();
         }
 
-        // 🎯 CORREGIDO: Manejo correcto del checkbox
         const roofValue = formData.get("roof");
         if (roofValue !== null) {
             pitch.roof = roofValue === 'on' || roofValue === 'true';
         }
 
-        console.log('🎯 Datos del formulario:', pitch); // DEBUG
+        console.log(' Datos del formulario:', pitch); // DEBUG
 
         // Verificar que al menos un campo se va a actualizar
         const { id, ...fieldsToUpdate } = pitch;
@@ -174,7 +166,7 @@ export default function PitchUpdate(){
                     <label>Tamaño</label>
                     <select name="size">
                         <option value="">Seleccionar tamaño (opcional)</option>
-                        {/* 🎯 ACTUALIZADO: Tamaños específicos para fútbol */}
+                        {/* Tamaños específicos para fútbol */}
                         <option value="5v5">5v5 (Fútbol 5) - 20x40m</option>
                         <option value="7v7">7v7 (Fútbol 7) - 40x60m</option>
                         <option value="11v11">11v11 (Fútbol 11) - 90x120m</option>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
 import type { UserData } from '../types/userData';
 import type { ReservePitch, ReservePitchFilters, ReservationFormData, ReservationRequest } from '../types/reservePitchTypes';
@@ -11,59 +11,45 @@ import '../static/css/ReservePitch.css';
 const ReservePitchPage: React.FC = () => {
   const navigate = useNavigate();
 
-  // 🔐 Authentication check - MUST be at the top before any other logic
   const storedUser = localStorage.getItem('user');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
 
   // Check authentication on mount
-  useEffect(() => {
-    console.log('🔐 Checking authentication...');
-    
-    if (!storedUser) {
-      console.log('❌ No stored user, redirecting to login');
+ useEffect(() => {
+  console.log('🔐 Checking authentication...');
+  const storedUser = localStorage.getItem('user');
+
+  if (!storedUser) {
+    console.log('❌ No stored user, redirecting to login');
+    navigate('/login');
+    return;
+  }
+
+  try {
+    let tokenString = storedUser;
+    const parsed = JSON.parse(storedUser);
+    if (parsed.token) tokenString = parsed.token;
+
+    const decoded = jwtDecode(tokenString) as UserData;
+    const currentTime = Date.now() / 1000;
+
+    if (decoded.exp && decoded.exp < currentTime) {
+      console.log('⏰ Token expired, redirecting to login');
+      localStorage.removeItem('user');
       navigate('/login');
       return;
     }
 
-    try {
-      console.log('🔍 Stored user token:', storedUser);
-      
-      // Parse the stored token (it might be a JSON object with a token property)
-      let tokenString = storedUser;
-      try {
-        const parsed = JSON.parse(storedUser);
-        console.log('📦 Parsed token object:', parsed);
-        // If it's an object with a token property, use that
-        if (parsed.token) {
-          tokenString = parsed.token;
-        }
-      } catch {
-        // If parsing fails, use the original string
-        console.log('ℹ️ Token is not JSON, using as-is');
-      }
-      
-      const decoded = jwtDecode(tokenString) as UserData;
-      console.log('✅ Token decoded:', decoded);
-      
-      // Check if token has expired
-      const currentTime = Date.now() / 1000;
-      if (decoded.exp && decoded.exp < currentTime) {
-        console.log('⏰ Token expired, redirecting to login');
-        localStorage.removeItem('user');
-        navigate('/login');
-        return;
-      }
+    setUserData(decoded);
+    setIsAuthenticated(true);
+  } catch (error) {
+    console.error('❌ Token inválido:', error);
+    localStorage.removeItem('user');
+    navigate('/login');
+  }
+}, [navigate]);
 
-      console.log('✅ Authentication successful');
-      setUserData(decoded);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('❌ Token inválido:', error);
-      localStorage.removeItem('user');
-      navigate('/login');
-    }
-  }, [storedUser, navigate]);
 
   const [pitches, setPitches] = useState<ReservePitch[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,12 +69,11 @@ const ReservePitchPage: React.FC = () => {
   });
 
   // Fetch pitches from GET /api/pitchs/getAll (no authentication required)
-  const fetchPitches = async () => {
+  const fetchPitches = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // 🔗 API Call: GET /api/pitchs/getAll (no auth required)
       const response = await fetch('http://localhost:3000/api/pitchs/getAll', {
         method: 'GET',
         headers: {
@@ -109,7 +94,7 @@ const ReservePitchPage: React.FC = () => {
       }
 
       const responseData = await response.json();
-      console.log('🎯 Pitches data received:', responseData);
+      console.log('Pitches data received:', responseData);
 
       // Handle different response formats (data array or direct array)
       let pitchesData: ReservePitch[] = [];
@@ -118,12 +103,12 @@ const ReservePitchPage: React.FC = () => {
       } else if (responseData.data && Array.isArray(responseData.data)) {
         pitchesData = responseData.data;
       } else {
-        console.error('🎯 Unexpected response format:', responseData);
+        console.error('Unexpected response format:', responseData);
         throw new Error('Formato de respuesta inesperado');
       }
 
-      console.log('🎯 Processed pitches:', pitchesData);
-      console.log('🎯 First pitch structure:', pitchesData[0]);
+      console.log('Processed pitches:', pitchesData);
+      console.log('First pitch structure:', pitchesData[0]);
       
       setPitches(pitchesData);
 
@@ -133,12 +118,12 @@ const ReservePitchPage: React.FC = () => {
         setFilters((prev) => ({ ...prev, priceMax: Math.ceil(maxPrice * 1.2) }));
       }
     } catch (err) {
-      console.error('🎯 Error fetching pitches:', err);
+      console.error('Error fetching pitches:', err);
       setError(err instanceof Error ? err.message : 'Error al cargar canchas');
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
   // Filter pitches based on current filters
   const filteredPitches = pitches.filter((pitch) => {
@@ -197,7 +182,7 @@ const ReservePitchPage: React.FC = () => {
 
   // Handle reservation confirmation
   const handleConfirmReservation = async (data: ReservationFormData) => {
-    console.log('🎯 Reservation data to send:', data);
+    console.log('Reservation data to send:', data);
     
     try {
       // 🔧 FIX: Create date in local timezone without UTC conversion
@@ -287,7 +272,7 @@ const ReservePitchPage: React.FC = () => {
     if (isAuthenticated) {
       fetchPitches();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, fetchPitches]);
 
   // Don't render anything until authentication is checked
   if (!isAuthenticated || !userData) {
@@ -394,7 +379,6 @@ const ReservePitchPage: React.FC = () => {
         </main>
       </div>
 
-      {/* Reservation Modal */}
       <ReservationModal
         pitch={selectedPitch}
         isOpen={isModalOpen}

@@ -15,14 +15,14 @@ export default function BusinessPitchEdit() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
-    // 🎯 VERIFICACIÓN DE SESIÓN
+    // VERIFICACIÓN DE SESIÓN
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
         alert('sesion no iniciada');
         return <Navigate to="/login" />;
     }
 
-    // 🎯 FUNCIÓN PARA OBTENER TOKEN Y USERID
+    // FUNCIÓN PARA OBTENER TOKEN Y USERID
     const getAuthData = useCallback(() => {
         try {
             const userStr = localStorage.getItem('user');
@@ -60,7 +60,7 @@ export default function BusinessPitchEdit() {
         }
     }, []);
 
-    // 🎯 FUNCIÓN PARA OBTENER EL BUSINESSID DEL USUARIO
+    // FUNCIÓN PARA OBTENER EL BUSINESSID DEL USUARIO
     const getBusinessId = useCallback(async () => {
         try {
             const { token, userId } = getAuthData();
@@ -123,14 +123,14 @@ export default function BusinessPitchEdit() {
             return extractedBusinessId;
             
         } catch (error) {
-            console.error('🎯 Error getting business ID:', error);
+            console.error('Error getting business ID:', error);
             showNotification('Error al obtener el negocio: ' + error, 'error');
             setHasNoBusiness(true);
             throw error;
         }
     }, [getAuthData, showNotification]);
 
-    // 🎯 OBTENER DATOS DE LA CANCHA A EDITAR
+    // OBTENER DATOS DE LA CANCHA A EDITAR
     const getPitchData = useCallback(async () => {
         try {
             setLoading(true);
@@ -167,7 +167,7 @@ export default function BusinessPitchEdit() {
             setData(json);
             setOriginalData(json.data);
             
-            // 🎯 CARGAR PREVIEW DE IMAGEN EXISTENTE
+            // CARGAR PREVIEW DE IMAGEN EXISTENTE
             if (json.data.imageUrl) {
                 setImagePreview(json.data.imageUrl);
             }
@@ -180,7 +180,7 @@ export default function BusinessPitchEdit() {
         }
     }, [id, getAuthData, showNotification]);
 
-    // 🎯 EFECTO PARA OBTENER DATOS INICIALES
+    // EFECTO PARA OBTENER DATOS INICIALES
     useEffect(() => {
         const initializeData = async () => {
             await getBusinessId();
@@ -197,7 +197,7 @@ export default function BusinessPitchEdit() {
         { value: '11v11', label: 'Fut 11' }
     ];
 
-    // 🎯 TIPOS DE SUELO
+    // TIPOS DE SUELO
     const groundTypeOptions = [
         { value: 'césped natural', label: 'Césped Natural' },
         { value: 'césped sintético', label: 'Césped Sintético' },
@@ -241,10 +241,9 @@ export default function BusinessPitchEdit() {
                 throw new Error('No se proporcionó ID de cancha');
             }
 
-            console.log('🎯 Actualizando cancha con ID:', id);
-            console.log('🎯 Payload a enviar:', pitchData);
+            console.log('Actualizando cancha con ID:', id);
+            console.log('Payload a enviar:', pitchData);
 
-            // 🎯 CORREGIDO: Usar PATCH con JSON como en el ejemplo
             const response = await fetch(`http://localhost:3000/api/pitchs/update/${id}`, {
                 method: "PATCH",
                 headers: {
@@ -254,7 +253,7 @@ export default function BusinessPitchEdit() {
                 body: JSON.stringify(pitchData)
             });
 
-            console.log('🎯 Status:', response.status);
+            console.log('Status:', response.status);
 
             if (!response.ok) {
                 const errors = await response.json();
@@ -290,12 +289,10 @@ export default function BusinessPitchEdit() {
 
         const formData = new FormData(e.currentTarget);
         
-        // 🎯 VALIDACIÓN MEJORADA: Crear objeto pitch con solo los campos que tienen valor
         const pitch: Partial<Pitch> & { id: number } = {
             id: Number(id)
         };
 
-        // 🎯 QUITADO: Campo de rating eliminado
 
         const priceValue = formData.get("price");
         if (priceValue && priceValue.toString().trim() !== '') {
@@ -318,16 +315,14 @@ export default function BusinessPitchEdit() {
             pitch.groundType = groundTypeValue.toString().trim();
         }
 
-        // 🎯 CORREGIDO: Manejo correcto del checkbox
         const roofValue = formData.get("roof");
         if (roofValue !== null) {
             pitch.roof = roofValue === 'on' || roofValue === 'true';
         }
 
-        // 🎯 AGREGAR BUSINESS ID (obligatorio)
         pitch.business = businessId;
 
-        console.log('🎯 Datos del formulario:', pitch);
+        console.log('Datos del formulario:', pitch);
 
         // Verificar que al menos un campo se va a actualizar (excluyendo business e id)
         const { id: pitchId, business, ...fieldsToUpdate } = pitch;
@@ -347,8 +342,7 @@ export default function BusinessPitchEdit() {
             fileInput.value = '';
         }
     };
-
-    // 🎯 MANEJO DE ESTADOS DE CARGA Y ERROR
+    
     if (loading && !originalData) {
         return (
             <div className="loading-container">
@@ -358,7 +352,7 @@ export default function BusinessPitchEdit() {
         );
     }
 
-    // 🎯 MANEJO ESPECÍFICO PARA USUARIOS SIN NEGOCIO
+    // MANEJO ESPECÍFICO PARA USUARIOS SIN NEGOCIO
     if (hasNoBusiness) {
         return (
             <div className="no-business-container">
@@ -399,7 +393,6 @@ export default function BusinessPitchEdit() {
 
     return (
         <div className='crud-form-container'>
-            {/* 🎯 ENCABEZADO SIMPLIFICADO */}
             <div className="form-header edit-header">
                 <h2 className='crud-form-title'>
                     <span className="edit-icon">✏️</span>
@@ -410,8 +403,6 @@ export default function BusinessPitchEdit() {
                     <p>Modificando la cancha ID: <strong>{id}</strong></p>
                 </div>
             </div>
-
-            {/* 🎯 SECCIÓN DE DATOS ACTUALES */}
             <div className="current-data-section">
                 <h3>📋 Datos Actuales de la Cancha</h3>
                 <div className="current-data-grid">
@@ -450,13 +441,11 @@ export default function BusinessPitchEdit() {
                 </div>
             </div>
 
-            {/* 🎯 SECCIÓN DE FORMULARIO DE EDICIÓN */}
             <div className="edit-form-section">
                 <h3>📝 Formulario de Edición</h3>
                 <p className="edit-instruction">Modifica los campos que deseas cambiar:</p>
                 
                 <form onSubmit={handleSubmit} className='crud-form'>
-                    {/* 🎯 QUITADO: Campo de rating eliminado */}
 
                     <div className='crud-form-item'>
                         <label>Precio por hora 💰</label>
@@ -528,7 +517,6 @@ export default function BusinessPitchEdit() {
                 </form>
             </div>
 
-            {/* 🎯 ESTILOS CSS */}
             <style>
                 {`
                 .edit-header {

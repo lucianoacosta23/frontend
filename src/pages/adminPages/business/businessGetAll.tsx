@@ -170,13 +170,13 @@ const BusinessGetAll = () => {
     window.location.reload();
   };
 
-  // 🎯 FUNCIÓN PARA MOSTRAR EL MODAL (reemplaza la confirmación antigua)
+  // FUNCIÓN PARA MOSTRAR EL MODAL (reemplaza la confirmación antigua)
   const handleDeleteClick = (business: Business) => {
     setBusinessToDelete(business);
     setShowDeleteModal(true);
   };
 
-  // 🎯 FUNCIÓN PARA CONFIRMAR LA ELIMINACIÓN - MODIFICADA
+  // FUNCIÓN PARA CONFIRMAR LA ELIMINACIÓN - MODIFICADA
   const handleConfirmDelete = async () => {
     if (!businessToDelete || !businessToDelete.id) return;
 
@@ -227,18 +227,17 @@ const BusinessGetAll = () => {
       setShowDeleteModal(false);
       setBusinessToDelete(null);
       
-      // 🎯 MOSTRAR TOAST DE ÉXITO EN LUGAR DE ALERT
       showNotification(
         `Negocio "${businessToDelete.businessName}" eliminado con éxito`, 
         'success'
       );
       
     } catch (err) {
-      console.error('🎯 Error al eliminar negocio:', err);
+      console.error('Error al eliminar negocio:', err);
       
       const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
       
-      // 🎯 MOSTRAR TOAST DE ERROR EN LUGAR DE ALERT
+      // MOSTRAR TOAST DE ERROR EN LUGAR DE ALERT
       showNotification(
         `Error al eliminar negocio: ${errorMessage}`, 
         'error'
@@ -248,7 +247,7 @@ const BusinessGetAll = () => {
     }
   };
 
-  // 🎯 FUNCIÓN PARA CANCELAR LA ELIMINACIÓN
+  // FUNCIÓN PARA CANCELAR LA ELIMINACIÓN
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
     setBusinessToDelete(null);
@@ -337,9 +336,7 @@ const BusinessGetAll = () => {
                       <td className="table-cell">{business.id || 'N/A'}</td>
                       <td className="table-cell">{business.businessName}</td>
                       <td className="table-cell">{business.address}</td>
-                      {/* CORREGIDO: Usar función helper para obtener nombre de localidad */}
                       <td className="table-cell">{getLocalityName(business.locality)}</td>
-                      {/* CORREGIDO: Usar función helper para obtener nombre del dueño */}
                       <td className="table-cell">{getOwnerName(business.owner)}</td>
                       <td className="table-cell">{business.averageRating?.toFixed(1) || '0.0'}</td>
                       <td className="table-cell">{formatPercentage(business.reservationDepositPercentage)}</td>
@@ -361,7 +358,6 @@ const BusinessGetAll = () => {
                           >
                             Editar
                           </Link>
-                          {/* 🎯 BOTÓN MODIFICADO - Ahora abre el modal */}
                           <button 
                             onClick={() => handleDeleteClick(business)}
                             className="action-button delete-button"
@@ -380,8 +376,6 @@ const BusinessGetAll = () => {
           </>
         )}
       </div>
-
-      {/* 🎯 MODAL DE CONFIRMACIÓN */}
       <DeleteConfirm
         isOpen={showDeleteModal}
         title="Eliminar Negocio"

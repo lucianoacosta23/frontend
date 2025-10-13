@@ -98,8 +98,8 @@ export default function MyReservations() {
                     {data?.data.map((reservation:Reservation) => (
             <tr key={reservation.id}>
               <td>{reservation.id}</td>
-              <td>{reservation.pitch.id}</td>
-              <td>{reservation.pitch.business.businessName}</td>
+              <td>{typeof(reservation.pitch.business) === "object" && reservation.pitch.business.businessName}</td>
+              <td>{reservation.pitch.id}</td>  
               <td>{reservation.ReservationTime}</td>
               <td><button className='action-button delete' value={reservation.id}>Cancelar</button></td>
             </tr>

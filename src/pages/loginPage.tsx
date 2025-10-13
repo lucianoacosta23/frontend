@@ -9,19 +9,18 @@ import { errorHandler } from '../types/apiError.js';
 export function LoginPage(){
     const [loginPage, changePage] = useState<boolean>(true);
     
-    // 🎯 NUEVOS ESTADOS PARA EL TOAST
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
 
-    // 🎯 FUNCIÓN PARA MOSTRAR TOAST
+    // FUNCIÓN PARA MOSTRAR TOAST
     const showNotification = (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
         setToastMessage(message);
         setToastType(type);
         setShowToast(true);
     };
 
-    // 🎯 FUNCIÓN PARA CERRAR TOAST
+    // FUNCIÓN PARA CERRAR TOAST
     const closeToast = () => {
         setShowToast(false);
     };

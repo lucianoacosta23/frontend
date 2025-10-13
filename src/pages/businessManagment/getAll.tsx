@@ -13,14 +13,14 @@ export default function BusinessPitchGetAll() {
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const navigate = useNavigate();
 
-    // 🎯 VERIFICACIÓN DE SESIÓN
+    // VERIFICACIÓN DE SESIÓN
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
         alert('sesion no iniciada');
         return <Navigate to="/login" />;
     }
 
-    // 🎯 FUNCIÓN SIMPLIFICADA para obtener token y userId
+    // FUNCIÓN SIMPLIFICADA para obtener token y userId
     const getAuthData = useCallback(() => {
         try {
             const userStr = localStorage.getItem('user');
@@ -45,15 +45,15 @@ export default function BusinessPitchGetAll() {
                     if (payload) {
                         const decoded = JSON.parse(atob(payload));
                         userId = decoded.id || decoded.userId || decoded.sub;
-                        console.log('🎯 Usuario decodificado del token:', decoded);
+                        console.log('Usuario decodificado del token:', decoded);
                     }
                 } catch (decodeError) {
                     console.error('Error decodificando token:', decodeError);
                 }
             }
 
-            console.log('🎯 Token extraído:', token.substring(0, 50) + '...');
-            console.log('🎯 UserId extraído:', userId);
+            console.log('Token extraído:', token.substring(0, 50) + '...');
+            console.log('UserId extraído:', userId);
 
             return { token, userId };
         } catch (error) {
@@ -62,7 +62,7 @@ export default function BusinessPitchGetAll() {
         }
     }, []);
 
-    // 🎯 FUNCIÓN CORREGIDA para obtener el businessId del usuario
+    // FUNCIÓN CORREGIDA para obtener el businessId del usuario
     const getBusinessId = useCallback(async () => {
         try {
             const { token, userId } = getAuthData();
@@ -75,8 +75,8 @@ export default function BusinessPitchGetAll() {
                 throw new Error('No se pudo obtener el ID del usuario');
             }
 
-            console.log('🎯 Obteniendo business para usuario:', userId);
-            console.log('🎯 URL completa:', `http://localhost:3000/api/business/findByOwnerId/${userId}`);
+            console.log('Obteniendo business para usuario:', userId);
+            console.log('URL completa:', `http://localhost:3000/api/business/findByOwnerId/${userId}`);
 
             const response = await fetch(`http://localhost:3000/api/business/findByOwnerId/${userId}`, {
                 method: "GET",
@@ -86,7 +86,7 @@ export default function BusinessPitchGetAll() {
                 }
             });
 
-            console.log('🎯 Response status:', response.status);
+            console.log('Response status:', response.status);
             
             if (response.status === 401 || response.status === 403) {
                 localStorage.removeItem('user');
@@ -95,9 +95,9 @@ export default function BusinessPitchGetAll() {
                 return;
             }
             
-            // 🎯 MANEJO ESPECÍFICO DEL 404
+            // MANEJO ESPECÍFICO DEL 404
             if (response.status === 404) {
-                console.log('🎯 No se encontró negocio para este usuario');
+                console.log('No se encontró negocio para este usuario');
                 setHasNoBusiness(true);
                 setLoading(false);
                 showNotification('No tienes un negocio registrado aún', 'warning');
@@ -106,12 +106,12 @@ export default function BusinessPitchGetAll() {
             
             if (!response.ok) {
                 const errors = await response.json();
-                console.error('🎯 Error response:', errors);
+                console.error('Error response:', errors);
                 throw new Error(`Error ${response.status}: ${errors.message || 'Error al obtener el negocio'}`);
             }
             
             const businessData = await response.json();
-            console.log('🎯 Business data recibida:', businessData);
+            console.log('Business data recibida:', businessData);
             
             let extractedBusinessId;
             if (businessData.id) {
@@ -125,27 +125,26 @@ export default function BusinessPitchGetAll() {
             }
             
             if (!extractedBusinessId) {
-                console.log('🎯 Respuesta del negocio no contiene ID válido');
+                console.log('Respuesta del negocio no contiene ID válido');
                 setHasNoBusiness(true);
                 setLoading(false);
                 showNotification('No se encontró información válida del negocio', 'warning');
                 return null;
             }
             
-            console.log('🎯 Business ID encontrado:', extractedBusinessId);
+            console.log('Business ID encontrado:', extractedBusinessId);
             setBusinessId(extractedBusinessId);
             setHasNoBusiness(false);
             return extractedBusinessId;
             
         } catch (error) {
-            console.error('🎯 Error getting business ID:', error);
+            console.error('Error getting business ID:', error);
             showNotification(errorHandler(error), 'error');
             setError(true);
             throw error;
         }
     }, [getAuthData, showNotification]);
 
-    // 🎯 FUNCIÓN MEJORADA para obtener todas las canchas del negocio
     const getAll = useCallback(async (currentBusinessId?: number) => {
         try {
             setLoading(true);
@@ -165,7 +164,7 @@ export default function BusinessPitchGetAll() {
                 throw new Error('No se encontró el token de autenticación');
             }
 
-            console.log('🎯 Obteniendo canchas para business:', targetBusinessId);
+            console.log('Obteniendo canchas para business:', targetBusinessId);
 
             const response = await fetch(`http://localhost:3000/api/pitchs/getByBusiness/${targetBusinessId}`, {
                 method: "GET",
@@ -182,9 +181,9 @@ export default function BusinessPitchGetAll() {
                 return;
             }
 
-            // 🎯 MANEJO ESPECÍFICO PARA 404 - No hay canchas (NO ES ERROR)
+            // MANEJO ESPECÍFICO PARA 404 - No hay canchas (NO ES ERROR)
             if (response.status === 404) {
-                console.log('🎯 No se encontraron canchas para este negocio');
+                console.log('No se encontraron canchas para este negocio');
                 setData({ data: [] });
                 showNotification('No tienes canchas registradas aún', 'info');
                 return;
@@ -192,11 +191,11 @@ export default function BusinessPitchGetAll() {
             
             if (!response.ok) {
                 const errors = await response.json();
-                console.error('🎯 Error response:', errors);
+                console.error('Error response:', errors);
                 
-                // 🎯 MANEJO ESPECÍFICO del mensaje "No pitches found"
+                // MANEJO ESPECÍFICO del mensaje "No pitches found"
                 if (errors.error && errors.error.includes('No pitches found')) {
-                    console.log('🎯 Backend indica que no hay canchas para este negocio');
+                    console.log('Backend indica que no hay canchas para este negocio');
                     setData({ data: [] });
                     showNotification('No tienes canchas registradas aún', 'info');
                     return;
@@ -206,11 +205,11 @@ export default function BusinessPitchGetAll() {
             }
             
             const json: PitchResponse = await response.json();
-            console.log('🎯 Canchas recibidas:', json);
+            console.log('Canchas recibidas:', json);
             setData(json);
             
         } catch (error) {
-            console.error('🎯 Error getting pitches:', error);
+            console.error('Error getting pitches:', error);
             showNotification(errorHandler(error), 'error');
             setError(true);
         } finally {
@@ -218,7 +217,7 @@ export default function BusinessPitchGetAll() {
         }
     }, [businessId, getBusinessId, getAuthData, showNotification]);
 
-    // 🎯 FUNCIÓN PARA REINICIALIZAR
+    // FUNCIÓN PARA RE-INICIALIZAR
     const initializeData = useCallback(async () => {
         try {
             setError(false);
@@ -236,7 +235,7 @@ export default function BusinessPitchGetAll() {
                 await getAll(currentBusinessId);
             }
         } catch (error) {
-            console.error('🎯 Error inicializando datos:', error);
+            console.error('Error inicializando datos:', error);
             setError(true);
             setLoading(false);
         }
@@ -279,7 +278,7 @@ export default function BusinessPitchGetAll() {
             await getAll(businessId || undefined);
             
         } catch (error) {
-            console.error('🎯 Error eliminando cancha:', error);
+            console.error('Error eliminando cancha:', error);
             showNotification(errorHandler(error), 'error');
             setLoading(false);
         }
@@ -293,12 +292,12 @@ export default function BusinessPitchGetAll() {
         }
     };
 
-    // 🎯 FUNCIÓN PARA NAVEGAR AL DETALLE
+    // FUNCIÓN PARA NAVEGAR AL DETALLE
     const handleViewDetail = (pitchId: number) => {
         navigate(`/myBusiness/detail/${pitchId}`);
     };
 
-    // 🎯 FUNCIÓN PARA NAVEGAR A EDITAR
+    // FUNCIÓN PARA NAVEGAR A EDITAR
     const handleEdit = (pitchId: number) => {
         navigate(`/MyBusiness/edit/${pitchId}`);
     };
@@ -312,7 +311,7 @@ export default function BusinessPitchGetAll() {
         );
     }
 
-    // 🎯 NUEVO: Manejo específico para usuarios sin negocio
+    // Manejo específico para usuarios sin negocio
     if (hasNoBusiness) {
         return (
             <div className="no-business-container">
@@ -411,7 +410,6 @@ export default function BusinessPitchGetAll() {
                             </td>
                             <td>
                                 <div className="action-buttons-container">
-                                    {/* 🎯 BOTÓN PARA VER DETALLE */}
                                     <button 
                                         className='action-button detail' 
                                         onClick={() => handleViewDetail(pitch.id!)}
@@ -419,7 +417,6 @@ export default function BusinessPitchGetAll() {
                                     >
                                         👁️ Ver
                                     </button>
-                                    {/* 🎯 BOTÓN PARA EDITAR */}
                                     <button 
                                         className='action-button edit' 
                                         onClick={() => handleEdit(pitch.id!)}
@@ -427,7 +424,6 @@ export default function BusinessPitchGetAll() {
                                     >
                                         ✏️ Editar
                                     </button>
-                                    {/* 🎯 BOTÓN ELIMINAR */}
                                     <button 
                                         className='action-button delete' 
                                         onClick={handleDeleteSubmit} 

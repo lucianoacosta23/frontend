@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import '../../../static/css/users/userCreate.css';
 import Toast from '../../../components/Toast'; // Ajusta la ruta según tu estructura
@@ -6,7 +6,6 @@ import Toast from '../../../components/Toast'; // Ajusta la ruta según tu estru
 const LocalityCreate = () => {
   const navigate = useNavigate();
   
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -129,7 +128,6 @@ const LocalityCreate = () => {
 
   return (
     <div className="update-container">
-      {/* Toast Component */}
       <Toast
         message={toast.message}
         type={toast.type}
