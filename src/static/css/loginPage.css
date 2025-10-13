@@ -18,15 +18,15 @@
 .logForm {
     background-color: #ffffff;
     display: flex;
-    flex-direction: column; /* 🎯 Agregado para mejor estructura */
+    flex-direction: column; 
     width: 35vw;
-    min-width: 400px; /* 🎯 Ancho mínimo para responsive */
+    min-width: 400px; 
     height: fit-content;   
     justify-content: center;
     align-items: center;
     border-radius: 4%;
     gap: 25px;
-    padding: 30px; /* 🎯 Agregado padding */
+    padding: 2rem; 
     font-size: 1.6rem;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.262);
     border: 1px solid #bdc3c7;
@@ -38,57 +38,57 @@
     flex-direction: column;
     gap: 25px;
     width: 100%;
-    align-items: center; /* 🎯 AGREGADO: Centrar los inputs */
+    align-items: center; 
 }
 
 .logInput {
     position: relative;
     width: 100%;
-    max-width: 350px; /* 🎯 MOVIDO: max-width al contenedor padre */
+    max-width: 350px; 
     display: flex;
-    justify-content: center; /* 🎯 AGREGADO: Centrar contenido */
+    justify-content: center; 
 }
 
 .logInput input {
     padding: 20px 20px 20px 10px;
     display: block;
-    width: 100%; /* 🎯 CAMBIADO: 100% del contenedor padre */
-    /* max-width: 350px; */ /* 🎯 REMOVIDO: Se maneja en el padre */
+    width: 100%; 
     outline: none;
     background: transparent;
     border: none;
     border-bottom: 1px solid gray;
-    color: var(--font-color); /* 🎯 Color del texto */
-    font-size: 1.2rem; /* 🎯 Tamaño de fuente */
-    box-sizing: border-box; /* 🎯 Para padding correcto */
+    color: black; 
+    font-size: 1.2rem; 
+    box-sizing: border-box;
 }
 
 .logInput input::placeholder {
-    color: transparent; /* 🎯 Placeholder transparente para labels flotantes */
+    color: transparent; 
 }
 
 .logInput label {
     position: absolute;
-    left: 10px; /* 🎯 Ajustado para alinear con el padding del input */
-    top: 20px; /* 🎯 Ajustado para centrar verticalmente */
-    transition: all 0.4s ease; /* 🎯 Transición más suave */
+    left: 10px; 
+    top: 20px; 
+    transition: all 0.4s ease; 
     font-size: 1.4rem;
     cursor: pointer;
-    color: #94a3b8; /* 🎯 Color gris suave */
-    pointer-events: none; /* 🎯 Para que no interfiera con clicks */
+    color: #94a3b8; 
+    pointer-events: none;
 }
 
 .logInput input:focus ~ label, 
 .logInput input:not(:placeholder-shown) ~ label {
-    top: -5px; /* 🎯 Ajustado para mejor posicionamiento */
+    top: -5px; 
     font-size: 1rem;
     color: var(--accent-color);
+    background-color: transparent;
     display: block;
     visibility: visible;
 }
 
 .logInput input:focus {
-    border-bottom: 2px solid var(--accent-color); /* 🎯 Borde más grueso en focus */
+    border-bottom: 2px solid var(--accent-color);
 }
 
 .logSubmitContainer {
@@ -96,58 +96,58 @@
     flex-direction: row;
     gap: 2vw;
     width: 100%;
-    justify-content: center; /* 🎯 Centrar botones */
-    margin-top: 10px; /* 🎯 Espacio superior */
+    justify-content: center; 
+    margin-top: 10px; 
 }
 
 .logSubmit {
     height: 6vh;
-    min-height: 45px; /* 🎯 Altura mínima */
+    min-height: 45px;
     width: 10vw;
-    min-width: 120px; /* 🎯 Ancho mínimo */
+    min-width: 120px; 
     font-size: 1.4rem;
     background-color: var(--button-color);
     outline: none;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    color: white; /* 🎯 Color del texto del botón */
-    font-weight: 600; /* 🎯 Texto más bold */
-    transition: all 0.3s ease; /* 🎯 Transición suave */
+    color: white; 
+    font-weight: 600; 
+    transition: all 0.3s ease;
 }
 
 .logSubmit:hover {
     background-color: var(--accent-color);
-    transform: translateY(-2px); /* 🎯 Efecto hover sutil */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 🎯 Sombra en hover */
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .logSubmit:active {
-    transform: translateY(0); /* 🎯 Efecto click */
+    transform: translateY(0); 
 }
 
 .otherMsg {
     font-size: 1rem;
-    color: #94a3b8; /* 🎯 Color gris más suave */
+    color: #94a3b8; 
     cursor: pointer;
-    text-decoration: none; /* 🎯 Sin subrayado */
-    transition: color 0.3s ease; /* 🎯 Transición suave */
+    text-decoration: none; 
+    transition: color 0.3s ease; 
 }
 
 .otherMsg:hover {
-    color: var(--accent-color); /* 🎯 Color hover */
-    text-decoration: underline; /* 🎯 Subrayado en hover */
+    color: var(--accent-color); 
+    text-decoration: underline; 
 }
 
 .otherMsgs {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* 🎯 Espacio entre mensajes */
-    text-align: center; /* 🎯 Centrar texto */
-    margin-top: 15px; /* 🎯 Espacio superior */
+    gap: 10px; 
+    text-align: center;
+    margin-top: 15px;
 }
 
-/* 🎯 RESPONSIVE DESIGN */
+/*   RESPONSIVE DESIGN */
 @media (max-width: 768px) {
     .logForm {
         width: 90vw;

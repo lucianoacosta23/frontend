@@ -77,7 +77,7 @@ const LocalityUpdate = () => {
         const localityData = await response.json();
         const locality = localityData.data || localityData;
         
-        console.log('🎯 DATOS DE LA LOCALIDAD RECIBIDOS:', locality);
+        console.log('DATOS DE LA LOCALIDAD RECIBIDOS:', locality);
         setLocality(locality);
 
         // Establecer form data
@@ -88,7 +88,7 @@ const LocalityUpdate = () => {
         });
 
       } catch (err) {
-        console.error('🎯 ERROR EN FETCH:', err);
+        console.error('ERROR EN FETCH:', err);
         setError(err instanceof Error ? err.message : 'Error al cargar datos');
       } finally {
         setLoading(false);
@@ -128,7 +128,7 @@ const LocalityUpdate = () => {
         province: formData.province.trim()
       };
 
-      console.log('🎯 Datos a enviar al backend:', updateData);
+      console.log('Datos a enviar al backend:', updateData);
 
       const response = await fetch(`http://localhost:3000/api/localities/update/${id}`, {
         method: 'PATCH',
@@ -200,7 +200,6 @@ const LocalityUpdate = () => {
 
   return (
     <div className="update-container">
-      {/* Toast Component */}
       <Toast
         message={toast.message}
         type={toast.type}

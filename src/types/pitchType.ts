@@ -1,5 +1,5 @@
-import { Business } from './businessType'; // Si tienes este tipo
-import { Reservation } from './reservationType'; // Si tienes este tipo
+import type { BusinessData } from './businessType'; // Si tienes este tipo
+import type { Reservation } from './reservationType'; // Si tienes este tipo
 
 export type Pitch = {
     id?: number,
@@ -8,7 +8,7 @@ export type Pitch = {
     groundType: string,
     roof: boolean,
     price: number,
-    business?: Business | number, // Puede ser el objeto completo o solo el ID
+    business?: BusinessData | number, // Puede ser el objeto completo o solo el ID
     imageUrl?: string,
     driveFileId?: string,
     createdAt: string | number | Date,

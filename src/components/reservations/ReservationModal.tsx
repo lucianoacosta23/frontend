@@ -37,7 +37,6 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
       return;
     }
 
-    // TODO: Replace with actual API call to POST /api/reservations
     const reservationData: ReservationFormData = {
       pitchId: pitch.id,
       date: selectedDate,

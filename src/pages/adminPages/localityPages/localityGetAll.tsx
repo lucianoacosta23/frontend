@@ -197,7 +197,6 @@ const LocalitiesGetAll = () => {
 
   return (
     <div className="users-getall-container">
-      {/* Toast Component */}
       <Toast
         message={toast.message}
         type={toast.type}
@@ -205,8 +204,6 @@ const LocalitiesGetAll = () => {
         onClose={hideToast}
         duration={4000}
       />
-
-      {/* Modal de confirmación de eliminación */}
       <DeleteConfirm
         isOpen={deleteModal.isOpen}
         title="Confirmar Eliminación de Localidad"

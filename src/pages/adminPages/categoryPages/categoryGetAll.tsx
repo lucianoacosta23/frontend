@@ -78,13 +78,11 @@ const CategoryGetAll = () => {
     window.location.reload();
   };
 
-  // 🎯 FUNCIÓN PARA MOSTRAR EL MODAL (reemplaza la confirmación antigua)
   const handleDeleteClick = (category: Category) => {
     setCategoryToDelete(category);
     setShowDeleteModal(true);
   };
 
-  // 🎯 FUNCIÓN PARA CONFIRMAR LA ELIMINACIÓN - MODIFICADA
   const handleConfirmDelete = async () => {
     if (!categoryToDelete || !categoryToDelete.id) return;
 
@@ -126,27 +124,23 @@ const CategoryGetAll = () => {
         }
       }
 
-      // Actualizar la lista local removiendo la categoría eliminada
       setCategories(prevCategories => 
         prevCategories.filter(category => category.id !== categoryToDelete.id)
       );
       
-      // Cerrar modal y limpiar estado
       setShowDeleteModal(false);
       setCategoryToDelete(null);
       
-      // 🎯 MOSTRAR TOAST DE ÉXITO EN LUGAR DE ALERT
       showNotification(
         `Categoría "${categoryToDelete.description}" eliminada con éxito`, 
         'success'
       );
       
     } catch (err) {
-      console.error('🎯 Error al eliminar categoría:', err);
+      console.error('Error al eliminar categoría:', err);
       
       const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
       
-      // 🎯 MOSTRAR TOAST DE ERROR EN LUGAR DE ALERT
       showNotification(
         `Error al eliminar categoría: ${errorMessage}`, 
         'error'
@@ -156,7 +150,6 @@ const CategoryGetAll = () => {
     }
   };
 
-  // 🎯 FUNCIÓN PARA CANCELAR LA ELIMINACIÓN
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
     setCategoryToDelete(null);
@@ -241,7 +234,6 @@ const CategoryGetAll = () => {
                           >
                             Editar
                           </Link>
-                          {/* 🎯 BOTÓN MODIFICADO - Ahora abre el modal */}
                           <button 
                             onClick={() => handleDeleteClick(category)}
                             className="action-button delete-button"
@@ -260,8 +252,6 @@ const CategoryGetAll = () => {
           </>
         )}
       </div>
-
-      {/* 🎯 MODAL DE CONFIRMACIÓN */}
       <DeleteConfirm
         isOpen={showDeleteModal}
         title="Eliminar Categoría"

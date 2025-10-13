@@ -11,7 +11,7 @@ export default function businessPitchDetail() {
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const { id } = useParams<{ id: string }>();
 
-    // 🎯 VERIFICACIÓN DE SESIÓN
+    // VERIFICACIÓN DE SESIÓN
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
         alert('sesion no iniciada');

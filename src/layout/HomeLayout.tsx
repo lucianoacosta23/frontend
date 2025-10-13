@@ -5,19 +5,19 @@ import HomeFooter from "../pages/homepage/homeFooter"
 import Toast from "../components/Toast"
 
 export function HomeLayout(){
-    // 🎯 NUEVOS ESTADOS PARA EL TOAST
+    //  NUEVOS ESTADOS PARA EL TOAST
         const [showToast, setShowToast] = useState(false);
         const [toastMessage, setToastMessage] = useState('');
         const [toastType, setToastType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
     
-        // 🎯 FUNCIÓN PARA MOSTRAR TOAST
+        //  FUNCIÓN PARA MOSTRAR TOAST
         const showNotification = (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
             setToastMessage(message);
             setToastType(type);
             setShowToast(true);
         };
     
-        // 🎯 FUNCIÓN PARA CERRAR TOAST
+        //  FUNCIÓN PARA CERRAR TOAST
         const closeToast = () => {
             setShowToast(false);
         };

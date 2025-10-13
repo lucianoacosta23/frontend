@@ -3,7 +3,7 @@ import { FaFutbol } from "react-icons/fa";
 import '../../static/css/homePageNav.css'
 import { jwtDecode } from "jwt-decode";
 import type { UserData } from "../../types/userData";
-import { useState, useEffect } from "react"; // 🎯 AGREGAR ESTOS IMPORTS
+import { useState, useEffect } from "react"; //  AGREGAR ESTOS IMPORTS
 
 interface HomePageNavProps {
   showNotification: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
@@ -12,11 +12,11 @@ interface HomePageNavProps {
 export function HomePageNav({ showNotification }: HomePageNavProps){
     const navigate = useNavigate()
     
-    // 🎯 USAR ESTADO PARA QUE SE ACTUALICE
+    //  USAR ESTADO PARA QUE SE ACTUALICE
     const [userData, setUserData] = useState<UserData | undefined>(undefined);
     const [storedUser, setStoredUser] = useState<string | null>(null);
     
-    // 🎯 FUNCIÓN PARA VERIFICAR AUTENTICACIÓN
+    //  FUNCIÓN PARA VERIFICAR AUTENTICACIÓN
     const checkAuth = () => {
         const user = localStorage.getItem('user');
         setStoredUser(user);
@@ -36,7 +36,7 @@ export function HomePageNav({ showNotification }: HomePageNavProps){
         }
     };
     
-    // 🎯 VERIFICAR AL MONTAR Y CUANDO CAMBIE EL localStorage
+    //  VERIFICAR AL MONTAR Y CUANDO CAMBIE EL localStorage
     useEffect(() => {
         checkAuth();
         
@@ -59,7 +59,7 @@ export function HomePageNav({ showNotification }: HomePageNavProps){
     const handleLogout = () => {
         localStorage.removeItem('user');
         showNotification("Sesión cerrada con éxito", "success");
-        // 🎯 ACTUALIZAR ESTADO INMEDIATAMENTE
+        //  ACTUALIZAR ESTADO INMEDIATAMENTE
         setStoredUser(null);
         setUserData(undefined);
     }

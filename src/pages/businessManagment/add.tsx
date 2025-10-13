@@ -13,14 +13,14 @@ export default function PitchAdd() {
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const navigate = useNavigate();
 
-    // 🎯 VERIFICACIÓN DE SESIÓN
+    // VERIFICACIÓN DE SESIÓN
     const storedUser = localStorage.getItem('user');
     if (!storedUser) {
         alert('sesion no iniciada');
         return <Navigate to="/login" />;
     }
 
-    // 🎯 FUNCIÓN PARA OBTENER TOKEN Y USERID
+    // FUNCIÓN PARA OBTENER TOKEN Y USERID
     const getAuthData = useCallback(() => {
         try {
             const userStr = localStorage.getItem('user');
@@ -45,15 +45,15 @@ export default function PitchAdd() {
                     if (payload) {
                         const decoded = JSON.parse(atob(payload));
                         userId = decoded.id || decoded.userId || decoded.sub;
-                        console.log('🎯 Usuario decodificado del token:', decoded);
+                        console.log('Usuario decodificado del token:', decoded);
                     }
                 } catch (decodeError) {
                     console.error('Error decodificando token:', decodeError);
                 }
             }
 
-            console.log('🎯 Token extraído:', token.substring(0, 50) + '...');
-            console.log('🎯 UserId extraído:', userId);
+            console.log('Token extraído:', token.substring(0, 50) + '...');
+            console.log('UserId extraído:', userId);
 
             return { token, userId };
         } catch (error) {
@@ -62,7 +62,7 @@ export default function PitchAdd() {
         }
     }, []);
 
-    // 🎯 FUNCIÓN PARA OBTENER EL BUSINESSID DEL USUARIO
+    // FUNCIÓN PARA OBTENER EL BUSINESSID DEL USUARIO
     const getBusinessId = useCallback(async () => {
         try {
             const { token, userId } = getAuthData();
@@ -75,8 +75,8 @@ export default function PitchAdd() {
                 throw new Error('No se pudo obtener el ID del usuario');
             }
 
-            console.log('🎯 Obteniendo business para usuario:', userId);
-            console.log('🎯 URL completa:', `http://localhost:3000/api/business/findByOwnerId/${userId}`);
+            console.log('Obteniendo business para usuario:', userId);
+            console.log('URL completa:', `http://localhost:3000/api/business/findByOwnerId/${userId}`);
 
             const response = await fetch(`http://localhost:3000/api/business/findByOwnerId/${userId}`, {
                 method: "GET",
@@ -86,7 +86,7 @@ export default function PitchAdd() {
                 }
             });
 
-            console.log('🎯 Response status:', response.status);
+            console.log('Response status:', response.status);
             
             if (response.status === 401 || response.status === 403) {
                 localStorage.removeItem('user');
@@ -95,9 +95,9 @@ export default function PitchAdd() {
                 return null;
             }
             
-            // 🎯 MANEJO ESPECÍFICO DEL 404
+            // MANEJO ESPECÍFICO DEL 404
             if (response.status === 404) {
-                console.log('🎯 No se encontró negocio para este usuario');
+                console.log('No se encontró negocio para este usuario');
                 setHasNoBusiness(true);
                 showNotification('No tienes un negocio registrado aún', 'warning');
                 return null;
@@ -105,12 +105,12 @@ export default function PitchAdd() {
             
             if (!response.ok) {
                 const errors = await response.json();
-                console.error('🎯 Error response:', errors);
+                console.error('Error response:', errors);
                 throw new Error(`Error ${response.status}: ${errors.message || 'Error al obtener el negocio'}`);
             }
             
             const businessData = await response.json();
-            console.log('🎯 Business data recibida:', businessData);
+            console.log('Business data recibida:', businessData);
             
             let extractedBusinessId;
             if (businessData.id) {
@@ -124,26 +124,26 @@ export default function PitchAdd() {
             }
             
             if (!extractedBusinessId) {
-                console.log('🎯 Respuesta del negocio no contiene ID válido');
+                console.log('Respuesta del negocio no contiene ID válido');
                 setHasNoBusiness(true);
                 showNotification('No se encontró información válida del negocio', 'warning');
                 return null;
             }
             
-            console.log('🎯 Business ID encontrado:', extractedBusinessId);
+            console.log('Business ID encontrado:', extractedBusinessId);
             setBusinessId(extractedBusinessId);
             setHasNoBusiness(false);
             return extractedBusinessId;
             
         } catch (error) {
-            console.error('🎯 Error getting business ID:', error);
+            console.error('Error getting business ID:', error);
             showNotification('Error al obtener el negocio: ' + error, 'error');
             setHasNoBusiness(true);
             throw error;
         }
     }, [getAuthData, showNotification]);
 
-    // 🎯 EFECTO PARA OBTENER EL BUSINESSID AL CARGAR EL COMPONENTE
+    // EFECTO PARA OBTENER EL BUSINESSID AL CARGAR EL COMPONENTE
     useEffect(() => {
         const initializeBusiness = async () => {
             try {
@@ -166,7 +166,7 @@ export default function PitchAdd() {
         { value: '11v11', label: 'Fut 11' }
     ];
 
-    // 🎯 TIPOS DE SUELO ACTUALIZADOS SEGÚN TU ESPECIFICACIÓN
+    //TIPOS DE SUELO ACTUALIZADOS SEGÚN TU ESPECIFICACIÓN
     const groundTypeOptions = [
         { value: 'césped natural', label: 'Césped Natural' },
         { value: 'césped sintético', label: 'Césped Sintético' },
@@ -245,7 +245,7 @@ export default function PitchAdd() {
             setData(json);
             showNotification('✅ Cancha creada con éxito', 'success');
             
-            // 🎯 MODIFICACIÓN: Regresar a la página anterior en lugar de navegar a una ruta específica
+            // Regresar a la página anterior en lugar de navegar a una ruta específica
             navigate(-1); // Esto regresa a la página anterior en el historial
             
         } catch (error) {
@@ -286,7 +286,7 @@ export default function PitchAdd() {
         
         // Agregar campos individualmente
         pitchData.append('business', businessId.toString());
-        pitchData.append('rating', '1'); // 🎯 RATING FIJO EN 1
+        pitchData.append('rating', '1'); //    RATING FIJO EN 1
         pitchData.append('price', formData.get("price") as string);
         pitchData.append('size', selectedSize);
         pitchData.append('groundType', selectedGroundType);
@@ -309,7 +309,7 @@ export default function PitchAdd() {
         }
     };
 
-    // 🎯 MANEJO DE ESTADOS DE CARGA Y ERROR
+    // MANEJO DE ESTADOS DE CARGA Y ERROR
     if (loading) {
         return (
             <div className="loading-container">
@@ -319,7 +319,7 @@ export default function PitchAdd() {
         );
     }
 
-    // 🎯 MANEJO ESPECÍFICO PARA USUARIOS SIN NEGOCIO
+    // MANEJO ESPECÍFICO PARA USUARIOS SIN NEGOCIO
     if (hasNoBusiness) {
         return (
             <div className="no-business-container">
@@ -353,7 +353,6 @@ export default function PitchAdd() {
             </div>
 
             <form onSubmit={handleSubmit} className='crud-form' encType="multipart/form-data">
-                {/* 🎯 EL BUSINESS ID YA NO ES INPUT - SE OBTIENE AUTOMÁTICAMENTE */}
                 <div className='crud-form-item info-field'>
                     <label>Negocio asociado</label>
                     <div className="readonly-field">
@@ -361,8 +360,6 @@ export default function PitchAdd() {
                         <span className="info-text">(Obtenido automáticamente de tu negocio)</span>
                     </div>
                 </div>
-
-                {/* 🎯 QUITADO: Campo de rating eliminado */}
 
                 <div className='crud-form-item'>
                     <label>Precio por hora 💰</label>
@@ -441,7 +438,7 @@ export default function PitchAdd() {
                 <div className='crud-form-actions'>
                     <button 
                         type="button" 
-                        onClick={() => navigate(-1)} // 🎯 MODIFICACIÓN: Regresar a la página anterior
+                        onClick={() => navigate(-1)} // Regresar a la página anterior
                         className="secondary-button"
                     >
                         ↩️ Cancelar
@@ -455,8 +452,6 @@ export default function PitchAdd() {
                     </button>
                 </div>
             </form>
-            
-            {/* 🎯 PREVIEW DE LA CANCHA CREADA */}
             {data && (
                 <div className="success-preview">
                     <h3>🎉 ¡Cancha creada exitosamente!</h3>

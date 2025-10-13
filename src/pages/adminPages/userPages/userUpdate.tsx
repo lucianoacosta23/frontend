@@ -9,7 +9,7 @@ interface User {
   surname: string;
   email: string;
   phoneNumber?: string;
-  category: {  // 🎯 NO es opcional, es obligatorio según la entidad
+  category: {  
     id: number;
     description: string;
     usertype: string;
@@ -43,7 +43,6 @@ const UserUpdate = () => {
     categoryId: ''
   });
 
-  // 🎯 PRIMER useEffect: Cargar datos básicos (SIMPLIFICADO)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -96,18 +95,17 @@ const UserUpdate = () => {
         const userData = await userResponse.json();
         const user = userData.data || userData;
         
-        console.log('🎯 DATOS DEL USUARIO RECIBIDOS:', user);
+        console.log('DATOS DEL USUARIO RECIBIDOS:', user);
         setUser(user);
 
-        // 🎯 LÓGICA SIMPLIFICADA: El usuario SIEMPRE tiene category según la entidad
         let currentCategoryId = '';
         
         if (user.category && user.category.id) {
           currentCategoryId = String(user.category.id);
-          console.log('🎯 CategoryId encontrado:', currentCategoryId);
-          console.log('🎯 Categoría completa:', user.category);
+          console.log(' CategoryId encontrado:', currentCategoryId);
+          console.log(' Categoría completa:', user.category);
         } else {
-          console.log('🎯 ⚠️ Usuario sin categoría (esto no debería pasar según la entidad)');
+          console.log(' Usuario sin categoría');
         }
 
         // Establecer form data
@@ -116,11 +114,11 @@ const UserUpdate = () => {
           surname: user.surname || '',
           email: user.email || '',
           phoneNumber: user.phoneNumber || '',
-          categoryId: currentCategoryId // 🎯 Directamente desde user.category.id
+          categoryId: currentCategoryId
         });
 
       } catch (err) {
-        console.error('🎯 ERROR EN FETCH:', err);
+        console.error('ERROR EN FETCH:', err);
         setError(err instanceof Error ? err.message : 'Error al cargar datos');
         setCategories([]);
       } finally {
@@ -154,16 +152,15 @@ const UserUpdate = () => {
         throw new Error('No se encontró token de autenticación');
       }
 
-      // 🎯 DATOS PARA ENVIAR: categoryId como número
       const updateData = {
         name: formData.name.trim(),
         surname: formData.surname.trim(),
         email: formData.email.trim(),
         phoneNumber: formData.phoneNumber.trim() || undefined,
-        categoryId: formData.categoryId ? parseInt(formData.categoryId) : undefined // 🎯 Enviar como número
+        categoryId: formData.categoryId ? parseInt(formData.categoryId) : undefined // Enviar como número
       };
 
-      console.log('🎯 Datos a enviar al backend:', updateData);
+      console.log('Datos a enviar al backend:', updateData);
 
       const response = await fetch(`http://localhost:3000/api/users/update/${id}`, {
         method: 'PUT',
@@ -233,7 +230,6 @@ const UserUpdate = () => {
         ✏️ Actualizar Usuario: {user?.name} {user?.surname}
       </h2>
       
-      {/* 🎯 MOSTRAR CATEGORÍA EN SUBTÍTULO */}
       {user?.category && (
         <div className="user-subtitle">
           <span className="current-category-subtitle">
@@ -248,7 +244,6 @@ const UserUpdate = () => {
         </div>
       )}
 
-      {/* 🎯 MOSTRAR CATEGORÍA ACTUAL COMO TARJETA */}
       {user?.category && (
         <div className="current-user-info">
           <h3>📊 Información Actual del Usuario</h3>

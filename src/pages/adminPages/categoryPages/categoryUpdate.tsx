@@ -50,7 +50,7 @@ const CategoryUpdate = () => {
         const categoryData = await response.json();
         const category = categoryData.data || categoryData;
         
-        console.log('🎯 DATOS DE LA CATEGORÍA RECIBIDOS:', category);
+        console.log('DATOS DE LA CATEGORÍA RECIBIDOS:', category);
         setCategory(category);
 
         // Establecer form data con los datos actuales
@@ -60,7 +60,7 @@ const CategoryUpdate = () => {
         });
 
       } catch (err) {
-        console.error('🎯 ERROR EN FETCH:', err);
+        console.error('ERROR EN FETCH:', err);
         setError(err instanceof Error ? err.message : 'Error al cargar datos');
       } finally {
         setLoading(false);
@@ -99,7 +99,7 @@ const CategoryUpdate = () => {
         usertype: formData.usertype.trim()
       };
 
-      console.log('🎯 Datos a enviar al backend:', updateData);
+      console.log('Datos a enviar al backend:', updateData);
 
       const response = await fetch(`http://localhost:3000/api/category/update/${id}`, {
         method: 'PATCH',
@@ -227,7 +227,7 @@ const CategoryUpdate = () => {
           <div className="form-group">
             <label htmlFor="usertype">Tipo de Usuario</label>
             
-            {/* 🎯 Mostrar tipo actual si existe */}
+            {/* Mostrar tipo actual si existe */}
             {category?.usertype && (
               <div className="current-category">
                 <span>📋 Tipo actual: <strong>{category.usertype}</strong></span>

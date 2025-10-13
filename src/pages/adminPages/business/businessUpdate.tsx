@@ -84,7 +84,7 @@ const BusinessUpdate = () => {
         const businessData = await businessResponse.json();
         const business = businessData.data || businessData;
         
-        console.log('🎯 DATOS DEL NEGOCIO RECIBIDOS:', business);
+        console.log('DATOS DEL NEGOCIO RECIBIDOS:', business);
         setBusiness(business);
 
         // Cargar localidades
@@ -133,7 +133,7 @@ const BusinessUpdate = () => {
         });
 
       } catch (err) {
-        console.error('🎯 ERROR EN FETCH:', err);
+        console.error('ERROR EN FETCH:', err);
         setError(err instanceof Error ? err.message : 'Error al cargar datos');
       } finally {
         setLoading(false);
@@ -196,9 +196,8 @@ const BusinessUpdate = () => {
         throw new Error('La hora de apertura debe ser anterior a la hora de cierre');
       }
 
-      // 🔥 SOLUCIÓN: Incluir el ID en el cuerpo de la solicitud
       const updateData = {
-        id: parseInt(id), // 🔥 Añadir el ID aquí
+        id: parseInt(id),
         businessName: formData.businessName.trim(),
         address: formData.address.trim(),
         locality: parseInt(formData.localityId),
@@ -209,9 +208,8 @@ const BusinessUpdate = () => {
         active: formData.active
       };
 
-      console.log('🎯 Datos a enviar al backend:', updateData);
+      console.log('Datos a enviar al backend:', updateData);
 
-      // 🔥 INTENTAR DIFERENTES ENDPOINTS Y MÉTODOS
       let response;
       
       // Intentar con PUT incluyendo ID en el cuerpo
@@ -260,8 +258,8 @@ const BusinessUpdate = () => {
           errorMessage = responseText || errorMessage;
         }
         
-        // 🔥 MOSTRAR INFORMACIÓN DETALLADA DEL ERROR
-        console.error('🎯 ERROR DETALLADO:', {
+        // MOSTRAR INFORMACIÓN DETALLADA DEL ERROR
+        console.error('ERROR DETALLADO:', {
           status: response.status,
           statusText: response.statusText,
           message: errorMessage
@@ -271,13 +269,13 @@ const BusinessUpdate = () => {
       }
 
       const result = await response.json();
-      console.log('✅ Respuesta del servidor:', result);
+      console.log('Respuesta del servidor:', result);
 
       alert('Negocio actualizado con éxito');
       navigate(`/admin/business/detail/${id}`);
       
     } catch (err) {
-      console.error('🎯 ERROR COMPLETO:', err);
+      console.error('ERROR COMPLETO:', err);
       setError(err instanceof Error ? err.message : 'Error al actualizar negocio');
     } finally {
       setSaving(false);

@@ -166,9 +166,6 @@ export default function InactiveBusinesses() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    active: true  // Solo enviamos el campo active
-                })
             })
             
             if (!response.ok) {
@@ -284,7 +281,7 @@ export default function InactiveBusinesses() {
                                                     background: '#22c55e', 
                                                     color: 'white', 
                                                     border: 'none', 
-                                                    padding: '0.5rem 1rem', 
+                                                    padding: '1rem 1.5rem', 
                                                     borderRadius: '4px', 
                                                     cursor: 'pointer',
                                                     fontWeight: 'bold'

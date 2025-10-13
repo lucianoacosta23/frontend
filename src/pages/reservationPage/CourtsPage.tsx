@@ -16,14 +16,13 @@ const CourtsPage: React.FC = () => {
   
   const navigate = useNavigate();
 
-  // 🎯 VERIFICACIÓN SIMPLE: Solo si está logueado o no
+  //  si está logueado o no
   const storedUser = localStorage.getItem('user');
   if (!storedUser) {
     alert('sesion no iniciada');
     return <Navigate to="/login" />;
   }
 
-  // 🎯 EXTRAER EL TOKEN CORRECTAMENTE
   let token = '';
   try {
     const userObject = JSON.parse(storedUser);
@@ -42,7 +41,7 @@ const CourtsPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // 🎯 USAR EL TOKEN EXTRAÍDO
+      //  USAR EL TOKEN EXTRAÍDO
       const response = await fetch('http://localhost:3000/api/pitchs/getAll', {
         method: 'GET',
         headers: {
@@ -63,7 +62,7 @@ const CourtsPage: React.FC = () => {
       }
 
       const responseData = await response.json();
-      console.log('🎯 Datos de canchas recibidos:', responseData);
+      console.log(' Datos de canchas recibidos:', responseData);
 
       let courtsData: Court[] = [];
       if (Array.isArray(responseData)) {
@@ -85,7 +84,7 @@ const CourtsPage: React.FC = () => {
         setPriceInputs(prev => ({ ...prev, max: adjustedMax.toString() }));
       }
     } catch (err) {
-      console.error('🎯 Error al obtener canchas:', err);
+      console.error(' Error al obtener canchas:', err);
       setError(err instanceof Error ? err.message : 'Error al cargar canchas');
     } finally {
       setLoading(false);
@@ -93,7 +92,7 @@ const CourtsPage: React.FC = () => {
   };
 
   const handleReserveCourt = (courtId: number) => {
-    console.log('🎯 Reservar cancha con ID:', courtId);
+    console.log(' Reservar cancha con ID:', courtId);
     alert(`Funcionalidad de reserva para cancha ${courtId} - Próximamente`);
   };
 

@@ -1,4 +1,3 @@
-/* static/css/usersGetAll.css */
 
 :root {
     --primary-color: #2ecc71;
@@ -38,7 +37,7 @@
   height: 100vh;
   margin: 0;
   background-color: var(--surface);
-  padding: 5px 10px; /* 🎯 REDUCIDO */
+  padding: 5px 10px; 
   display: flex;
   flex-direction: column;
 }
@@ -46,10 +45,10 @@
 /* Título principal */
 .categories-title {
   color: var(--dark-color);
-  margin-bottom: 8px; /* 🎯 REDUCIDO */
-  padding-bottom: 6px; /* 🎯 REDUCIDO */
+  margin-bottom: 8px;
+  padding-bottom: 6px; 
   border-bottom: 3px solid var(--secondary-color);
-  font-size: 1.6rem; /* 🎯 REDUCIDO */
+  font-size: 1.6rem; 
   font-weight: 700;
   text-align: center;
   flex-shrink: 0;
@@ -59,9 +58,9 @@
 .categories-summary {
   background: linear-gradient(135deg, var(--secondary-color), var(--secondary-hover));
   color: white;
-  padding: 6px 12px; /* 🎯 REDUCIDO */
+  padding: 6px 12px; 
   border-radius: 6px;
-  margin-bottom: 8px; /* 🎯 REDUCIDO */
+  margin-bottom: 8px;
   font-size: 0.9rem;
   text-align: center;
   box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
@@ -75,21 +74,20 @@
   border-radius: 3px;
 }
 
-/* Contenedor de la tabla - 🎯 CLAVE: altura automática */
+/* Contenedor de la tabla */
 .table-container {
   flex: 1;
   overflow: auto;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
   border: 1px solid var(--border);
-  max-height: calc(100vh - 120px); /* 🎯 AGREGADO: altura máxima */
+  max-height: calc(100vh - 120px); 
 }
 
-/* Tabla de categorías - 🎯 CLAVE: sin altura fija */
+/* Tabla de categorías */
 .categories-table {
   width: 100%;
   border-collapse: collapse;
-  /* 🎯 REMOVIDO: height: 100%; */
 }
 
 /* Cabecera de la tabla */
@@ -101,22 +99,22 @@
 }
 
 .table-header th {
-  padding: 10px 12px; /* 🎯 REDUCIDO */
+  padding: 10px 12px; 
   text-align: left;
   font-weight: 600;
-  font-size: 0.9rem; /* 🎯 REDUCIDO */
+  font-size: 0.9rem; 
   color: var(--light-color);
   border: none;
   white-space: nowrap;
 }
 
 .table-header th:first-child {
-  width: 60px; /* 🎯 MÁS COMPACTO */
+  width: 60px;
   text-align: center;
 }
 
 .table-header th:last-child {
-  width: 200px; /* 🎯 MÁS COMPACTO */
+  width: 200px; 
   text-align: center;
 }
 
@@ -133,10 +131,10 @@
   border-bottom: none;
 }
 
-/* Celdas de la tabla - 🎯 CLAVE: padding reducido */
+/* Celdas de la tabla */
 .table-cell {
-  padding: 8px 12px; /* 🎯 REDUCIDO de 12px */
-  font-size: 0.85rem; /* 🎯 REDUCIDO */
+  padding: 8px 12px;
+  font-size: 0.85rem;
   color: var(--text-color);
   border: none;
   vertical-align: middle;
@@ -146,12 +144,12 @@
   font-weight: 600;
   color: var(--secondary-color);
   text-align: center;
-  width: 60px; /* 🎯 MÁS COMPACTO */
+  width: 60px;
 }
 
 .table-cell:last-child {
   text-align: center;
-  width: 200px; /* 🎯 MÁS COMPACTO */
+  width: 200px;
 }
 
 /* Botones de acción */
@@ -164,7 +162,7 @@
 }
 
 .action-button {
-  padding: 6px 8px; /* 🎯 REDUCIDO el padding horizontal */
+  padding: 6px 8px; 
   border: none;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -172,13 +170,13 @@
   text-decoration: none;
   font-weight: 500;
   text-align: center;
-  width: 55px; /* 🎯 CAMBIADO: ancho fijo en lugar de min-width */
-  height: 28px; /* 🎯 AGREGADO: altura fija */
+  width: 55px; 
+  height: 28px; 
   display: inline-flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  overflow: hidden; /* 🎯 AGREGADO: para textos largos */
+  overflow: hidden; 
 }
 
 .view-button {
@@ -216,7 +214,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 1; /* 🎯 CAMBIADO: usar flex en lugar de height fija */
+  flex: 1; 
   background: var(--surface);
 }
 
@@ -248,7 +246,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex: 1; /* 🎯 CAMBIADO: usar flex en lugar de height fija */
+  flex: 1; 
   background: var(--surface);
   padding: 20px;
 }
@@ -292,7 +290,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1; /* 🎯 CAMBIADO: usar flex */
+  flex: 1; 
   font-size: 1.1rem;
   color: var(--text-color);
   background: var(--light-color);
@@ -318,7 +316,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .categories-container {
-    padding: 4px 8px; /* 🎯 MÁS COMPACTO */
+    padding: 4px 8px;
   }
   
   .categories-title {
@@ -346,7 +344,7 @@
   .action-button {
     padding: 4px 8px;
     font-size: 0.75rem;
-    width: 45px; /* 🎯 Más pequeño en móviles */
+    width: 45px; 
     height: 24px;
   }
   
@@ -363,7 +361,6 @@
     padding: 3px 4px;
   }
   
-  /* 🎯 OPCIONAL: Usar solo iconos en pantallas muy pequeñas */
   .action-button span {
     display: none; /* Ocultar texto */
   }
