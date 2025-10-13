@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import type {Coupon} from '../../../types/couponType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
+import { errorHandler } from '../../../types/apiError.ts';
 
 export default function CouponAdd(){
     const [data, setData] = useState<CouponResponse | null>(null);
-    const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
@@ -13,7 +13,6 @@ export default function CouponAdd(){
     const add = async (coupon:Coupon) =>{
         try{
             setLoading(true)
-            setError(null)
             const token = JSON.parse(localStorage.getItem('user') || '{}').token;
             const response = await fetch('http://localhost:3000/api/coupons/add',{
                 method:"POST",
@@ -24,14 +23,15 @@ export default function CouponAdd(){
                 body: JSON.stringify(coupon)
             })
             if(!response.ok){
-                throw new Error("HTTP Error! status: " + response.status)
+                const errors = await response.json();
+                throw errors
             }
             const json:CouponResponse = await response.json()
             setData(json)
             showNotification('Cupón actualizado con éxito!', 'success')
             navigate('/admin/coupons/getAll')
         }catch(error){
-            setError(error as Error)
+            showNotification(errorHandler(error), 'error');
             setLoading(false)
         }finally{
             setLoading(false)
@@ -78,7 +78,6 @@ export default function CouponAdd(){
             </form>
             <pre>
             {loading && <p>Loading...</p>}
-            {error && <p>Error: {error.message}</p>}
             {data && (
                 <table className='crudTable'>
                 <thead>

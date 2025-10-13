@@ -41,11 +41,8 @@ import BusinessCreate from '../adminPages/business/businessCreate.tsx';
 import BusinessUpdate from '../adminPages/business/businessUpdate.tsx';
 import BusinessDetail from '../adminPages/business/businessDetail.tsx';
 import ReservePitchPage from '../ReservePitch.tsx';
-import BusinessPitchHome from '../businessManagment/home.tsx';
-import BusinessPitchGetAll from '../businessManagment/getAll.tsx';
-import BusinessPitchAdd from '../businessManagment/add.tsx';
-import BusinessPitchDetail from '../businessManagment/detail.tsx';
-import BusinessPitchEdit from '../businessManagment/edit.tsx';
+import MyReservations from '../homepage/myReservations.tsx';
+
 
 function App() {
   return (
@@ -58,13 +55,6 @@ function App() {
           <Route path='registerBusiness/' element={<RegisterBusinessPage/>}/>
           <Route path='reservation/' element={<CourtsPage/>}/>
           <Route path='reserve-pitch/' element={<ReservePitchPage/>}/>
-          <Route path='myBusiness/' element={<BusinessPitchHome />}>
-            <Route path='getAll/' element={<BusinessPitchGetAll/>}/>
-            <Route path='add/' element={<BusinessPitchAdd/>}/>
-            <Route path='detail/:id' element={<BusinessPitchDetail/>}/>
-            <Route path='edit/:id' element={<BusinessPitchEdit/>}/>
-
-          </Route>
         </Route>
 
         <Route path="admin/" element={<AdminLayout />}>

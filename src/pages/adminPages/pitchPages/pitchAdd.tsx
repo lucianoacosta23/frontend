@@ -22,14 +22,7 @@ export default function PitchAdd(){
     const groundTypeOptions = [
         { value: 'césped natural', label: 'Césped Natural' },
         { value: 'césped sintético', label: 'Césped Sintético' },
-        { value: 'sintético', label: 'Sintético' },
-        { value: 'natural', label: 'Natural' },
-        { value: 'arena', label: 'Arena' },
-        { value: 'cemento', label: 'Cemento' },
-        { value: 'parquet', label: 'Parquet' },
-        { value: 'tierra', label: 'Tierra' },
-        { value: 'asfalto', label: 'Asfalto' },
-        { value: 'caucho', label: 'Caucho' }
+        { value: 'cemento', label: 'Cemento' }
     ];
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

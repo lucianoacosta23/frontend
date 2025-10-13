@@ -91,12 +91,17 @@ export function HomePageNav({ showNotification }: HomePageNavProps){
                         <li>
                             <Link to="/registerBusiness">Registrar negocio</Link> 
                         </li>}
+                        {storedUser &&
+                        <li>
+                            <Link to="/myReservations">Mis reservas</Link>
+                        </li>}
                         <li>
                             {!storedUser && 
                             <Link to="/login">Iniciar sesión</Link>}
                             {storedUser &&
                             <Link to="/" onClick={handleLogout}>Cerrar sesión</Link>}
                         </li>  
+                        
                     </ul>   
                 </div>
             </header>
