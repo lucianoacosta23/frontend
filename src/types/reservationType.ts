@@ -6,5 +6,5 @@ export type Reservation = {
   ReservationDate: number;
   ReservationTime: string;
   pitch: Pitch; 
-  user: UserData; 
+  user: UserData;
 };

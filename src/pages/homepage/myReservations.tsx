@@ -40,6 +40,8 @@ export default function MyReservations() {
             }
         }, [showNotification])
 
+        
+
         useEffect(() => {
         const storedUser = localStorage.getItem('user');
             if (storedUser) {
@@ -53,6 +55,8 @@ export default function MyReservations() {
             }
         }, [error, findAllFromUser, userData]);
     
+
+
     /*const remove = async (id:number) =>{
             try{
                 setLoading(true)
@@ -94,8 +98,8 @@ export default function MyReservations() {
                     {data?.data.map((reservation:Reservation) => (
             <tr key={reservation.id}>
               <td>{reservation.id}</td>
-              <td>{reservation.pitch.business}</td>
               <td>{reservation.pitch.id}</td>
+              <td>{reservation.pitch.business.businessName}</td>
               <td>{reservation.ReservationTime}</td>
               <td><button className='action-button delete' value={reservation.id}>Cancelar</button></td>
             </tr>
