@@ -1,15 +1,15 @@
-import { NavLink, Outlet, Navigate, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "../static/css/AdminLayout.css";
 import { useState } from "react";
 import { FaUserShield, FaBars, FaTimes, FaUsers, FaMapMarkerAlt, FaTicketAlt,FaArrowAltCircleLeft,FaFutbol, FaHome, FaStore } from "react-icons/fa";
-import type { UserData } from "../types/userData.js";
-import {jwtDecode} from 'jwt-decode'
 import HomeFooter from "../pages/homepage/homeFooter.js";
 import Toast from "../components/Toast.js";
+import { useAuth } from "../components/Auth.js";
 
 export function AdminLayout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const {userData} = useAuth();
 
     //    NUEVOS ESTADOS PARA EL TOAST
     const [showToast, setShowToast] = useState(false);
@@ -31,13 +31,7 @@ export function AdminLayout() {
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!mobileMenuOpen);
     };
-
-    const storedUser = localStorage.getItem('user')
-    if(!storedUser){
-        alert('sesion no iniciada')
-        return <Navigate to="/login"/> //temporal
-    }
-    const userData = jwtDecode(storedUser) as UserData
+    
     const handleLogout = () =>{
         localStorage.clear() //temporal
         alert('sesion cerrada')
@@ -50,8 +44,8 @@ export function AdminLayout() {
             {/* Sidebar para desktop */}
             <aside className="admin-sidebar">
                 <div className="sidebar-header">
-                    <div className="sidebar-logo">{userData.name && userData.name.substring(0,2)}</div>
-                    <div className="sidebar-title">{userData.name}</div>
+                    <div className="sidebar-logo">{userData?.name && userData?.name.substring(0,2)}</div>
+                    <div className="sidebar-title">{userData?.name}</div>
                 </div>
                 
                 <nav className="sidebar-nav">
@@ -142,8 +136,8 @@ export function AdminLayout() {
                     {mobileMenuOpen ? <FaTimes /> : <FaBars />}
                 </button>
                 <div className="mobile-logo">
-                    <div className="mobile-logo-icon">{userData.name && userData.name.substring(0,2)}</div>
-                    <div className="mobile-logo-text">{userData.name}</div>
+                    <div className="mobile-logo-icon">{userData?.name && userData?.name.substring(0,2)}</div>
+                    <div className="mobile-logo-text">{userData?.name}</div>
                 </div>
             </header>
 

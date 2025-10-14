@@ -1,55 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router';
-import { jwtDecode } from 'jwt-decode';
-import type { UserData } from '../types/userData';
 import type { ReservePitch, ReservePitchFilters, ReservationFormData, ReservationRequest } from '../types/reservePitchTypes';
 import PitchFilters from '../components/filters/PitchFilters';
 import PitchCard from '../components/pitches/PitchCard';
 import ReservationModal from '../components/reservations/ReservationModal';
 import '../static/css/ReservePitch.css';
+import { useAuth } from '../components/Auth';
 
 const ReservePitchPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const storedUser = localStorage.getItem('user');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-
-  // Check authentication on mount
- useEffect(() => {
-  console.log('🔐 Checking authentication...');
-  const storedUser = localStorage.getItem('user');
-
-  if (!storedUser) {
-    console.log('❌ No stored user, redirecting to login');
-    navigate('/login');
-    return;
-  }
-
-  try {
-    let tokenString = storedUser;
-    const parsed = JSON.parse(storedUser);
-    if (parsed.token) tokenString = parsed.token;
-
-    const decoded = jwtDecode(tokenString) as UserData;
-    const currentTime = Date.now() / 1000;
-
-    if (decoded.exp && decoded.exp < currentTime) {
-      console.log('⏰ Token expired, redirecting to login');
-      localStorage.removeItem('user');
-      navigate('/login');
-      return;
-    }
-
-    setUserData(decoded);
-    setIsAuthenticated(true);
-  } catch (error) {
-    console.error('❌ Token inválido:', error);
-    localStorage.removeItem('user');
-    navigate('/login');
-  }
-}, [navigate]);
-
+  const {userData, token} = useAuth()
 
   const [pitches, setPitches] = useState<ReservePitch[]>([]);
   const [loading, setLoading] = useState(true);
@@ -211,7 +172,7 @@ const ReservePitchPage: React.FC = () => {
       console.log('📤 ReservationTime ISO:', requestBody.ReservationTime);
 
       // Get the actual token string
-      let tokenString = storedUser || '';
+      let tokenString = token || '';
       try {
         const parsed = JSON.parse(tokenString);
         if (parsed.token) {
@@ -268,18 +229,16 @@ const ReservePitchPage: React.FC = () => {
 
   // Fetch pitches on component mount (only when authenticated)
   useEffect(() => {
-    if (isAuthenticated) {
+    if (userData) {
       fetchPitches();
     }
-  }, [isAuthenticated, fetchPitches]);
+  }, [userData, fetchPitches]);
 
-  // Don't render anything until authentication is checked
-  if (!isAuthenticated || !userData) {
+  if (!token) {
     return (
       <div className="reserve-pitch-container">
         <div className="reserve-pitch-loading">
-          <div className="loading-spinner"></div>
-          <p className="loading-text">Verificando sesión...</p>
+          <p className="loading-text">Debes iniciar sesión para ingresar a esta página correctamente.</p>
         </div>
       </div>
     );

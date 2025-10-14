@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CourtList from './CourtList';
 import type { Court } from '../../components/CourtCard';
 import '../../static/css/courtPages.css';
+import { useAuth } from '../../components/Auth';
 
 const CourtsPage: React.FC = () => {
   const [courts, setCourts] = useState<Court[]>([]);
@@ -16,27 +17,18 @@ const CourtsPage: React.FC = () => {
   
   const navigate = useNavigate();
 
-  //  si está logueado o no
-  const storedUser = localStorage.getItem('user');
-  if (!storedUser) {
-    alert('sesion no iniciada');
-    return <Navigate to="/login" />;
-  }
-
-  let token = '';
-  try {
-    const userObject = JSON.parse(storedUser);
-    token = userObject.token || storedUser;
-  } catch (error) {
-    // Si no es JSON válido, usar el string directo
-    token = storedUser;
+  const {token} = useAuth();
+  
+  if(!token){
+      alert('Tienes que iniciar sesión para ingresar a esta página')
+      navigate('/');
   }
 
   useEffect(() => {
     fetchCourts();
-  }, []);
+  });
 
-  const fetchCourts = async () => {
+  const fetchCourts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -89,7 +81,7 @@ const CourtsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  },[navigate, token]);
 
   const handleReserveCourt = (courtId: number) => {
     console.log(' Reservar cancha con ID:', courtId);
