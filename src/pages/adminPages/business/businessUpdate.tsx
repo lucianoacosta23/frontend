@@ -183,9 +183,7 @@ const BusinessUpdate = () => {
         throw new Error('Debe seleccionar una localidad');
       }
 
-      if (!formData.ownerId) {
-        throw new Error('Debe seleccionar un dueño');
-      }
+      // NOTA: Se removió la validación del ownerId ya que no se puede editar
 
       const depositPercentage = parseFloat(formData.reservationDepositPercentage);
       if (isNaN(depositPercentage) || depositPercentage < 0 || depositPercentage > 1) {
@@ -201,7 +199,7 @@ const BusinessUpdate = () => {
         businessName: formData.businessName.trim(),
         address: formData.address.trim(),
         locality: parseInt(formData.localityId),
-        owner: parseInt(formData.ownerId),
+        // NOTA: Se mantiene el owner original del negocio, no se envía el del formulario
         reservationDepositPercentage: depositPercentage,
         openingAt: formData.openingAt,
         closingAt: formData.closingAt,
@@ -458,23 +456,21 @@ const BusinessUpdate = () => {
             </select>
           </div>
 
+          {/* Campo de dueño deshabilitado - solo lectura */}
           <div className="form-group">
             <label htmlFor="ownerId">Dueño del Negocio</label>
-            <select
+            <input
+              type="text"
               id="ownerId"
-              name="ownerId"
-              value={formData.ownerId}
-              onChange={handleInputChange}
-              required
+              value={business ? getOwnerName(business.owner) : ''}
               className="form-input"
-            >
-              <option value="">Seleccione un dueño</option>
-              {owners.map(owner => (
-                <option key={owner.id} value={owner.id}>
-                  {owner.name} ({owner.email})
-                </option>
-              ))}
-            </select>
+              disabled
+              readOnly
+              style={{backgroundColor: '#f5f5f5', cursor: 'not-allowed'}}
+            />
+            <small className="form-help">
+              ⚠ El dueño del negocio no se puede modificar
+            </small>
           </div>
         </div>
 
@@ -564,7 +560,7 @@ const BusinessUpdate = () => {
           <button
             type="submit"
             className="save-button"
-            disabled={saving || !formData.businessName.trim() || !formData.address.trim() || !formData.localityId || !formData.ownerId}
+            disabled={saving || !formData.businessName.trim() || !formData.address.trim() || !formData.localityId}
           >
             {saving ? 'Actualizando...' : 'Actualizar Negocio'}
           </button>

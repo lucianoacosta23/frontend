@@ -83,7 +83,6 @@ const BusinessCreate = () => {
         }
 
       } catch (err) {
-        console.error('Error cargando datos iniciales:', err);
         setError('Error al cargar datos necesarios: ' + (err instanceof Error ? err.message : 'Error desconocido'));
       } finally {
         setLoadingData(false);
