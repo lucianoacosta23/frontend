@@ -2,7 +2,7 @@
 
 export interface PitchBusiness {
   id: number;
-  name: string;
+  businessName: string;
 }
 
 export interface ReservePitch {

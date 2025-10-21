@@ -13,8 +13,8 @@ interface Business {
   businessName: string;
   name?: string;
   address?: string;
-  openingHour: string;  // Ej: "08:00"
-  closingHour: string;  // Ej: "22:00"
+  openingAt: string;  // Ej: "08:00"
+  closingAt: string;  // Ej: "22:00"
 }
 
 interface PitchWithReservations extends Court {
@@ -52,12 +52,12 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
 
   // Función para generar horarios basados en el horario del negocio
-  const generateTimeSlots = useCallback((openingHour: string, closingHour: string): TimeSlot[] => {
+  const generateTimeSlots = useCallback((openingAt: string, closingAt: string): TimeSlot[] => {
     const slots: TimeSlot[] = [];
     
     // Convertir horas de string a números
-    const openTime = parseInt(openingHour.split(':')[0]);
-    const closeTime = parseInt(closingHour.split(':')[0]);
+    const openTime = parseInt(openingAt.split(':')[0]);
+    const closeTime = parseInt(closingAt.split(':')[0]);
     
     // Validar que los horarios sean válidos
     if (isNaN(openTime) || isNaN(closeTime) || openTime >= closeTime) {
@@ -65,7 +65,7 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
       return generateDefaultTimeSlots();
     }
     
-    // Generar slots cada hora desde openingHour hasta closingHour (exclusivo)
+    // Generar slots cada hora desde openingAt hasta closingAt (exclusivo)
     for (let hour = openTime; hour < closeTime; hour++) {
       const startTime = `${hour.toString().padStart(2, '0')}:00`;
       const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`;
@@ -260,10 +260,10 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
       setPitch(pitchData);
 
       // Generar timeSlots basados en el horario del negocio
-      if (pitchData.business?.openingHour && pitchData.business?.closingHour) {
+      if (pitchData.business?.openingAt && pitchData.business?.closingAt) {
         const generatedSlots = generateTimeSlots(
-          pitchData.business.openingHour,
-          pitchData.business.closingHour
+          pitchData.business.openingAt,
+          pitchData.business.closingAt
         );
         setTimeSlots(generatedSlots);
       } else {
@@ -535,8 +535,8 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
               {pitch.roof && <span className="feature-badge covered">🏠 Cubierta</span>}
               <span className="feature-badge size">📏 {pitch.size}</span>
               <span className="feature-badge ground">🌿 {pitch.groundType}</span>
-              {pitch.business?.openingHour && pitch.business?.closingHour && (
-                <span className="feature-badge hours">🕒 {pitch.business.openingHour} - {pitch.business.closingHour}</span>
+              {pitch.business?.openingAt && pitch.business?.closingAt && (
+                <span className="feature-badge hours">🕒 {pitch.business.openingAt} - {pitch.business.closingAt}</span>
               )}
             </div>
           </div>
@@ -559,12 +559,12 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
             </div>
 
             {/* Información de horario del negocio */}
-            {pitch.business?.openingHour && pitch.business?.closingHour && (
+            {pitch.business?.openingAt && pitch.business?.closingAt && (
               <div className="detail-item">
                 <span className="detail-icon">🕒</span>
                 <div className="detail-content">
                   <strong>Horario de atención:</strong>
-                  <span>{pitch.business.openingHour} - {pitch.business.closingHour}</span>
+                  <span>{pitch.business.openingAt} - {pitch.business.closingAt}</span>
                 </div>
               </div>
             )}
@@ -654,9 +654,9 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
           <div className="form-header">
             <h3>📅 Selecciona fecha y horario</h3>
             <p>Elige cuándo quieres reservar esta cancha (turnos de 1 hora)</p>
-            {pitch.business?.openingHour && pitch.business?.closingHour && (
+            {pitch.business?.openingAt && pitch.business?.closingAt && (
               <p style={{fontSize: '0.9rem', color: '#3498db', marginTop: '5px'}}>
-                Horario del negocio: {pitch.business.openingHour} - {pitch.business.closingHour}
+                Horario del negocio: {pitch.business.openingAt} - {pitch.business.closingAt}
               </p>
             )}
           </div>
@@ -769,10 +769,10 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
                 <span>Precio por hora:</span>
                 <strong>${pitch.price}</strong>
               </div>
-              {pitch.business?.openingHour && pitch.business?.closingHour && (
+              {pitch.business?.openingAt && pitch.business?.closingAt && (
                 <div className="summary-item">
                   <span>Horario negocio:</span>
-                  <strong>{pitch.business.openingHour} - {pitch.business.closingHour}</strong>
+                  <strong>{pitch.business.openingAt} - {pitch.business.closingAt}</strong>
                 </div>
               )}
               {date && selectedTime && (
