@@ -47,7 +47,7 @@ import BusinessPitchAdd from '../businessManagment/add.tsx';
 import BusinessPitchEdit from '../businessManagment/edit.tsx';
 import BusinessPitchGetAll from '../businessManagment/getAll.tsx';
 import BusinessReservations from '../businessManagment/getReservations.tsx';
-
+import ReservePitchPageMakeReservation from '../reservationPage/reservationPage.tsx';
 
 function App() {
   return (
@@ -56,6 +56,7 @@ function App() {
         <Route element={<HomeLayout />}>
           <Route index path='/' element={<Homepage/>}/>
           <Route path='login/' element={<LoginPage/>}/>
+          <Route path='makeReservation/:id' element={<ReservePitchPageMakeReservation/>} />
           <Route path='about/' element={<AboutUs/>}/>
           <Route path='registerBusiness/' element={<RegisterBusinessPage/>}/>
           <Route path='reservation/' element={<CourtsPage/>}/>

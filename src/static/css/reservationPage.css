@@ -1,0 +1,775 @@
+/* courtPages.css */
+.reserve-pitch-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Header Styles */
+.reserve-pitch-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background: #5a6268;
+}
+
+.reserve-pitch-title {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.reserve-pitch-subtitle {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin-bottom: 0;
+}
+
+/* Loading States */
+.reserve-pitch-loading,
+.reserve-pitch-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+}
+
+/* Error States */
+.error-message {
+  background: #ffeaea;
+  color: #e74c3c;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #e74c3c;
+}
+
+.error-message h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.retry-button,
+.secondary-button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0.5rem;
+  transition: background 0.3s;
+  font-family: inherit;
+}
+
+.secondary-button {
+  background: #6c757d;
+}
+
+.retry-button:hover {
+  background: #2980b9;
+}
+
+.secondary-button:hover {
+  background: #5a6268;
+}
+
+/* Main Content Layout */
+.reservation-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .reservation-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .reserve-pitch-container {
+    padding: 1rem;
+  }
+  
+  .back-button {
+    position: relative;
+    margin-bottom: 1rem;
+    top: auto;
+    transform: none;
+  }
+}
+
+/* Pitch Card Large */
+.pitch-card-large {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pitch-card-large:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.pitch-image-section {
+  position: relative;
+}
+
+.pitch-image-large {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.pitch-badges {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.pitch-id-badge,
+.feature-badge {
+  background: rgba(44, 62, 80, 0.85);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.feature-badge.covered { background: rgba(52, 152, 219, 0.85); }
+.feature-badge.size { background: rgba(46, 204, 113, 0.85); }
+.feature-badge.ground { background: rgba(155, 89, 182, 0.85); }
+
+.pitch-details-section {
+  padding: 2rem;
+}
+
+.pitch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.pitch-header h2 {
+  margin: 0;
+  flex: 1;
+  font-size: 1.6rem;
+  color: #2c3e50;
+}
+
+.price-tag {
+  text-align: right;
+}
+
+.price-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-bottom: 4px;
+}
+
+.price-amount {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2ecc71;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.detail-icon {
+  margin-right: 12px;
+  font-size: 1.2rem;
+  margin-top: 2px;
+}
+
+.detail-content {
+  flex: 1;
+}
+
+.detail-content strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #2c3e50;
+}
+
+/* Availability Info - MODIFICADO */
+.availability-info {
+  background: #e8f4fd;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border-left: 4px solid #3498db;
+}
+
+.availability-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.availability-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
+}
+
+.availability-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.stat-item {
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+/* Estilos para la disponibilidad del día - NUEVO */
+.availability-details {
+  margin-top: 10px;
+}
+
+.availability-progress {
+  width: 100%;
+  height: 8px;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.availability-status {
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.status-available {
+  color: #27ae60;
+}
+
+.status-partial {
+  color: #f39c12;
+}
+
+.status-full {
+  color: #e74c3c;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.feature-card {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  margin-right: 12px;
+}
+
+.feature-info {
+  flex: 1;
+}
+
+.feature-label {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-bottom: 4px;
+}
+
+.feature-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* Reservation Form */
+.reservation-form-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  align-self: start;
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.form-header p {
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.7rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.label-icon {
+  margin-right: 8px;
+  font-size: 1.1rem;
+}
+
+.form-input {
+  padding: 12px 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Estilos para la selección de horarios */
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.time-slot {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  border: none;
+  font-family: inherit;
+}
+
+.time-slot:hover:not(:disabled) {
+  border-color: #3498db;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.time-slot-available {
+  border-color: #d1f2eb;
+  background: #f8fefd;
+}
+
+.time-slot-unavailable {
+  border-color: #fadbd8;
+  background: #fef5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.time-slot-selected {
+  border-color: #2ecc71;
+  background: #f0f9f4;
+  box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2);
+}
+
+.time-slot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-slot-label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.time-slot-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.time-slot-available .time-slot-status {
+  color: #27ae60;
+}
+
+.time-slot-unavailable .time-slot-status {
+  color: #e74c3c;
+}
+
+.selected-time-info {
+  margin-top: 15px;
+  padding: 12px;
+  background: #e8f4fd;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+  font-size: 0.95rem;
+}
+
+/* Busy Times Warning */
+.busy-times-warning {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.warning-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.warning-icon {
+  margin-right: 8px;
+}
+
+.busy-times-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.busy-time-badge {
+  background: #e74c3c;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.warning-text {
+  font-size: 0.9rem;
+  color: #856404;
+  margin: 0;
+}
+
+/* Available Times Info */
+.available-times-info {
+  background: #d1f2eb;
+  border: 1px solid #a3e4d7;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.info-icon {
+  margin-right: 8px;
+}
+
+.info-text {
+  font-size: 0.9rem;
+  color: #0e6251;
+  margin: 0;
+}
+
+/* Error Message in Form */
+.error-message {
+  display: flex;
+  align-items: center;
+  background: #ffeaea;
+  color: #e74c3c;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border-left: 4px solid #e74c3c;
+}
+
+.error-icon {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.error-content {
+  flex: 1;
+}
+
+.error-content strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Reservation Summary */
+.reservation-summary {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-item span {
+  color: #7f8c8d;
+}
+
+.summary-item strong {
+  color: #2c3e50;
+}
+
+.availability-status .available {
+  color: #27ae60;
+}
+
+.availability-status .unavailable {
+  color: #e74c3c;
+}
+
+.warning-message {
+  background: #fff3cd !important;
+  border-left-color: #f39c12 !important;
+  color: #856404 !important;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-primary {
+  background: #2ecc71;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+}
+
+.btn-secondary {
+  background: #f8f9fa;
+  color: #7f8c8d;
+  border: 2px solid #e9ecef;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e9ecef;
+  color: #495057;
+  transform: translateY(-2px);
+}
+
+.button-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.button-icon {
+  font-size: 1.1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .reserve-pitch-title {
+    font-size: 2rem;
+  }
+  
+  .pitch-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .price-tag {
+    text-align: left;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+
+  /* Responsive para horarios */
+  .time-slots-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  
+  .time-slot {
+    padding: 10px;
+  }
+  
+  .time-slot-label {
+    font-size: 0.85rem;
+  }
+  
+  .time-slot-status {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reserve-pitch-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .pitch-details-section {
+    padding: 1.5rem;
+  }
+  
+  .reservation-form-container {
+    padding: 1.5rem;
+  }
+  
+  .reservation-summary {
+    padding: 1rem;
+  }
+
+  /* Responsive para horarios en móviles */
+  .time-slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -3,28 +3,14 @@ import CourtCard, { type Court } from '../../components/CourtCard'; // Usar type
 
 interface CourtListProps {
   courts: Court[];
-  onReserveCourt?: (courtId: number) => void;
 }
 
-const CourtList: React.FC<CourtListProps> = ({ courts, onReserveCourt }) => {
-  if (courts.length === 0) {
-    return (
-      <div className="no-courts-message">
-        <div className="no-courts-icon">🏟️</div>
-        <h3>No se encontraron canchas</h3>
-        <p>Intenta ajustar los filtros de búsqueda</p>
-      </div>
-    );
-  }
-
+const CourtList: React.FC<CourtListProps> = ({ courts }) => {
   return (
-    <div className="court-list">
-      {courts.map(court => (
-        <CourtCard 
-          key={court.id} 
-          court={court} 
-          onReserve={onReserveCourt}
-        />
+    <div className="courts-grid">
+      {courts.map((court) => (
+        // solo pasar la court; CourtCard hará la navegación SPA
+        <CourtCard key={court.id} court={court} />
       ))}
     </div>
   );

@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router';
-import type { ReservePitch, ReservePitchFilters, ReservationFormData, ReservationRequest } from '../types/reservePitchTypes';
+import type { ReservePitch, ReservePitchFilters } from '../types/reservePitchTypes';
 import PitchFilters from '../components/filters/PitchFilters';
 import PitchCard from '../components/pitches/PitchCard';
-import ReservationModal from '../components/reservations/ReservationModal';
 import '../static/css/ReservePitch.css';
 import { useAuth } from '../components/Auth';
 
@@ -15,8 +14,6 @@ const ReservePitchPage: React.FC = () => {
   const [pitches, setPitches] = useState<ReservePitch[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPitch, setSelectedPitch] = useState<ReservePitch | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [renderError, setRenderError] = useState<string | null>(null);
 
   // Initialize filters
@@ -132,99 +129,9 @@ const ReservePitchPage: React.FC = () => {
     });
   };
 
-  // Handle reserve button click - opens modal
+  // Handle reserve button click - navigate to reservation page
   const handleReserve = (pitchId: number) => {
-    const pitch = pitches.find((p) => p.id === pitchId);
-    if (pitch) {
-      setSelectedPitch(pitch);
-      setIsModalOpen(true);
-    }
-  };
-
-  // Handle reservation confirmation
-  const handleConfirmReservation = async (data: ReservationFormData) => {
-    console.log('Reservation data to send:', data);
-    
-    try {
-      // Parse date as YYYY-MM-DD and keep it in local timezone
-      const [year, month, day] = data.date.split('-').map(Number);
-      const [hours, minutes] = data.time.split(':').map(Number);
-      
-      // Create date at noon to avoid timezone issues with date-only values
-      const reservationDate = new Date(year, month - 1, day, 12, 0, 0, 0);
-      
-      // Create time with the selected hour
-      const reservationTime = new Date(year, month - 1, day, hours, minutes, 0, 0);
-
-      console.log('📅 Local reservation date:', reservationDate);
-      console.log('⏰ Local reservation time:', reservationTime);
-
-      // Prepare request body according to API specification
-      const requestBody: ReservationRequest = {
-        ReservationDate: reservationDate.toISOString(),
-        ReservationTime: reservationTime.toISOString(),
-        pitch: data.pitchId,
-        user: userData.id!, // Extract user ID from JWT token
-      };
-
-      console.log('📤 Sending reservation request:', requestBody);
-      console.log('📤 ReservationDate ISO:', requestBody.ReservationDate);
-      console.log('📤 ReservationTime ISO:', requestBody.ReservationTime);
-
-      // Get the actual token string
-      let tokenString = token || '';
-      try {
-        const parsed = JSON.parse(tokenString);
-        if (parsed.token) {
-          tokenString = parsed.token;
-        }
-      } catch {
-        // Use as-is if not JSON
-      }
-
-      const response = await fetch('http://localhost:3000/api/reservations/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokenString}`,
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      // Handle 401 Unauthorized
-      if (response.status === 401) {
-        localStorage.removeItem('user');
-        alert('Sesión expirada. Por favor inicia sesión nuevamente.');
-        navigate('/login');
-        return;
-      }
-
-      // Handle 403 Forbidden
-      if (response.status === 403) {
-        alert('❌ No tienes permisos para realizar esta acción.');
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error: ${response.status} ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      console.log('✅ Reservation created:', result);
-      
-      alert(
-        `✅ Reserva creada exitosamente!\n\nCancha: ${selectedPitch?.business.name}\nFecha: ${data.date}\nHora: ${data.time}`
-      );
-
-      setIsModalOpen(false);
-      setSelectedPitch(null);
-    } catch (err) {
-      console.error('❌ Error creating reservation:', err);
-      alert(
-        `❌ Error al crear la reserva\n\n${err instanceof Error ? err.message : 'Error desconocido'}\n\nPor favor intenta nuevamente.`
-      );
-    }
+    navigate(`/makeReservation/${pitchId}`);
   };
 
   // Fetch pitches on component mount (only when authenticated)
@@ -337,15 +244,7 @@ const ReservePitchPage: React.FC = () => {
         </main>
       </div>
 
-      <ReservationModal
-        pitch={selectedPitch}
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedPitch(null);
-        }}
-        onConfirm={handleConfirmReservation}
-      />
+      {/* No ReservationModal: navigation to /makeReservation/:id is used instead */}
     </div>
   );
 };

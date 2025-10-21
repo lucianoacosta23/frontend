@@ -16,35 +16,33 @@ const CourtsPage: React.FC = () => {
   const [priceInputs, setPriceInputs] = useState<{ min: string; max: string }>({ min: '0', max: '10000' });
   
   const navigate = useNavigate();
-
-  const {token} = useAuth();
+  const { token } = useAuth();
   
-  if(!token){
-      alert('Tienes que iniciar sesión para ingresar a esta página')
-      navigate('/');
+  if (!token) {
+    alert('Tienes que iniciar sesión para ingresar a esta página');
+    navigate('/');
   }
 
   useEffect(() => {
     fetchCourts();
-  });
+  }, []);
 
   const fetchCourts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      //  USAR EL TOKEN EXTRAÍDO
       const response = await fetch('http://localhost:3000/api/pitchs/getAll', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Usar el token extraído
+          'Authorization': `Bearer ${token}`
         }
       });
 
       if (response.status === 401) {
         localStorage.removeItem('user');
-        alert('sesion expirada');
+        alert('Sesión expirada');
         navigate('/login');
         return;
       }
@@ -54,7 +52,7 @@ const CourtsPage: React.FC = () => {
       }
 
       const responseData = await response.json();
-      console.log(' Datos de canchas recibidos:', responseData);
+      console.log('Datos de canchas recibidos:', responseData);
 
       let courtsData: Court[] = [];
       if (Array.isArray(responseData)) {
@@ -76,21 +74,15 @@ const CourtsPage: React.FC = () => {
         setPriceInputs(prev => ({ ...prev, max: adjustedMax.toString() }));
       }
     } catch (err) {
-      console.error(' Error al obtener canchas:', err);
+      console.error('Error al obtener canchas:', err);
       setError(err instanceof Error ? err.message : 'Error al cargar canchas');
     } finally {
       setLoading(false);
     }
-  },[navigate, token]);
-
-  const handleReserveCourt = (courtId: number) => {
-    console.log(' Reservar cancha con ID:', courtId);
-    alert(`Funcionalidad de reserva para cancha ${courtId} - Próximamente`);
-  };
+  }, [navigate, token]);
 
   const handleMinPriceChange = (value: string) => {
     setPriceInputs(prev => ({ ...prev, min: value }));
-    
     const numValue = parseFloat(value);
     if (!isNaN(numValue) && numValue >= 0) {
       setPriceRange(prev => ({ 
@@ -105,7 +97,6 @@ const CourtsPage: React.FC = () => {
 
   const handleMaxPriceChange = (value: string) => {
     setPriceInputs(prev => ({ ...prev, max: value }));
-    
     const numValue = parseFloat(value);
     if (!isNaN(numValue) && numValue >= 0) {
       setPriceRange(prev => ({ 
@@ -132,15 +123,14 @@ const CourtsPage: React.FC = () => {
     setPriceInputs({ min: defaultMin.toString(), max: defaultMax.toString() });
   };
 
-  // Filtrar canchas
   const filteredCourts = courts.filter(court => {
     const matchesSearch = court.business.businessName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         court.business.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         court.groundType.toLowerCase().includes(searchTerm.toLowerCase());
+                          court.business.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          court.groundType.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesRoof = filterRoof === 'all' || 
-                       (filterRoof === 'with' && court.roof) || 
-                       (filterRoof === 'without' && !court.roof);
+                        (filterRoof === 'with' && court.roof) || 
+                        (filterRoof === 'without' && !court.roof);
     
     const matchesGround = filterGroundType === 'all' || court.groundType === filterGroundType;
     const matchesPrice = court.price >= priceRange.min && court.price <= priceRange.max;
@@ -169,7 +159,7 @@ const CourtsPage: React.FC = () => {
             <h3>❌ Error al cargar canchas</h3>
             <p>{error}</p>
           </div>
-          <button onClick={fetchCourts} className="retry-button">
+          <button onClick={() => fetchCourts()} className="retry-button">
             🔄 Reintentar
           </button>
         </div>
@@ -198,7 +188,6 @@ const CourtsPage: React.FC = () => {
       <div className="courts-list-main">
         <CourtList 
           courts={filteredCourts} 
-          onReserveCourt={handleReserveCourt}
         />
       </div>
 

@@ -1,5 +1,6 @@
 // CourtCard.tsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Interfaces TypeScript - EXPORTADAS
 export interface Business {
@@ -31,10 +32,12 @@ export interface Court {
 
 interface CourtCardProps {
   court: Court;
-  onReserve?: (courtId: number) => void;
+  // onReserve removed to force SPA navigation
 }
 
-const CourtCard: React.FC<CourtCardProps> = ({ court, onReserve }) => {
+const CourtCard: React.FC<CourtCardProps> = ({ court }) => {
+  const navigate = useNavigate();
+
   // Función para renderizar estrellas de rating
   const renderStars = (rating: number) => {
     const stars = [];
@@ -62,12 +65,8 @@ const CourtCard: React.FC<CourtCardProps> = ({ court, onReserve }) => {
   };
 
   const handleReserveClick = () => {
-    if (onReserve) {
-      onReserve(court.id);
-    } else {
-      // Redirigir a la página de reserva con el ID de la cancha
-      window.location.href = `http://localhost:5173/makeReservation/${court.id}`;
-    }
+    // Navegación SPA a la página de reserva (siempre)
+    navigate(`/makeReservation/${court.id}`);
   };
 
   return (
