@@ -21,6 +21,13 @@ const PitchFilters: React.FC<PitchFiltersProps> = ({
   };
 
   const handleSizeChange = (value: string) => {
+    if(value == 'pequeño'){
+      value = '5v5';
+    }else if(value == 'mediano'){
+      value = '7v7';
+    }else if(value == 'grande'){
+      value = '11v11';
+    }
     onFilterChange({ ...filters, size: value });
   };
 
@@ -96,9 +103,9 @@ const PitchFilters: React.FC<PitchFiltersProps> = ({
             className="pitch-filter-select"
           >
             <option value="all">Todos los tamaños</option>
-            <option value="pequeño">Pequeño</option>
-            <option value="mediano">Mediano</option>
-            <option value="grande">Grande</option>
+            <option value="pequeño">Fut5</option>
+            <option value="mediano">Fut7</option>
+            <option value="grande">Fut11</option>
           </select>
         </div>
 
