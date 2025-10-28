@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type {Pitch} from '../../../types/pitchType.ts'
 import { useNavigate, useOutletContext } from 'react-router';
+import type { BusinessData } from '../../../types/businessType.ts';
 
 export default function PitchAdd(){
     const [data, setData] = useState<PitchResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [businesses, setBusinesses] = useState<BusinessData[]>([]);
     
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const navigate = useNavigate();
@@ -18,11 +20,11 @@ export default function PitchAdd(){
         { value: '11v11', label: 'Fut 11' }
     ];
 
-    // Opciones válidas para el tipo de suelo - probemos estas
     const groundTypeOptions = [
         { value: 'césped natural', label: 'Césped Natural' },
-        { value: 'césped sintético', label: 'Césped Sintético' },
-        { value: 'cemento', label: 'Cemento' }
+        { value: 'césped sintético', label: 'Césped Sintético'},
+        { value: 'cemento', label: 'Cemento' },
+        { value: 'arcilla', label: 'Arcilla' },
     ];
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,15 +55,7 @@ export default function PitchAdd(){
             setLoading(true);
             const token = JSON.parse(localStorage.getItem('user') || '{}').token;
 
-            // Para debugging: mostrar los datos que se envían
-            console.log('Enviando datos:');
-            for (let [key, value] of pitchData.entries()) {
-                if (key === 'image') {
-                    console.log(`${key}:`, (value as File).name, (value as File).size);
-                } else {
-                    console.log(`${key}:`, value);
-                }
-            }
+            console.log(pitchData);
 
             const response = await fetch('http://localhost:3000/api/pitchs/add', {
                 method: "POST",
@@ -84,7 +78,7 @@ export default function PitchAdd(){
                 try {
                     const errorData = JSON.parse(responseText);
                     errorMessage = errorData.error || errorData.message || errorMessage;
-                } catch (e) {
+                } catch (e:unknown) {
                     errorMessage = responseText || errorMessage;
                 }
                 throw new Error(errorMessage);
@@ -132,6 +126,7 @@ export default function PitchAdd(){
         pitchData.append('groundType', selectedGroundType);
         pitchData.append('roof', formData.get("roof") ? 'true' : 'false');
         
+        console.log(pitchData);
         // Agregar la imagen si existe
         if (imageFile) {
             pitchData.append('image', imageFile);
@@ -140,6 +135,29 @@ export default function PitchAdd(){
         add(pitchData);
     };
 
+    const fetchBusinesses = useCallback(async () => {
+        try {
+            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
+            const response = await fetch('http://localhost:3000/api/business/findAll', {
+                method: "GET",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }); 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const json = await response.json();
+            setBusinesses(json.data);
+        } catch (error) {
+            console.error('Error fetching businesses:', error);
+            showNotification('Error al cargar negocios: ' + error, 'error');
+            return [];
+        }
+    },[showNotification]);
+    useEffect(() => {
+        fetchBusinesses();
+    }, [fetchBusinesses]);
     const removeImage = () => {
         setImageFile(null);
         setImagePreview(null);
@@ -155,7 +173,14 @@ export default function PitchAdd(){
             <form onSubmit={handleSubmit} className='crud-form' encType="multipart/form-data">
                 <div className='crud-form-item'>
                     <label>ID de negocio asociado</label>
-                    <input name="business" type="number" required />
+                    <select name="business" required>
+                        <option value="">Selecciona un negocio</option>
+                        {businesses.map(business => (
+                            <option key={business.id} value={business.id}>
+                                {business.businessName} (ID: {business.id})
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className='crud-form-item'>
                     <label>Rating</label>
@@ -186,7 +211,6 @@ export default function PitchAdd(){
                             </option>
                         ))}
                     </select>
-                    <small>Prueba con "césped sintético" primero</small>
                 </div>
                 <div className='crud-form-item'>
                     <label className='checkbox-label'>

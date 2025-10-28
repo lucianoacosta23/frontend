@@ -32,7 +32,7 @@ const CourtsPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('http://localhost:3000/api/pitchs/getAll', {
+      const response = await fetch('http://localhost:3000/api/pitchs/getAllFromActiveBusinesses', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

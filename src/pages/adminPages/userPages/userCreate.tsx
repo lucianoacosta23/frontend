@@ -117,11 +117,14 @@ const UserCreate = () => {
         phoneNumber: formData.phoneNumber.trim() || null,
       };
 
+      if(createData.phoneNumber === null) {
+        delete createData.phoneNumber;
+      }
       // Incluir categoryId solo si se seleccionó una categoría válida
       if (formData.categoryId && !isNaN(parseInt(formData.categoryId))) {
-        createData.categoryId = parseInt(formData.categoryId);
+        createData.category = parseInt(formData.categoryId);
       }
-
+      console.log('Datos a enviar para crear usuario:', createData);
       const response = await fetch('http://localhost:3000/api/users/add', {
         method: 'POST',
         headers: {

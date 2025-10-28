@@ -67,8 +67,8 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
     
     // Generar slots cada hora desde openingAt hasta closingAt (exclusivo)
     for (let hour = openTime; hour < closeTime; hour++) {
-      const startTime = `${hour.toString().padStart(2, '0')}:00`;
-      const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`;
+      const startTime = `${hour.toString().padStart(2, '0')}`;
+      const endTime = `${(hour + 1).toString().padStart(2, '0')}`;
       const label = `${startTime} - ${endTime}`;
       
       slots.push({
@@ -85,8 +85,8 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
   const generateDefaultTimeSlots = (): TimeSlot[] => {
     const defaultSlots: TimeSlot[] = [];
     for (let hour = 8; hour < 22; hour++) {
-      const startTime = `${hour.toString().padStart(2, '0')}:00`;
-      const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`;
+      const startTime = `${hour.toString().padStart(2, '0')}`;
+      const endTime = `${(hour + 1).toString().padStart(2, '0')}`;
       const label = `${startTime} - ${endTime}`;
       
       defaultSlots.push({
@@ -165,16 +165,13 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
     // Buscar si existe algún horario ocupado en la misma fecha y hora
     const isOccupied = occupiedSlots.some(slot => {
       const slotDate = new Date(slot.ReservationDate);
-      const slotTime = new Date(slot.ReservationTime);
+      const slotTime = (slot.ReservationTime);
       
       // Comparar si es el mismo día
       const isSameDay = formatDate(slotDate) === selectedDate;
       
       // Comparar si es la misma hora
-      const isSameTime = 
-        slotTime.getHours() === parseInt(time.split(':')[0]) &&
-        slotTime.getMinutes() === parseInt(time.split(':')[1]);
-      
+      const isSameTime = slotTime === time;
       return isSameDay && isSameTime;
     });
 
@@ -332,8 +329,8 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
     setError(null);
 
     try {
-      const datetime = new Date(`${date}T${selectedTime}`);
-      if (isNaN(datetime.getTime())) throw new Error('Fecha/hora inválida');
+      const datetime = new Date(`${date}`);
+      if (isNaN(datetime.getTime())) throw new Error('Fecha inválida');
 
       // Verificar que la fecha no sea en el pasado
       if (datetime < new Date()) {
@@ -344,7 +341,8 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
         ReservationDate: date,
         ReservationTime: `${selectedTime}:00`,
         pitch: pitch.id,
-        user: userData.id
+        user: userData.id,
+        status: 'pendiente'
       };
 
       console.log('Enviando reserva con datos:', body);
@@ -409,8 +407,8 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
         return formatDate(slotDate) === date;
       })
       .map(slot => {
-        const slotTime = new Date(slot.ReservationTime);
-        return `${slotTime.getHours().toString().padStart(2, '0')}:${slotTime.getMinutes().toString().padStart(2, '0')}`;
+        const slotTime = slot.ReservationTime;
+        return `${slotTime}`;
       })
       .sort();
   }, [date, occupiedSlots]);

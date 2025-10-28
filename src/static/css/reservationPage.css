@@ -242,7 +242,7 @@
   flex: 1;
 }
 
-.detail-content strong {
+.detail-content strong, .detail-content span {
   display: block;
   margin-bottom: 4px;
   color: #2c3e50;

@@ -15,7 +15,6 @@ interface User {
 
 const BusinessCreate = () => {
   const navigate = useNavigate();
-  
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingData, setLoadingData] = useState(true);
@@ -147,11 +146,13 @@ const BusinessCreate = () => {
         locality: parseInt(formData.localityId), // Enviar solo el ID como número
         owner: parseInt(formData.ownerId), // Enviar solo el ID como número
         reservationDepositPercentage: depositPercentage,
-        openingAt: formData.openingAt + ':00', // Añadir segundos si es necesario
-        closingAt: formData.closingAt + ':00', // Añadir segundos si es necesario
+        openingAt: formData.openingAt, // Añadir segundos si es necesario
+        closingAt: formData.closingAt, // Añadir segundos si es necesario
         active: false, // Por defecto inactivo hasta que un admin lo active
         averageRating: 0.0
       };
+
+      console.log(createData)
 
       // URL CORREGIDA - usar /api/business/add para crear negocio
       const response = await fetch('http://localhost:3000/api/business/add', {

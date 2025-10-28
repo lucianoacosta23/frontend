@@ -5,9 +5,11 @@ export interface ApiError {
 
 export function errorHandler(error: unknown): string {
   if (typeof error === "object" && error !== null) {
-    if ("message" in error) return (error.message) as string;
-    if ("error" in error) return (error.error) as string;
-    if ("errors" in error) return JSON.stringify((error).errors);
+    if ("errors" in error && Array.isArray((error as any).errors)) {
+      return (error as any).errors.map((err: any) => err.msg).join("; ");
+    }
+    if ("message" in error) return (error as any).message as string;
+    if ("error" in error) return (error as any).error as string;
   }
 
   if (typeof error === "string") return error;
