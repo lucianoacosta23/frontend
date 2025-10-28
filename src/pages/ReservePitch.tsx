@@ -87,7 +87,7 @@ const ReservePitchPage: React.FC = () => {
   const filteredPitches = pitches.filter((pitch) => {
     try {
       // Safe access to business name with fallback
-      const businessName = pitch.business?.name || (pitch as any).businessName || '';
+      const businessName = pitch.business?.businessName || '';
       const matchesSearch =
         businessName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
         (pitch.groundType || '').toLowerCase().includes(filters.searchTerm.toLowerCase());
