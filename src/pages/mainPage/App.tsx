@@ -65,7 +65,7 @@ function App() {
           <Route path='myBusiness/' element={<BusinessPitchHome />}>
             <Route path='getAll/' element={<BusinessPitchGetAll />} />
             <Route path='add/' element={<BusinessPitchAdd />} />
-            <Route path='update/:id' element={<BusinessPitchEdit />} />
+            <Route path='edit/:id' element={<BusinessPitchEdit />} />
             <Route path='detail/:id' element={<BusinessDetail />} />
             <Route path='getReservations/' element={<BusinessReservations />} />
           </Route>

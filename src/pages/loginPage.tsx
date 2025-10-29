@@ -44,7 +44,7 @@ export function LoginPage(){
 
     async function register(user:UserData){
         try{
-        const response = await fetch('http://localhost:3000/api/login/register',{method:"POST",
+        const response = await fetch('http://localhost:3000/api/users/register',{method:"POST",
                 headers: { 'Content-Type': 'application/json',
                 }, 
                 body: JSON.stringify(user)})

@@ -1,1017 +1,323 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import type { Court } from '../../components/CourtCard';
-import '../../static/css/reservationPage.css';
+import { useCallback, useEffect, useState,} from 'react'; 
+import type {ChangeEvent, FormEvent } from 'react';
+import type { Pitch } from '../../types/pitchType.ts';
+import { useNavigate, useOutletContext, useParams } from 'react-router';
+import { errorHandler } from '../../types/apiError.ts';
+import { useAuth } from '../../components/Auth.tsx';
 
-interface OccupiedSlot {
-  ReservationDate: string;
-  ReservationTime: string;
+interface PitchFormData {
+    rating: number | string;
+    price: number | string;
+    size: string;
+    groundType: string;
+    roof: boolean;
 }
 
-interface Business {
-  id: number;
-  businessName: string;
-  name?: string;
-  address?: string;
-  openingHour: string;  // Ej: "08:00"
-  closingHour: string;  // Ej: "22:00"
-}
+export default function BusinessPitchEdit() {
+    const { id } = useParams<{ id: string }>();
 
-interface PitchWithReservations extends Court {
-  reservations?: OccupiedSlot[];
-  business?: Business;
-}
-
-interface UserData {
-  id: number;
-  email: string;
-  name?: string;
-  role?: string;
-}
-
-interface TimeSlot {
-  time: string;
-  label: string;
-  available: boolean;
-}
-
-export default function ReservePitchPageMakeReservation(): JSX.Element {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-
-  const [pitch, setPitch] = useState<PitchWithReservations | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [occupiedSlots, setOccupiedSlots] = useState<OccupiedSlot[]>([]);
-  const [token, setToken] = useState<string | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
-
-  const [date, setDate] = useState<string>('');
-  const [selectedTime, setSelectedTime] = useState<string>('');
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
-
-  // FUNCIÓN COMPLETAMENTE CORREGIDA PARA GENERAR HORARIOS
-  const generateTimeSlots = useCallback((openingHour: string, closingHour: string): TimeSlot[] => {
-    const slots: TimeSlot[] = [];
-    
-    console.log('🔧 Generando horarios con:', { openingHour, closingHour });
-    
-    // FUNCIÓN MEJORADA: Convertir horas de string a minutos totales
-    const parseTimeToMinutes = (timeString: string): number => {
-        // Asegurarse de que el formato sea HH:MM:SS o HH:MM
-        const timeParts = timeString.split(':');
-        const hours = parseInt(timeParts[0], 10); // SIEMPRE base 10
-        const minutes = parseInt(timeParts[1] || '0', 10); // SIEMPRE base 10
-        
-        console.log(`⏰ Parseando "${timeString}" -> horas: ${hours}, minutos: ${minutes}`);
-        
-        return (hours * 60) + minutes;
-    };
-    
-    const openMinutes = parseTimeToMinutes(openingHour);
-    const closeMinutes = parseTimeToMinutes(closingHour);
-    
-    console.log('📊 Minutos calculados:', { 
-        openingHour, 
-        closingHour,
-        openMinutes, 
-        closeMinutes,
-        openHours: Math.floor(openMinutes / 60),
-        closeHours: Math.floor(closeMinutes / 60)
-    });
-    
-    // Validar que los horarios sean válidos
-    if (isNaN(openMinutes) || isNaN(closeMinutes)) {
-        console.warn('❌ Horarios de negocio inválidos, usando horarios por defecto');
-        return generateDefaultTimeSlots();
-    }
-    
-    // CORRECCIÓN PRINCIPAL: Manejar horarios normales (sin cruce de medianoche)
-    let totalSlots = 0;
-    
-    if (closeMinutes > openMinutes) {
-        // Horario normal: cierre después de apertura
-        totalSlots = Math.floor((closeMinutes - openMinutes) / 60);
-        console.log('🔄 Horario normal, slots totales:', totalSlots);
-        
-        // Generar slots cada hora
-        for (let i = 0; i < totalSlots; i++) {
-            const startMinutes = openMinutes + (i * 60);
-            const endMinutes = startMinutes + 60;
-            
-            // Calcular horas y minutos de inicio (formato 24h)
-            const startHours = Math.floor(startMinutes / 60);
-            const startMins = startMinutes % 60;
-            
-            // Calcular horas y minutos de fin (formato 24h)
-            const endHours = Math.floor(endMinutes / 60);
-            const endMins = endMinutes % 60;
-            
-            const startTime = `${startHours.toString().padStart(2, '0')}:${startMins.toString().padStart(2, '0')}`;
-            const endTime = `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
-            const label = `${startTime} - ${endTime}`;
-            
-            slots.push({
-                time: startTime,
-                label: label,
-                available: true
-            });
-            
-            console.log(`➕ Slot ${i + 1}: ${label}`);
-        }
-    } else if (closeMinutes < openMinutes) {
-        // Horario que cruza medianoche: cierre antes de apertura (next day)
-        console.log('🌙 Horario cruza medianoche');
-        
-        // Primera parte: desde apertura hasta medianoche
-        const slotsUntilMidnight = Math.floor((1440 - openMinutes) / 60);
-        for (let i = 0; i < slotsUntilMidnight; i++) {
-            const startMinutes = openMinutes + (i * 60);
-            const endMinutes = startMinutes + 60;
-            
-            const startHours = Math.floor(startMinutes / 60);
-            const startMins = startMinutes % 60;
-            const endHours = Math.floor(endMinutes / 60);
-            const endMins = endMinutes % 60;
-            
-            const startTime = `${startHours.toString().padStart(2, '0')}:${startMins.toString().padStart(2, '0')}`;
-            const endTime = `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
-            const label = `${startTime} - ${endTime}`;
-            
-            slots.push({
-                time: startTime,
-                label: label,
-                available: true
-            });
-            
-            console.log(`🌃 Slot noche ${i + 1}: ${label}`);
-        }
-        
-        // Segunda parte: desde medianoche hasta cierre
-        const slotsAfterMidnight = Math.floor(closeMinutes / 60);
-        for (let i = 0; i < slotsAfterMidnight; i++) {
-            const startMinutes = i * 60;
-            const endMinutes = startMinutes + 60;
-            
-            const startHours = Math.floor(startMinutes / 60);
-            const startMins = startMinutes % 60;
-            const endHours = Math.floor(endMinutes / 60);
-            const endMins = endMinutes % 60;
-            
-            const startTime = `${startHours.toString().padStart(2, '0')}:${startMins.toString().padStart(2, '0')}`;
-            const endTime = `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
-            const label = `${startTime} - ${endTime}`;
-            
-            slots.push({
-                time: startTime,
-                label: label,
-                available: true
-            });
-            
-            console.log(`🌅 Slot madrugada ${i + 1}: ${label}`);
-        }
-        
-        totalSlots = slotsUntilMidnight + slotsAfterMidnight;
-    } else {
-        // Misma hora de apertura y cierre
-        console.warn('⚠️ Horarios iguales, usando horarios por defecto');
-        return generateDefaultTimeSlots();
-    }
-    
-    console.log(`✅ Slots generados exitosamente: ${slots.length} turnos`);
-    console.log('📋 Slots detallados:', slots);
-    
-    return slots;
-  }, []);
-
-  // FUNCIÓN PARA VALIDAR HORARIOS - MEJORADA
-  const validateBusinessHours = useCallback((openingHour: string, closingHour: string): boolean => {
-      try {
-          const parseTimeToMinutes = (timeString: string): number => {
-              const timeParts = timeString.split(':');
-              const hours = parseInt(timeParts[0], 10); // BASE 10 EXPLÍCITA
-              const minutes = parseInt(timeParts[1] || '0', 10); // BASE 10 EXPLÍCITA
-              
-              if (isNaN(hours) || isNaN(minutes)) {
-                  throw new Error('Formato de hora inválido');
-              }
-              
-              return (hours * 60) + minutes;
-          };
-          
-          const openMinutes = parseTimeToMinutes(openingHour);
-          const closeMinutes = parseTimeToMinutes(closingHour);
-          
-          // Validaciones básicas
-          if (openMinutes < 0 || openMinutes >= 1440 || closeMinutes < 0 || closeMinutes >= 1440) {
-              console.warn('❌ Horas fuera de rango (0-23:59)');
-              return false;
-          }
-          
-          console.log('✅ Validación de horarios exitosa:', { 
-              openingHour, 
-              closingHour, 
-              openMinutes, 
-              closeMinutes,
-              openTime: `${Math.floor(openMinutes / 60)}:${openMinutes % 60}`,
-              closeTime: `${Math.floor(closeMinutes / 60)}:${closeMinutes % 60}`
-          });
-          
-          return true;
-          
-      } catch (error) {
-          console.error('❌ Error validando horarios:', error);
-          return false;
-      }
-  }, []);
-
-  // Función para horarios por defecto (fallback)
-  const generateDefaultTimeSlots = (): TimeSlot[] => {
-    const defaultSlots: TimeSlot[] = [];
-    for (let hour = 8; hour < 22; hour++) {
-      const startTime = `${hour.toString().padStart(2, '0')}:00`;
-      const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`;
-      const label = `${startTime} - ${endTime}`;
-      
-      defaultSlots.push({
-        time: startTime,
-        label: label,
-        available: true
-      });
-    }
-    return defaultSlots;
-  };
-
-  // Función para decodificar el token JWT
-  const decodeToken = useCallback((token: string): UserData | null => {
-    try {
-      const payload = token.split('.')[1];
-      const decodedPayload = atob(payload);
-      const userData = JSON.parse(decodedPayload);
-      
-      return {
-        id: userData.id || userData.userId || 0,
-        email: userData.email || '',
-        name: userData.name || userData.username || '',
-        role: userData.role || ''
-      };
-    } catch (error) {
-      console.error('Error decodificando token:', error);
-      return null;
-    }
-  }, []);
-
-  // Función para limpiar la autenticación
-  const clearAuth = useCallback(() => {
-    localStorage.removeItem('user');
-    setToken(null);
-    setUserData(null);
-  }, []);
-
-  // Obtener token y datos del usuario desde localStorage
-  useEffect(() => {
-    const getAuthData = () => {
-      try {
-        const storedUser = localStorage.getItem('user');
-        
-        if (storedUser) {
-          const parsed = JSON.parse(storedUser);
-          if (parsed.token) {
-            setToken(parsed.token);
-            const decodedUser = decodeToken(parsed.token);
-            if (decodedUser) {
-              setUserData(decodedUser);
-            }
-          } else {
-            clearAuth();
-          }
-        }
-      } catch (error) {
-        console.error('Error obteniendo datos de autenticación:', error);
-        clearAuth();
-      }
-    };
-
-    getAuthData();
-  }, [clearAuth, decodeToken]);
-
-  // Función para formatear fecha a string YYYY-MM-DD
-  const formatDate = (date: Date): string => {
-    return date.toISOString().split('T')[0];
-  };
-
-  // FUNCIÓN isTimeSlotAvailable CORREGIDA
-  const isTimeSlotAvailable = useCallback((selectedDate: string, time: string): boolean => {
-    if (!selectedDate || !time || occupiedSlots.length === 0) {
-      return true;
-    }
-
-    // CORRECCIÓN: Usar parseInt con base 10 explícita
-    const [hours, minutes] = time.split(':').map(part => parseInt(part, 10)); // BASE 10
-    
-    console.log('🔍 Verificando disponibilidad:', { selectedDate, time, hours, minutes });
-
-    // Buscar si existe algún horario ocupado en la misma fecha y hora
-    const isOccupied = occupiedSlots.some(slot => {
-      const slotDate = new Date(slot.ReservationDate);
-      const slotTime = new Date(slot.ReservationTime);
-      
-      // Comparar si es el mismo día
-      const isSameDay = formatDate(slotDate) === selectedDate;
-      
-      // Comparar si es la misma hora (usando base 10)
-      const slotHours = slotTime.getHours();
-      const slotMinutes = slotTime.getMinutes();
-      
-      const isSameTime = slotHours === hours && slotMinutes === minutes;
-      
-      if (isSameDay && isSameTime) {
-        console.log(`❌ Horario ocupado encontrado: ${slotHours}:${slotMinutes}`);
-      }
-      
-      return isSameDay && isSameTime;
+    const [pitch, setPitch] = useState<PitchResponse | null>(null);
+    const [formData, setFormData] = useState<PitchFormData>({
+        rating: '',
+        price: '',
+        size: '',
+        groundType: '',
+        roof: false
     });
 
-    const result = !isOccupied;
-    console.log(`📊 Resultado disponibilidad ${time}: ${result ? '✅ Disponible' : '❌ Ocupado'}`);
-    
-    return result;
-  }, [occupiedSlots]);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true); // Inicia en true
 
-  // Función para obtener horarios ocupados de la cancha
-  const fetchOccupiedSlots = useCallback(async (pitchId: string, authToken: string) => {
-    try {
-      if (!authToken) {
-        return [];
-      }
+    const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
+    const navigate = useNavigate();
+    const { token, isLoading } = useAuth();
 
-      const response = await fetch(`http://localhost:3000/api/reservations/findOccupiedSlotsByPitch/${pitchId}`, {
-        method: 'GET',
-        headers: { 
-          'Content-Type': 'application/json', 
-          Authorization: `Bearer ${authToken}` 
-        },
-      });
 
-      if (response.ok) {
-        const slotsData = await response.json();
-        
-        const slots = Array.isArray(slotsData) 
-          ? slotsData 
-          : slotsData.data || slotsData.occupiedSlots || [];
-        
-        setOccupiedSlots(slots);
-        return slots;
-      }
-      return [];
-    } catch (error) {
-      console.error('Error obteniendo horarios ocupados:', error);
-      return [];
-    }
-  }, []);
-
-  const fetchPitch = useCallback(async (pitchId: string) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      if (!pitchId) throw new Error('ID de cancha faltante');
-      
-      if (!token) {
-        alert('Debes iniciar sesión para reservar una cancha');
-        navigate('/login');
-        return;
-      }
-
-      const response = await fetch(`http://localhost:3000/api/pitchs/getOne/${pitchId}`, {
-        method: 'GET',
-        headers: { 
-          'Content-Type': 'application/json', 
-          Authorization: `Bearer ${token}` 
-        },
-      });
-
-      if (response.status === 401) {
-        clearAuth();
-        alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
-        navigate('/login');
-        return;
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error: ${response.status} - ${errorText}`);
-      }
-
-      const responseData = await response.json();
-
-      let pitchData: PitchWithReservations;
-      if (responseData.data) {
-        pitchData = responseData.data;
-      } else if (responseData.pitch) {
-        pitchData = responseData.pitch;
-      } else {
-        pitchData = responseData;
-      }
-
-      setPitch(pitchData);
-
-      // ACTUALIZAR EN fetchPitch - VERSIÓN CORREGIDA
-      // Generar timeSlots basados en el horario del negocio
-      if (pitchData.business?.openingHour && pitchData.business?.closingHour) {
-        // Limpiar y formatear horarios (remover segundos si existen)
-        const cleanOpeningHour = pitchData.business.openingHour.split(':').slice(0, 2).join(':');
-        const cleanClosingHour = pitchData.business.closingHour.split(':').slice(0, 2).join(':');
-        
-        console.log('🧹 Horarios limpiados:', { 
-          original: { 
-            opening: pitchData.business.openingHour, 
-            closing: pitchData.business.closingHour 
-          },
-          cleaned: { 
-            opening: cleanOpeningHour, 
-            closing: cleanClosingHour 
-          }
-        });
-        
-        // Validar primero los horarios
-        const areHoursValid = validateBusinessHours(cleanOpeningHour, cleanClosingHour);
-        
-        if (areHoursValid) {
-          const generatedSlots = generateTimeSlots(cleanOpeningHour, cleanClosingHour);
-          setTimeSlots(generatedSlots);
-          
-          console.log('🎯 Horarios del negocio aplicados:', {
-            opening: cleanOpeningHour,
-            closing: cleanClosingHour,
-            slotsGenerados: generatedSlots.length,
-            slots: generatedSlots
-          });
-        } else {
-          console.warn('❌ Horarios del negocio inválidos, usando horarios por defecto');
-          setTimeSlots(generateDefaultTimeSlots());
+    const getOne = useCallback(async () => {
+        if (!token) { 
+            return;
         }
-      } else {
-        // Fallback a horarios por defecto
-        console.warn('⚠️ No se encontraron horarios del negocio, usando horarios por defecto');
-        setTimeSlots(generateDefaultTimeSlots());
-      }
-
-      await fetchOccupiedSlots(pitchId, token);
-
-    } catch (err) {
-      console.error('Error en fetchPitch:', err);
-      setError(err instanceof Error ? err.message : 'Error al cargar la cancha');
-    } finally {
-      setLoading(false);
-    }
-  }, [token, navigate, fetchOccupiedSlots, clearAuth, generateTimeSlots, validateBusinessHours]);
-
-  useEffect(() => {
-    if (!token) {
-      const timer = setTimeout(() => {
-        if (!token) {
-          navigate('/login');
-        }
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-
-    if (!id) {
-      setError('ID de cancha inválida');
-      setLoading(false);
-      return;
-    }
-    
-    fetchPitch(id);
-  }, [id, token, fetchPitch, navigate]);
-
-  // Actualizar disponibilidad de horarios cuando cambia la fecha
-  useEffect(() => {
-    if (date) {
-      setSelectedTime(''); // Resetear selección al cambiar fecha
-    }
-  }, [date]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pitch) return;
-    if (!date || !selectedTime) {
-      setError('Selecciona fecha y horario para la reserva');
-      return;
-    }
-    
-    // Validar que el horario esté disponible
-    if (!isTimeSlotAvailable(date, selectedTime)) {
-      setError('Este horario no está disponible. Por favor selecciona otro.');
-      return;
-    }
-
-    if (!token || !userData) {
-      alert('Debes iniciar sesión');
-      navigate('/login');
-      return;
-    }
-
-    setSubmitting(true);
-    setError(null);
-
-    try {
-      const datetime = new Date(`${date}T${selectedTime}`);
-      if (isNaN(datetime.getTime())) throw new Error('Fecha/hora inválida');
-
-      // Verificar que la fecha no sea en el pasado
-      if (datetime < new Date()) {
-        throw new Error('No puedes reservar en fechas pasadas');
-      }
-
-      const body = {
-        ReservationDate: date,
-        ReservationTime: `${selectedTime}:00`,
-        pitch: pitch.id,
-        user: userData.id
-      };
-
-      console.log('Enviando reserva con datos:', body);
-
-      const res = await fetch('http://localhost:3000/api/reservations/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (res.status === 401) {
-        clearAuth();
-        alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
-        navigate('/login');
-        return;
-      }
-
-      if (!res.ok) {
-        const txt = await res.text();
-        let msg = `Error ${res.status}`;
         try {
-          const j = JSON.parse(txt);
-          msg = j.message || j.error || msg;
-        } catch {
-          msg = txt || msg;
+            setLoading(true);
+            const response = await fetch(`http://localhost:3000/api/pitchs/getOne/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                 const errors = await response.json();
+                 throw new Error(`Error ${response.status}: ${errors.message || 'Error al obtener la cancha'}`);
+            }
+
+            const json: PitchResponse = await response.json();
+            setPitch(json);
+            console.log('Datos de la cancha para editar:', json);
+            setFormData({
+                rating: json.data.rating || '',
+                price: json.data.price || '',
+                size: json.data.size || '',
+                groundType: json.data.groundType || '',
+                roof: json.data.roof || false
+            });
+
+        } catch (error) {
+            console.error('Error obteniendo cancha:', error);
+            showNotification(errorHandler(error), 'error');
+        } finally {
+            setLoading(false);
+        }
+    }, [showNotification, token, id]);
+
+    useEffect(() => {
+        if (!isLoading && id) {
+            getOne();
+        }
+    }, [id, getOne, isLoading]);
+
+
+    const update = async (pitchData: Partial<Pitch>, image: File | null) => {
+        try {
+            setLoading(true);
+            
+            if (!token) {
+                throw new Error('Token de autenticación no encontrado');
+            }
+
+            const payload = new FormData();
+
+            if (pitchData.rating) payload.append('rating', pitchData.rating.toString());
+            if (pitchData.price) payload.append('price', pitchData.price.toString());
+            if (pitchData.size) payload.append('size', pitchData.size);
+            if (pitchData.groundType) payload.append('groundType', pitchData.groundType);
+            if (pitchData.roof !== undefined) payload.append('roof', pitchData.roof.toString());
+            if (image) {
+                payload.append('image', image); 
+            }
+          payload.append('business', pitch?.data.business?.id || '');
+            console.log(payload);
+            const response = await fetch(`http://localhost:3000/api/pitchs/update/${id}`, {
+                method: "PATCH",
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: payload
+            });
+
+            if (!response.ok) {
+                const errors = await response.json();
+                throw errors;
+            }
+            showNotification('Cancha actualizada con éxito!', 'success');
+            navigate('/myBusiness/getAll');
+        } catch (error) {
+            showNotification(errorHandler(error), 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value, type } = e.target;
+        
+        if (type === 'checkbox') {
+            const checked = (e.target as HTMLInputElement).checked;
+            setFormData(prev => ({
+                ...prev,
+                [name]: checked
+            }));
+        } else {
+                setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    };
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        
+        if (!id) {
+            showNotification('No se encontró el ID de la cancha', 'error');
+            return;
+        }
+
+        const pitchUpdate: Partial<Pitch> = {};
+
+        if (formData.rating && formData.rating.toString().trim() !== '') {
+            const rating = Number(formData.rating);
+            if (!isNaN(rating) && rating >= 1 && rating <= 5) {
+                pitchUpdate.rating = rating;
+            } else {
+                showNotification('El rating debe ser un número entre 1 y 5', 'error');
+                return;
+            }
+        }
+
+        if (formData.price && formData.price.toString().trim() !== '') {
+            const price = Number(formData.price);
+            if (!isNaN(price) && price > 0) {
+                pitchUpdate.price = price;
+            } else {
+                showNotification('El precio debe ser un número mayor a 0', 'error');
+                return;
+            }
         }
         
-        if (msg.includes('User not found')) {
-          throw new Error('Error en el sistema: usuario no encontrado. Por favor contacta con soporte.');
+        if (formData.size && formData.size.trim() !== '') {
+            pitchUpdate.size = formData.size.trim();
         }
+        if (formData.groundType && formData.groundType.trim() !== '') {
+            pitchUpdate.groundType = formData.groundType.trim();
+        }
+
+        pitchUpdate.roof = formData.roof;
         
-        throw new Error(msg);
-      }
 
-      const result = await res.json();
-      console.log('Reserva creada exitosamente:', result);
+        if (Object.keys(pitchUpdate).length === 0 && !imageFile) {
+            showNotification('Debe modificar al menos un campo o agregar una imagen para actualizar', 'warning');
+            return;
+        }
 
-      if (id) {
-        await fetchOccupiedSlots(id, token);
-      }
+        update(pitchUpdate, imageFile);
+    };
 
-      alert('✅ Reserva creada correctamente');
-      navigate('/reserve-pitch');
-    } catch (err) {
-      console.error('Error en handleSubmit:', err);
-      setError(err instanceof Error ? err.message : 'Error al crear la reserva');
-    } finally {
-      setSubmitting(false);
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+         const file = e.target.files?.[0];
+        if (file) {
+            if (!file.type.startsWith('image/')) {
+                showNotification('Por favor, selecciona un archivo de imagen válido', 'error');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('La imagen no debe superar los 5MB', 'error');
+                return;
+            }
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImagePreview(e.target?.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    const removeImage = () => {
+        setImageFile(null);
+        setImagePreview(null);
+        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    };
+
+    if (isLoading || loading && !pitch) {
+        return <div>Cargando datos de la cancha...</div>
     }
-  };
 
-  // Función para obtener horarios ocupados del día seleccionado
-  const getBusyTimesForSelectedDate = useCallback((): string[] => {
-    if (!date || occupiedSlots.length === 0) return [];
-
-    return occupiedSlots
-      .filter(slot => {
-        const slotDate = new Date(slot.ReservationDate);
-        return formatDate(slotDate) === date;
-      })
-      .map(slot => {
-        const slotTime = new Date(slot.ReservationTime);
-        return `${slotTime.getHours().toString().padStart(2, '0')}:${slotTime.getMinutes().toString().padStart(2, '0')}`;
-      })
-      .sort();
-  }, [date, occupiedSlots]);
-
-  const busyTimes = getBusyTimesForSelectedDate();
-
-  // Función para formatear la fecha en español
-  const formatSpanishDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  // Función para ir al login
-  const goToLogin = () => {
-    clearAuth();
-    navigate('/login');
-  };
-
-  // Estados de carga
-  if (!token) {
     return (
-      <div className="reserve-pitch-loading">
-        <div className="loading-spinner"></div>
-        <p className="loading-text">Verificando autenticación...</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="reserve-pitch-loading">
-        <div className="loading-spinner"></div>
-        <p className="loading-text">Cargando información de la cancha...</p>
-      </div>
-    );
-  }
-
-  if (error && !error.includes('no está disponible')) {
-    return (
-      <div className="reserve-pitch-error">
-        <div className="error-message">
-          <h3>❌ Error al cargar cancha</h3>
-          <p>{error}</p>
-        </div>
-        <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center'}}>
-          <button onClick={() => fetchPitch(id!)} className="retry-button">
-            Reintentar
-          </button>
-          <button onClick={goToLogin} className="secondary-button">
-            Iniciar Sesión Nuevamente
-          </button>
-          <button onClick={() => navigate('/reserve-pitch')} className="secondary-button">
-            ← Volver a canchas
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!pitch) {
-    return (
-      <div className="reserve-pitch-error">
-        <div className="error-message">
-          <h3>⚠️ No se encontró la cancha</h3>
-          <p>La cancha solicitada no existe o no está disponible.</p>
-        </div>
-        <button onClick={() => navigate('/reserve-pitch')} className="retry-button">
-          ← Volver a canchas
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="reserve-pitch-container">
-      {/* Header Section */}
-      <div className="reserve-pitch-header">
-        <button 
-          onClick={() => navigate('/reserve-pitch')} 
-          className="back-button"
-        >
-          ← Volver a canchas
-        </button>
-        <h1 className="reserve-pitch-title">🏟️ Reservar Cancha</h1>
-        <p className="reserve-pitch-subtitle">
-          Completa los datos para realizar tu reserva
-        </p>
-      </div>
-
-      {/* User Info */}
-      {userData && (
-        <div style={{
-          background: '#e8f4fd',
-          padding: '10px 15px',
-          borderRadius: '8px',
-          marginBottom: '20px',
-          borderLeft: '4px solid #3498db'
-        }}>
-          <strong>👤 Usuario:</strong> {userData.email || userData.name || 'Usuario'} 
-          {userData.role && <span style={{marginLeft: '10px'}}>| 🎯 Rol: {userData.role}</span>}
-          <span style={{marginLeft: '10px'}}>| 🆔 ID: {userData.id}</span>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <div className="reservation-content">
-        {/* Pitch Card */}
-        <div className="pitch-card-large">
-          <div className="pitch-image-section">
-            <img
-              src={pitch.imageUrl || 'https://via.placeholder.com/600x400?text=Cancha+Deportiva'}
-              alt={`Cancha ${pitch.id}`}
-              className="pitch-image-large"
-            />
-            <div className="pitch-badges">
-              <span className="pitch-id-badge">Cancha #{pitch.id}</span>
-              {pitch.roof && <span className="feature-badge covered">🏠 Cubierta</span>}
-              <span className="feature-badge size">📏 {pitch.size}</span>
-              <span className="feature-badge ground">🌿 {pitch.groundType}</span>
-              {pitch.business?.openingHour && pitch.business?.closingHour && (
-                <span className="feature-badge hours">🕒 {pitch.business.openingHour} - {pitch.business.closingHour}</span>
-              )}
-            </div>
-          </div>
-          
-          <div className="pitch-details-section">
-            <div className="pitch-header">
-              <h2>{pitch.business?.businessName || pitch.business?.name || 'Negocio'}</h2>
-              <div className="price-tag">
-                <span className="price-label">Precio por hora</span>
-                <span className="price-amount">${pitch.price}</span>
-              </div>
-            </div>
-
-            <div className="detail-item">
-              <span className="detail-icon">📍</span>
-              <div className="detail-content">
-                <strong>Dirección:</strong>
-                <span>{pitch.business?.address || 'Dirección no disponible'}</span>
-              </div>
-            </div>
-
-            {/* Información de horario del negocio */}
-            {pitch.business?.openingHour && pitch.business?.closingHour && (
-              <div className="detail-item">
-                <span className="detail-icon">🕒</span>
-                <div className="detail-content">
-                  <strong>Horario de atención:</strong>
-                  <span>{pitch.business.openingHour} - {pitch.business.closingHour} ({timeSlots.length} turnos disponibles)</span>
+        <div className='crud-form-container'>
+            <h2 className='crud-form-title'>Actualizar cancha (ID: {id})</h2>
+            <form onSubmit={handleSubmit} className='crud-form'>
+                <div className='crud-form-item'>
+                    <label>Rating (1-5)</label>
+                    <input 
+                        name="rating" 
+                        type="number" 
+                        min="1" 
+                        max="5" 
+                        step="0.1"
+                        placeholder="Opcional - Rating de 1 a 5" 
+                        value={formData.rating} 
+                        onChange={handleChange} 
+                    />
                 </div>
-              </div>
-            )}
-
-            {/* Información de disponibilidad */}
-            <div className="availability-info">
-              <div className="availability-header">
-                <span className="availability-icon">📊</span>
-                <strong>Disponibilidad del día</strong>
-              </div>
-              <div className="availability-stats">
-                {date ? (
-                  <span className="stat-item">
-                    Horarios ocupados hoy: <strong>{busyTimes.length}</strong> de {timeSlots.length}
-                  </span>
-                ) : (
-                  <span className="stat-item">
-                    Selecciona una fecha para ver disponibilidad
-                  </span>
-                )}
-              </div>
-              {date && (
-                <div className="availability-details">
-                  <div className="availability-progress">
-                    <div 
-                      className="progress-bar"
-                      style={{
-                        width: `${(busyTimes.length / timeSlots.length) * 100}%`,
-                        backgroundColor: busyTimes.length === 0 ? '#2ecc71' : 
-                                       busyTimes.length === timeSlots.length ? '#e74c3c' : '#f39c12'
-                      }}
-                    ></div>
-                  </div>
-                  <div className="availability-status">
-                    {busyTimes.length === 0 && (
-                      <span className="status-available">✅ Totalmente disponible</span>
-                    )}
-                    {busyTimes.length > 0 && busyTimes.length < timeSlots.length && (
-                      <span className="status-partial">⚠️ Parcialmente ocupada</span>
-                    )}
-                    {busyTimes.length === timeSlots.length && (
-                      <span className="status-full">❌ Completamente ocupada</span>
-                    )}
-                  </div>
+                
+                <div className='crud-form-item'>
+                    <label>Precio ($)</label>
+                    <input 
+                        name="price" 
+                        type="number" 
+                        min="0" 
+                        step="100"
+                        placeholder="Opcional - Precio por hora" 
+                        value={formData.price} 
+                        onChange={handleChange} 
+                    />
                 </div>
-              )}
-            </div>
-
-            <div className="features-grid">
-              <div className="feature-card">
-                <div className="feature-icon">🏠</div>
-                <div className="feature-info">
-                  <div className="feature-label">Cubierta</div>
-                  <div className="feature-value">{pitch.roof ? 'Sí' : 'No'}</div>
+                
+                <div className='crud-form-item'>
+                    <label>Tamaño</label>
+                    <select 
+                        name="size" 
+                        value={formData.size} 
+                        onChange={handleChange} 
+                    >
+                        {/* ... (tus options) ... */}
+                        <option value="">Seleccionar tamaño (opcional)</option>
+                        <option value="5v5">5v5 (Fútbol 5) - 20x40m</option>
+                        <option value="7v7">7v7 (Fútbol 7) - 40x60m</option>
+                        <option value="11v11">11v11 (Fútbol 11) - 90x120m</option>
+                    </select>
                 </div>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-icon">📏</div>
-                <div className="feature-info">
-                  <div className="feature-label">Tamaño</div>
-                  <div className="feature-value">{pitch.size || 'No especificado'}</div>
+                
+                <div className='crud-form-item'>
+                    <label>Tipo de suelo</label>
+                    <select 
+                        name="groundType" 
+                        value={formData.groundType} 
+                        onChange={handleChange} 
+                    >
+                        {/* ... (tus options) ... */}
+                        <option value="">Seleccionar tipo (opcional)</option>
+                        <option value="césped natural">Césped natural</option>
+                        <option value="césped sintético">Césped sintético</option>
+                        <option value="cemento">Cemento</option>
+                        <option value="arcilla">Arcilla</option>
+                    </select>
                 </div>
-              </div>
-
-              <div className="feature-card">
-                <div className="feature-icon">🌿</div>
-                <div className="feature-info">
-                  <div className="feature-label">Tipo de suelo</div>
-                  <div className="feature-value">{pitch.groundType || 'No especificado'}</div>
+                
+                <div className='crud-form-item'>
+                    <label>
+                        <input 
+                            type="checkbox" 
+                            name="roof" 
+                            checked={formData.roof} 
+                            onChange={handleChange} 
+                        />
+                        Tiene techo
+                    </label>
                 </div>
-              </div>
 
-              <div className="feature-card">
-                <div className="feature-icon">⏰</div>
-                <div className="feature-info">
-                  <div className="feature-label">Horarios disponibles</div>
-                  <div className="feature-value">{timeSlots.length} turnos</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Reservation Form */}
-        <div className="reservation-form-container">
-          <div className="form-header">
-            <h3>📅 Selecciona fecha y horario</h3>
-            <p>Elige cuándo quieres reservar esta cancha (turnos de 1 hora)</p>
-            {pitch.business?.openingHour && pitch.business?.closingHour && (
-              <p style={{fontSize: '0.9rem', color: '#3498db', marginTop: '5px'}}>
-                Horario del negocio: {pitch.business.openingHour} - {pitch.business.closingHour}
-              </p>
-            )}
-          </div>
-          
-          <form onSubmit={handleSubmit} className="reservation-form">
-            <div className="form-group">
-              <label className="form-label">
-                <span className="label-icon">📅</span>
-                Fecha de reserva
-              </label>
-              <input 
-                type="date" 
-                value={date} 
-                onChange={(e) => setDate(e.target.value)} 
-                className="form-input"
-                min={new Date().toISOString().split('T')[0]}
-                required 
-              />
-            </div>
-
-            {/* Selector de horarios */}
-            {date && (
-              <div className="form-group">
-                <label className="form-label">
-                  <span className="label-icon">⏰</span>
-                  Horario disponible (1 hora)
-                  {timeSlots.length > 0 && (
-                    <span style={{fontSize: '0.8rem', color: '#7f8c8d', marginLeft: '8px'}}>
-                      ({timeSlots.length} turnos disponibles)
-                    </span>
-                  )}
-                </label>
-                <div className="time-slots-grid">
-                  {timeSlots.map((slot) => {
-                    const isAvailable = isTimeSlotAvailable(date, slot.time);
-                    const isSelected = selectedTime === slot.time;
-                    
-                    return (
-                      <button
-                        key={slot.time}
-                        type="button"
-                        className={`time-slot ${isSelected ? 'time-slot-selected' : ''} ${
-                          isAvailable ? 'time-slot-available' : 'time-slot-unavailable'
-                        }`}
-                        onClick={() => isAvailable && setSelectedTime(slot.time)}
-                        disabled={!isAvailable}
-                      >
-                        <div className="time-slot-content">
-                          <div className="time-slot-label">{slot.label}</div>
-                          <div className="time-slot-status">
-                            {isAvailable ? '✅ Disponible' : '❌ Ocupado'}
-                          </div>
+                <div className='crud-form-item'>
+                    <label>Imagen de la cancha</label>
+                    <input 
+                        type="file" 
+                        name="image"
+                        accept="image/*" 
+                        onChange={handleImageChange}
+                    />
+                    {imagePreview && (
+                        <div className='image-preview-container'>
+                            <p>Vista previa:</p>
+                            <div className='image-preview'>
+                                <img src={imagePreview} alt="Vista previa de la cancha" />
+                                <button type="button" onClick={removeImage} className='remove-image-btn'>×</button>
+                            </div>
                         </div>
-                      </button>
-                    );
-                  })}
+                    )}
                 </div>
-                {selectedTime && (
-                  <div className="selected-time-info">
-                    <strong>Horario seleccionado:</strong> {timeSlots.find(slot => slot.time === selectedTime)?.label}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Mostrar horarios ocupados si hay una fecha seleccionada */}
-            {date && busyTimes.length > 0 && (
-              <div className="busy-times-warning">
-                <div className="warning-header">
-                  <span className="warning-icon">⏰</span>
-                  <strong>Horarios ocupados para el {formatSpanishDate(date)}:</strong>
+                
+                <div className='crud-form-actions'>
+                    <button type="submit" className='primary' disabled={loading}>
+                        {loading ? 'Actualizando...' : 'Actualizar'}
+                    </button>
                 </div>
-                <div className="busy-times-list">
-                  {busyTimes.map((busyTime, index) => (
-                    <span key={index} className="busy-time-badge">
-                      {busyTime} hs
-                    </span>
-                  ))}
-                </div>
-                <p className="warning-text">Estos horarios no están disponibles para reservar</p>
-              </div>
-            )}
-
-            {date && busyTimes.length === 0 && occupiedSlots.length > 0 && (
-              <div className="available-times-info">
-                <div className="info-header">
-                  <span className="info-icon">✅</span>
-                  <strong>¡Todos los horarios disponibles para el {formatSpanishDate(date)}!</strong>
-                </div>
-                <p className="info-text">Puedes seleccionar cualquier horario para este día.</p>
-              </div>
-            )}
-
-            {error && (
-              <div className={`error-message ${error.includes('no está disponible') ? 'warning-message' : ''}`}>
-                <span className="error-icon">⚠️</span>
-                <div className="error-content">
-                  <strong>{error.includes('no está disponible') ? 'Horario no disponible:' : 'Error:'}</strong>
-                  <span>{error}</span>
-                </div>
-              </div>
-            )}
-
-            <div className="reservation-summary">
-              <div className="summary-item">
-                <span>Cancha:</span>
-                <strong>#{pitch.id} - {pitch.business?.businessName || 'Negocio'}</strong>
-              </div>
-              <div className="summary-item">
-                <span>Precio por hora:</span>
-                <strong>${pitch.price}</strong>
-              </div>
-              {pitch.business?.openingHour && pitch.business?.closingHour && (
-                <div className="summary-item">
-                  <span>Horario negocio:</span>
-                  <strong>{pitch.business.openingHour} - {pitch.business.closingHour}</strong>
-                </div>
-              )}
-              {date && selectedTime && (
-                <>
-                  <div className="summary-item">
-                    <span>Fecha seleccionada:</span>
-                    <strong>{formatSpanishDate(date)}</strong>
-                  </div>
-                  <div className="summary-item">
-                    <span>Horario seleccionado:</span>
-                    <strong>{timeSlots.find(slot => slot.time === selectedTime)?.label}</strong>
-                  </div>
-                  <div className="summary-item availability-status">
-                    <span>Disponibilidad:</span>
-                    <strong className="available">
-                      ✅ Disponible
-                    </strong>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="form-actions">
-              <button 
-                type="button" 
-                onClick={() => navigate('/reserve-pitch')} 
-                className="btn btn-secondary"
-                disabled={submitting}
-              >
-                ← Cancelar
-              </button>
-              <button 
-                type="submit" 
-                className="btn btn-primary"
-                disabled={submitting || !date || !selectedTime || !isTimeSlotAvailable(date, selectedTime)}
-              >
-                {submitting ? (
-                  <>
-                    <span className="button-spinner"></span>
-                    Procesando reserva...
-                  </>
-                ) : (
-                  <>
-                    <span className="button-icon">✅</span>
-                    Confirmar Reserva - ${pitch.price}
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
+            </form>
         </div>
-      </div>
-    </div>
-  );
+    )
+}
+
+type PitchResponse = {
+    data: Pitch
 }

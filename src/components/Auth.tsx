@@ -6,21 +6,24 @@ import type { UserData } from '../types/userData';
 export function useAuth() {
   const [userData, setUserData] = useState<UserData | undefined>(undefined);
   const [token, setToken] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true); 
   const navigate = useNavigate();
     
   const checkAuth = useCallback(() => {
+    setIsLoading(true); 
     const stored = localStorage.getItem('user');
 
     if (!stored) {
       setUserData(undefined);
       setToken(undefined);
+      setIsLoading(false);
       return;
     }
 
     try {
       const decoded = jwtDecode(stored) as UserData;
       setUserData(decoded);
-      setToken(stored);
+      setToken(JSON.parse(stored).token);
     } catch (error) {
       console.error('Error decodificando token:', error);
       alert('Error decodificando token:' + error);
@@ -28,6 +31,8 @@ export function useAuth() {
       setUserData(undefined);
       setToken(undefined);
       navigate('/login');
+    } finally {
+      setIsLoading(false);
     }
   }, [navigate]);
 
@@ -42,5 +47,5 @@ export function useAuth() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [checkAuth]);
 
-  return { userData, token, checkAuth };
+  return { userData, token, isLoading, checkAuth };
 }

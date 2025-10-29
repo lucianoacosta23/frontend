@@ -300,7 +300,7 @@ export default function BusinessPitchGetAll() {
 
     // FUNCIÓN PARA NAVEGAR A EDITAR
     const handleEdit = (pitchId: number) => {
-        navigate(`/MyBusiness/edit/${pitchId}`);
+        navigate(`/myBusiness/edit/${pitchId}`);
     };
 
     if (loading) {

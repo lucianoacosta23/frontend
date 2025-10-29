@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { Pitch } from '../../types/pitchType.ts';
 import { useNavigate, useOutletContext, Navigate } from 'react-router';
+import { useAuth } from '../../components/Auth.tsx';
 
 export default function PitchAdd() {
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -13,59 +14,18 @@ export default function PitchAdd() {
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const navigate = useNavigate();
 
-    // VERIFICACIÓN DE SESIÓN
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
+    const { userData, token } = useAuth();
+
+    if (!userData) {
         alert('sesion no iniciada');
         return <Navigate to="/login" />;
     }
 
-    // FUNCIÓN PARA OBTENER TOKEN Y USERID
-    const getAuthData = useCallback(() => {
-        try {
-            const userStr = localStorage.getItem('user');
-            if (!userStr) {
-                throw new Error('No se encontró información de usuario');
-            }
-
-            let token: string;
-            let userId: number | null = null;
-
-            try {
-                const userObject = JSON.parse(userStr);
-                token = userObject.token || userStr;
-                userId = userObject.id;
-            } catch {
-                token = userStr;
-            }
-
-            if (!userId && token) {
-                try {
-                    const payload = token.split('.')[1];
-                    if (payload) {
-                        const decoded = JSON.parse(atob(payload));
-                        userId = decoded.id || decoded.userId || decoded.sub;
-                        console.log('Usuario decodificado del token:', decoded);
-                    }
-                } catch (decodeError) {
-                    console.error('Error decodificando token:', decodeError);
-                }
-            }
-
-            console.log('Token extraído:', token.substring(0, 50) + '...');
-            console.log('UserId extraído:', userId);
-
-            return { token, userId };
-        } catch (error) {
-            console.error('Error obteniendo datos de auth:', error);
-            throw error;
-        }
-    }, []);
 
     // FUNCIÓN PARA OBTENER EL BUSINESSID DEL USUARIO
     const getBusinessId = useCallback(async () => {
         try {
-            const { token, userId } = getAuthData();
+            const userId = userData.id;
             
             if (!token) {
                 throw new Error('No se encontró token de autenticación');
@@ -141,7 +101,7 @@ export default function PitchAdd() {
             setHasNoBusiness(true);
             throw error;
         }
-    }, [getAuthData, showNotification]);
+    }, [showNotification, token, userData]);
 
     // EFECTO PARA OBTENER EL BUSINESSID AL CARGAR EL COMPONENTE
     useEffect(() => {
@@ -200,7 +160,6 @@ export default function PitchAdd() {
     const add = async (pitchData: FormData) => {
         try {
             setLoading(true);
-            const { token } = getAuthData();
 
             if (!token) {
                 throw new Error('No se encontró token de autenticación');

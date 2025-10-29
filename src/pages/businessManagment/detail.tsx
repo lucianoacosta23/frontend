@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { useOutletContext, useParams, Navigate } from 'react-router';
 
 import '../../static/css/MybusinessDetail.css'
+import { useAuth } from '../../components/Auth.tsx';
+import { errorHandler } from '../../types/apiError.ts';
+
 export default function businessPitchDetail() {
     const [data, setData] = useState<PitchResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -11,8 +14,8 @@ export default function businessPitchDetail() {
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const { id } = useParams<{ id: string }>();
 
-    // VERIFICACIÓN DE SESIÓN
-    const storedUser = localStorage.getItem('user');
+    const { storedUser, token } = useAuth();
+
     if (!storedUser) {
         alert('sesion no iniciada');
         return <Navigate to="/login" />;
@@ -22,8 +25,6 @@ export default function businessPitchDetail() {
         try {
             setLoading(true);
             setError(false);
-            
-            const token = JSON.parse(localStorage.getItem('user') || '{}').token;
             
             if (!token) {
                 throw new Error('No se encontró token de autenticación');

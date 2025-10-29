@@ -199,7 +199,7 @@ const BusinessUpdate = () => {
         businessName: formData.businessName.trim(),
         address: formData.address.trim(),
         locality: parseInt(formData.localityId),
-        // NOTA: Se mantiene el owner original del negocio, no se envía el del formulario
+        owner:formData.ownerId,
         reservationDepositPercentage: depositPercentage,
         openingAt: formData.openingAt,
         closingAt: formData.closingAt,
@@ -208,10 +208,8 @@ const BusinessUpdate = () => {
 
       console.log('Datos a enviar al backend:', updateData);
 
-      let response;
-      
       // Intentar con PUT incluyendo ID en el cuerpo
-      response = await fetch(`http://localhost:3000/api/business/update/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/business/update/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -220,31 +218,6 @@ const BusinessUpdate = () => {
         body: JSON.stringify(updateData)
       });
 
-      // Si falla, intentar con PATCH
-      if (!response.ok) {
-        console.log('🔄 Intentando con PATCH...');
-        response = await fetch(`http://localhost:3000/api/business/update/${id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(updateData)
-        });
-      }
-
-      // Si aún falla, intentar sin ID en la URL pero sí en el cuerpo
-      if (!response.ok) {
-        console.log('🔄 Intentando endpoint alternativo...');
-        response = await fetch('http://localhost:3000/api/business/update', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(updateData)
-        });
-      }
 
       if (!response.ok) {
         const responseText = await response.text();
