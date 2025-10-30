@@ -3,12 +3,12 @@ import { useOutletContext, Navigate } from 'react-router';
 import { errorHandler } from '../../types/apiError.ts';
 import '../../static/css/MybusinessReservations.css';
 
-// Interfaces TypeScript
+// Interfaces TypeScript - SOLO 4 ESTADOS
 interface Reservation {
   id: number;
   ReservationDate: string;
   ReservationTime: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'attended';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   totalPrice?: number;
   pitchId?: number;
   userId?: number;
@@ -31,7 +31,7 @@ interface ReservationResponse {
   data: Reservation[];
 }
 
-type FilterType = 'all' | 'today' | 'pending' | 'confirmed' | 'attended' | 'cancelled';
+type FilterType = 'all' | 'today' | 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
 export default function BusinessReservations() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -162,6 +162,258 @@ export default function BusinessReservations() {
     }
   }, [getAuthData, showNotification]);
 
+  // 🎯 MAPEO DE ESTADOS FRONTEND → BACKEND (SOLO 4 ESTADOS)
+  const mapStatusToBackend = (frontendStatus: string): string => {
+    const statusMap: Record<string, string> = {
+      'pending': 'pendiente',
+      'confirmed': 'en curso',
+      'completed': 'completada',
+      'cancelled': 'cancelada'
+    };
+    
+    console.log('🎯 Mapeando estado frontend->backend:', frontendStatus, '->', statusMap[frontendStatus]);
+    return statusMap[frontendStatus] || frontendStatus;
+  };
+
+  // 🎯 MAPEO DE ESTADOS BACKEND → FRONTEND (SOLO 4 ESTADOS)
+  const mapStatusFromBackend = (backendStatus: string): string => {
+    const statusMap: Record<string, string> = {
+      'pendiente': 'pending',
+      'en curso': 'confirmed', 
+      'completada': 'completed',
+      'cancelada': 'cancelada'
+    };
+    
+    console.log('🎯 Mapeando estado backend->frontend:', backendStatus, '->', statusMap[backendStatus]);
+    return statusMap[backendStatus] || backendStatus;
+  };
+
+  // 🎯 FUNCIÓN PARA FORMATEAR FECHA PARA EL BACKEND
+  const formatDateForBackend = (dateString: string): string => {
+    try {
+      console.log('🎯 Formateando fecha original:', dateString);
+      
+      // Si la fecha viene con 'T', extraer solo la parte de fecha
+      if (dateString.includes('T')) {
+        const datePart = dateString.split('T')[0];
+        console.log('🎯 Fecha extraída (con T):', datePart);
+        return datePart;
+      }
+      
+      // Si la fecha ya está en formato YYYY-MM-DD, usarla directamente
+      if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        console.log('🎯 Fecha ya en formato correcto:', dateString);
+        return dateString;
+      }
+      
+      // Si la fecha viene en otro formato, convertirla
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        throw new Error('Fecha inválida');
+      }
+      
+      // Formatear como YYYY-MM-DD
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      
+      console.log('🎯 Fecha formateada:', formattedDate);
+      return formattedDate;
+      
+    } catch (error) {
+      console.error('🎯 Error formateando fecha:', error);
+      // Fallback: intentar extraer fecha de cualquier formato
+      const dateMatch = dateString.match(/\d{4}-\d{2}-\d{2}/);
+      return dateMatch ? dateMatch[0] : dateString;
+    }
+  };
+
+  // 🎯 FUNCIÓN PARA FORMATEAR HORA PARA EL BACKEND
+  const formatTimeForBackend = (timeString: string): string => {
+    try {
+      console.log('🎯 Formateando hora original:', timeString);
+      
+      // Si ya está en formato HH:MM o HH:MM:SS, verificar y ajustar
+      if (timeString.includes(':')) {
+        const timeParts = timeString.split(':');
+        if (timeParts.length >= 2) {
+          // Asegurar formato HH:MM (sin segundos para el backend)
+          const hours = timeParts[0].padStart(2, '0');
+          const minutes = timeParts[1].padStart(2, '0');
+          const formattedTime = `${hours}:${minutes}`;
+          console.log('🎯 Hora formateada:', formattedTime);
+          return formattedTime;
+        }
+      }
+      
+      // Si es una fecha completa, extraer la hora
+      const date = new Date(timeString);
+      if (!isNaN(date.getTime())) {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const formattedTime = `${hours}:${minutes}`;
+        console.log('🎯 Hora extraída de fecha:', formattedTime);
+        return formattedTime;
+      }
+      
+      console.log('🎯 Hora sin cambios:', timeString);
+      return timeString;
+      
+    } catch (error) {
+      console.error('🎯 Error formateando hora:', error);
+      return timeString;
+    }
+  };
+
+  // 🎯 FUNCIÓN PARA ACTUALIZAR ESTADO DE RESERVACIÓN
+  const updateReservationStatus = async (reservationId: number, newStatus: string) => {
+    try {
+      setUpdatingReservation(reservationId);
+      const { token } = getAuthData();
+      
+      if (!token) {
+        throw new Error('No se encontró el token de autenticación');
+      }
+
+      // 🎯 ENCONTRAR LA RESERVACIÓN ACTUAL para obtener todos sus datos
+      const currentReservation = reservations.find(r => r.id === reservationId);
+      if (!currentReservation) {
+        throw new Error('No se encontró la reservación');
+      }
+
+      console.log('🎯 Reservación actual encontrada:', currentReservation);
+
+      // 🎯 PREPARAR EL BODY COMPLETO con todos los campos requeridos Y FORMATEADOS
+      const updateBody = {
+        ReservationDate: formatDateForBackend(currentReservation.ReservationDate),
+        ReservationTime: formatTimeForBackend(currentReservation.ReservationTime),
+        status: mapStatusToBackend(newStatus),
+        pitch: currentReservation.pitchId || (currentReservation.pitch?.id),
+        user: currentReservation.userId || (currentReservation.user?.id),
+        // 🎯 AGREGAR PRECIO SI EXISTE
+        ...(currentReservation.totalPrice && { totalPrice: currentReservation.totalPrice })
+      };
+
+      console.log('🎯 Body final para enviar:', updateBody);
+
+      // 🎯 VALIDAR QUE TENEMOS TODOS LOS CAMPOS REQUERIDOS
+      if (!updateBody.pitch) {
+        throw new Error('No se encontró el ID de la cancha');
+      }
+      if (!updateBody.user) {
+        throw new Error('No se encontró el ID del usuario');
+      }
+      if (!updateBody.ReservationDate || updateBody.ReservationDate === 'Invalid Date') {
+        throw new Error('Fecha de reservación inválida');
+      }
+      if (!updateBody.ReservationTime) {
+        throw new Error('Hora de reservación inválida');
+      }
+
+      console.log('🎯 Enviando actualización completa:', { 
+        reservationId, 
+        frontendStatus: newStatus,
+        backendStatus: mapStatusToBackend(newStatus),
+        fullBody: updateBody
+      });
+
+      // 🎯 USAR EL ENDPOINT DE UPDATE CON PUT
+      const response = await fetch(`http://localhost:3000/api/reservations/update/${reservationId}`, {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updateBody)
+      });
+
+      console.log('🎯 Response status:', response.status);
+
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem('user');
+        alert('Sesión expirada o inválida');
+        window.location.href = '/login';
+        return;
+      }
+
+      // 🎯 OBTENER EL TEXTO CRUDO PRIMERO
+      const responseText = await response.text();
+      console.log('🎯 Response raw text:', responseText);
+      
+      if (!response.ok) {
+        let errorMessage = `Error ${response.status}`;
+        
+        if (responseText.trim().startsWith('{')) {
+          try {
+            const errorJson = JSON.parse(responseText);
+            console.log('🎯 Error JSON:', errorJson);
+            
+            // 🎯 MANEJO ESPECÍFICO DE ERRORES DE VALIDACIÓN
+            if (errorJson.errors && Array.isArray(errorJson.errors)) {
+              const errorMessages = errorJson.errors.map((err: any) => `${err.path}: ${err.msg}`).join(', ');
+              errorMessage = `Errores de validación: ${errorMessages}`;
+              
+              // 🎯 MOSTRAR DETALLES ESPECÍFICOS EN CONSOLA
+              console.error('🎯 Errores de validación detallados:', errorJson.errors);
+            } else {
+              errorMessage = errorJson.error || errorJson.message || errorMessage;
+            }
+          } catch {
+            errorMessage = responseText || errorMessage;
+          }
+        } else {
+          errorMessage = responseText || errorMessage;
+        }
+        
+        throw new Error(errorMessage);
+      }
+      
+      // 🎯 PARSEAR RESPUESTA EXITOSA
+      let result = null;
+      if (responseText.trim() && responseText.trim().startsWith('{')) {
+        try {
+          result = JSON.parse(responseText);
+          console.log('🎯 Parsed result:', result);
+        } catch {
+          console.log('🎯 Response no es JSON válido, pero operación exitosa');
+        }
+      }
+      
+      const statusMessages: Record<string, string> = {
+        'pending': 'Reservación marcada como pendiente!',
+        'confirmed': 'Reservación en curso!',
+        'completed': 'Reservación completada!',
+        'cancelled': 'Reservación cancelada!'
+      };
+      
+      showNotification(statusMessages[newStatus] || 'Estado actualizado!', 'success');
+      
+      // 🎯 ACTUALIZAR ESTADO LOCAL CON EL ESTADO DEL FRONTEND
+      setReservations(prev => prev.map(res => 
+        res.id === reservationId ? { ...res, status: newStatus as any } : res
+      ));
+      
+    } catch (error) {
+      console.error(`🎯 Error completo actualizando estado:`, error);
+      
+      let errorMessage = 'Error al actualizar la reservación';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      showNotification(errorMessage, 'error');
+      
+      // 🎯 RECARGAR DATOS PARA VERIFICAR ESTADO ACTUAL
+      setTimeout(() => {
+        initializeData();
+      }, 2000);
+      
+    } finally {
+      setUpdatingReservation(null);
+    }
+  };
+
   // 🎯 FUNCIÓN para obtener todas las reservaciones del negocio
   const getReservations = useCallback(async (currentBusinessId?: number) => {
     try {
@@ -215,8 +467,28 @@ export default function BusinessReservations() {
       }
       
       const json: ReservationResponse = await response.json();
-      setReservations(json.data || []);
-      
+    
+      // 🎯 DEBUG: Ver qué datos llegan exactamente
+      console.log('🎯 Reservaciones recibidas:', json.data?.length || 0);
+      if (json.data && json.data.length > 0) {
+        console.log('🎯 Primera reservación:', json.data[0]);
+        console.log('🎯 Estados encontrados:', json.data.map(r => r.status));
+        console.log('🎯 Formato de hora ejemplo:', json.data[0].ReservationTime);
+        console.log('🎯 Formato de fecha ejemplo (RAW):', json.data[0].ReservationDate);
+        console.log('🎯 Fecha procesada:', extractDate(json.data[0].ReservationDate));
+      }
+  
+      // 🎯 MAPEAR ESTADOS DEL BACKEND AL FRONTEND
+      const reservationsWithMappedStatus = json.data?.map(reservation => ({
+        ...reservation,
+        status: mapStatusFromBackend(reservation.status) as any
+      })) || [];
+
+      console.log('🎯 Estados originales del backend:', json.data?.map(r => r.status));
+      console.log('🎯 Estados mapeados para frontend:', reservationsWithMappedStatus.map(r => r.status));
+
+      setReservations(reservationsWithMappedStatus);
+
     } catch (error) {
       console.error('🎯 Error getting reservations:', error);
       showNotification(errorHandler(error), 'error');
@@ -226,7 +498,7 @@ export default function BusinessReservations() {
     }
   }, [businessId, getBusinessId, getAuthData, showNotification]);
 
-  // 🎯 FUNCIÓN PARA APLICAR FILTROS
+  // 🎯 FUNCIÓN PARA APLICAR FILTROS (SOLO 4 ESTADOS)
   const applyFilters = useCallback((reservationsList: Reservation[], filter: FilterType) => {
     const today = new Date().toDateString();
     
@@ -239,10 +511,10 @@ export default function BusinessReservations() {
         return reservationsList.filter(res => res.status === 'pending');
       case 'confirmed':
         return reservationsList.filter(res => res.status === 'confirmed');
-      case 'attended':
-        return reservationsList.filter(res => res.status === 'attended');
       case 'cancelled':
         return reservationsList.filter(res => res.status === 'cancelled');
+      case 'completed':
+        return reservationsList.filter(res => res.status === 'completed');
       default:
         return reservationsList;
     }
@@ -284,77 +556,80 @@ export default function BusinessReservations() {
     initializeData();
   }, []);
 
-  // 🎯 FUNCIÓN PARA MARCAR COMO ASISTIDO
-  const markAsAttended = async (reservationId: number) => {
+  // 🎯 FUNCIÓN PARA EXTRAER LA FECHA - ARREGLAR EL PROBLEMA DE ZONA HORARIA
+  const extractDate = (dateTimeString: string) => {
     try {
-      setUpdatingReservation(reservationId);
-      const { token } = getAuthData();
-      
-      if (!token) {
-        throw new Error('No se encontró el token de autenticación');
+      // Si la fecha viene en formato YYYY-MM-DD, usarla directamente
+      if (dateTimeString.includes('T')) {
+        // Si tiene formato ISO, extraer solo la parte de fecha
+        const datePart = dateTimeString.split('T')[0];
+        const [year, month, day] = datePart.split('-');
+        return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).toLocaleDateString('es-ES', {
+          weekday: 'short',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        });
       }
-
-      const response = await fetch(`http://localhost:3000/api/reservations/${reservationId}/status`, {
-        method: "PATCH",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          status: 'attended'
-        })
+      
+      // Si la fecha viene en formato YYYY-MM-DD
+      if (dateTimeString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = dateTimeString.split('-');
+        return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).toLocaleDateString('es-ES', {
+          weekday: 'short',
+          year: 'numeric', 
+          month: '2-digit',
+          day: '2-digit'
+        });
+      }
+      
+      // Fallback para otros formatos
+      const date = new Date(dateTimeString);
+      
+      // 🎯 AGREGAR UN DÍA para compensar zona horaria si es necesario
+      // Solo si parece que perdió un día
+      const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+      
+      return utcDate.toLocaleDateString('es-ES', {
+        weekday: 'short',
+        year: 'numeric',
+        month: '2-digit', 
+        day: '2-digit'
       });
-
-      if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem('user');
-        alert('Sesión expirada o inválida');
-        window.location.href = '/login';
-        return;
-      }
-      
-      if (!response.ok) {
-        const errors = await response.json();
-        throw new Error(`Error ${response.status}: ${errors.message || 'Error al actualizar la reservación'}`);
-      }
-      
-      showNotification('Reservación marcada como asistida!', 'success');
-      
-      // Actualizar el estado local
-      setReservations(prev => prev.map(res => 
-        res.id === reservationId ? { ...res, status: 'attended' } : res
-      ));
       
     } catch (error) {
-      console.error('🎯 Error marcando como asistido:', error);
-      showNotification(errorHandler(error), 'error');
-    } finally {
-      setUpdatingReservation(null);
+      console.error('🎯 Error procesando fecha:', dateTimeString, error);
+      return dateTimeString || 'Fecha inválida';
     }
   };
 
-  // 🎯 FUNCIÓN PARA EXTRAER LA FECHA
-  const extractDate = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    return date.toLocaleDateString('es-ES', {
-      weekday: 'short',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    });
-  };
-
   // 🎯 FUNCIÓN PARA EXTRAER LA HORA
-  const extractTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    return date.toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const extractTime = (timeString: string) => {
+    // Si ReservationTime es solo hora (ej: "14:30" o "14:30:00")
+    if (timeString && timeString.includes(':')) {
+      // Si ya es formato de hora, devolverlo directamente
+      const timeParts = timeString.split(':');
+      if (timeParts.length >= 2) {
+        return `${timeParts[0]}:${timeParts[1]}`;
+      }
+    }
+    
+    // Si es una fecha completa, extraer la hora
+    const date = new Date(timeString);
+    if (!isNaN(date.getTime())) {
+      return date.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    // Si nada funciona, devolver el string original o un placeholder
+    return timeString || 'Hora no disponible';
   };
 
-  // 🎯 FUNCIÓN PARA OBTENER COLOR DEL ESTADO
+  // 🎯 FUNCIÓN PARA OBTENER COLOR DEL ESTADO (SOLO 4 ESTADOS)
   const getStatusColor = (status: string = 'pending') => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case 'confirmed':
         return 'status-confirmed';
       case 'pending':
@@ -363,32 +638,28 @@ export default function BusinessReservations() {
         return 'status-cancelled';
       case 'completed':
         return 'status-completed';
-      case 'attended':
-        return 'status-attended';
       default:
         return 'status-pending';
     }
   };
 
-  // 🎯 FUNCIÓN PARA OBTENER TEXTO DEL ESTADO
+  // 🎯 FUNCIÓN PARA OBTENER TEXTO DEL ESTADO (SOLO 4 ESTADOS)
   const getStatusText = (status: string = 'pending') => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case 'confirmed':
-        return 'Confirmada';
+        return 'En Curso';
       case 'pending':
         return 'Pendiente';
       case 'cancelled':
         return 'Cancelada';
       case 'completed':
         return 'Completada';
-      case 'attended':
-        return 'Asistida';
       default:
         return 'Pendiente';
     }
   };
 
-  // 🎯 FUNCIÓN PARA CALCULAR ESTADÍSTICAS
+  // 🎯 FUNCIÓN PARA CALCULAR ESTADÍSTICAS (SOLO 4 ESTADOS)
   const getStats = () => {
     const today = new Date().toDateString();
     return {
@@ -398,7 +669,8 @@ export default function BusinessReservations() {
       ).length,
       pending: reservations.filter(res => res.status === 'pending').length,
       confirmed: reservations.filter(res => res.status === 'confirmed').length,
-      attended: reservations.filter(res => res.status === 'attended').length,
+      cancelled: reservations.filter(res => res.status === 'cancelled').length,
+      completed: reservations.filter(res => res.status === 'completed').length,
     };
   };
 
@@ -454,7 +726,7 @@ export default function BusinessReservations() {
         </div>
       </div>
 
-      {/* 🎯 FILTROS */}
+      {/* 🎯 FILTROS ACTUALIZADOS - SOLO 4 ESTADOS */}
       <div className="filters-section">
         <div className="filters-header">
           <h3>Filtros</h3>
@@ -485,18 +757,24 @@ export default function BusinessReservations() {
             className={`filter-button ${activeFilter === 'confirmed' ? 'active' : ''}`}
             onClick={() => setActiveFilter('confirmed')}
           >
-            ✅ Confirmadas ({stats.confirmed})
+            🔄 En Curso ({stats.confirmed})
           </button>
           <button 
-            className={`filter-button ${activeFilter === 'attended' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('attended')}
+            className={`filter-button ${activeFilter === 'completed' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('completed')}
           >
-            👍 Asistidas ({stats.attended})
+            🏁 Completadas ({stats.completed})
+          </button>
+          <button 
+            className={`filter-button ${activeFilter === 'cancelled' ? 'active' : ''}`}
+            onClick={() => setActiveFilter('cancelled')}
+          >
+            ❌ Canceladas ({stats.cancelled})
           </button>
         </div>
       </div>
       
-      {/* 🎯 TABLA */}
+      {/* 🎯 TABLA CON ACCIONES ACTUALIZADAS - SOLO 4 ESTADOS */}
       <div className="table-container">
         {filteredReservations.length === 0 ? (
           <div className="no-reservations-message">
@@ -565,19 +843,37 @@ export default function BusinessReservations() {
                   </td>
                   <td>
                     <div className="action-buttons-container">
-                      {(reservation.status === 'confirmed' || reservation.status === 'pending') && (
-                        <button 
-                          className={`action-button attend ${updatingReservation === reservation.id ? 'loading' : ''}`}
-                          onClick={() => markAsAttended(reservation.id)}
-                          disabled={updatingReservation === reservation.id}
-                          title="Marcar como asistido"
-                        >
-                          {updatingReservation === reservation.id ? '⏳' : '👍'} Asistido
-                        </button>
+                      {/* 🎯 MENÚ DESPLEGABLE CON SOLO LOS 4 ESTADOS PERMITIDOS */}
+                      <select 
+                        value={reservation.status}
+                        onChange={(e) => {
+                          if (e.target.value !== reservation.status) {
+                            console.log('🎯 Cambio de estado solicitado:', {
+                              from: reservation.status,
+                              to: e.target.value,
+                              reservationId: reservation.id
+                            });
+                            updateReservationStatus(reservation.id, e.target.value);
+                          }
+                        }}
+                        disabled={updatingReservation === reservation.id}
+                        className="status-select"
+                      >
+                        <option value="pending">⏳ Pendiente</option>
+                        <option value="confirmed">🔄 En Curso</option>
+                        <option value="completed">🏁 Completada</option>
+                        <option value="cancelled">❌ Cancelada</option>
+                      </select>
+                      
+                      {/* 🎯 INDICADOR DE LOADING */}
+                      {updatingReservation === reservation.id && (
+                        <span style={{marginLeft: '8px', color: '#666'}}>⏳ Actualizando...</span>
                       )}
-                      {reservation.status === 'attended' && (
-                        <span className="attended-badge">✅ Asistió</span>
-                      )}
+                      
+                      {/* 🎯 INFORMACIÓN ADICIONAL DEL ESTADO ACTUAL */}
+                      <div style={{marginTop: '4px', fontSize: '11px', color: '#666'}}>
+                        Estado actual: <span style={{fontWeight: 'bold', color: '#333'}}>{getStatusText(reservation.status)}</span>
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -591,6 +887,9 @@ export default function BusinessReservations() {
         <div className="reservations-stats">
           <span>Reservaciones hoy: {stats.today}</span>
           <span> | Pendientes: {stats.pending}</span>
+          <span> | En Curso: {stats.confirmed}</span>
+          <span> | Completadas: {stats.completed}</span>
+          <span> | Canceladas: {stats.cancelled}</span>
         </div>
         <button onClick={initializeData} className="refresh-button">
           🔄 Actualizar lista

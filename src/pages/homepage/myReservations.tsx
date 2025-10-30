@@ -61,7 +61,7 @@ export default function MyReservations() {
             try{
                 setLoading(true)
                 const token = JSON.parse(localStorage.getItem('user') || '{}').token;
-                const response = await fetch('http://localhost:3000/api/reservations/remove/'+id,{
+                const response = await fetch('http://localhost:3000/api/reservations/cancel/'+id,{
                     method:"DELETE",
                     headers: {
                         'Authorization': `Bearer ${token}`

@@ -32,6 +32,12 @@ const CourtsPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
+      console.log('🎯 Token disponible:', !!token);
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       const response = await fetch('http://localhost:3000/api/pitchs/getAllFromActiveBusinesses', {
         method: 'GET',
         headers: {
@@ -40,6 +46,8 @@ const CourtsPage: React.FC = () => {
         }
       });
 
+      console.log('🎯 Response status:', response.status);
+
       if (response.status === 401) {
         localStorage.removeItem('user');
         alert('Sesión expirada');
@@ -47,12 +55,34 @@ const CourtsPage: React.FC = () => {
         return;
       }
 
+      // 🎯 MANEJAR 404 específico (backend retorna 404 cuando no hay canchas)
+      if (response.status === 404) {
+        const errorText = await response.text();
+        console.log('🎯 404 Response body:', errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          
+          // Si el backend dice "No pitches from active businesses", no es un error
+          if (errorData.error && errorData.error.includes('No pitches from active businesses')) {
+            console.log('🎯 Backend dice: no hay canchas de negocios activos');
+            setCourts([]);
+            return; // Salir sin error
+          }
+        } catch (parseError) {
+          console.log('🎯 No se pudo parsear el error 404');
+        }
+        
+        // Si no es el mensaje específico, es un error del endpoint
+        throw new Error('El endpoint de canchas no está disponible');
+      }
+
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
       const responseData = await response.json();
-      console.log('Datos de canchas recibidos:', responseData);
+      console.log('🎯 Datos de canchas recibidos:', responseData);
 
       let courtsData: Court[] = [];
       if (Array.isArray(responseData)) {
@@ -62,9 +92,11 @@ const CourtsPage: React.FC = () => {
       } else if (responseData.data && Array.isArray(responseData.data)) {
         courtsData = responseData.data;
       } else {
+        console.log('🎯 Estructura inesperada:', responseData);
         throw new Error('Formato de respuesta inesperado');
       }
 
+      console.log(`🎯 Canchas procesadas: ${courtsData.length}`);
       setCourts(courtsData);
       
       if (courtsData.length > 0) {
@@ -74,7 +106,7 @@ const CourtsPage: React.FC = () => {
         setPriceInputs(prev => ({ ...prev, max: adjustedMax.toString() }));
       }
     } catch (err) {
-      console.error('Error al obtener canchas:', err);
+      console.error('🎯 Error al obtener canchas:', err);
       setError(err instanceof Error ? err.message : 'Error al cargar canchas');
     } finally {
       setLoading(false);
@@ -161,6 +193,52 @@ const CourtsPage: React.FC = () => {
           </div>
           <button onClick={() => fetchCourts()} className="retry-button">
             🔄 Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 🎯 AGREGAR MANEJO PARA CUANDO NO HAY CANCHAS (sin error)
+  if (!loading && !error && courts.length === 0) {
+    return (
+      <div className="courts-page-container">
+        <div className="courts-header-section">
+          <h1 className="courts-main-title">🏟️ Canchas Disponibles</h1>
+          <p className="courts-main-subtitle">
+            Encuentra la cancha perfecta para tu próximo partido
+          </p>
+        </div>
+        
+        <div className="no-courts-container" style={{
+          textAlign: 'center',
+          padding: '40px 20px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          margin: '20px 0'
+        }}>
+          <div className="no-courts-message">
+            <h3 style={{color: '#6c757d', marginBottom: '15px'}}>📭 No hay canchas disponibles</h3>
+            <p style={{color: '#6c757d', marginBottom: '10px'}}>
+              Actualmente no hay canchas de negocios activos disponibles para reservar.
+            </p>
+            <p style={{color: '#6c757d', marginBottom: '20px'}}>
+              Los negocios pueden estar temporalmente inactivos o no hay canchas registradas aún.
+            </p>
+          </div>
+          <button 
+            onClick={() => fetchCourts()} 
+            className="retry-button"
+            style={{
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              cursor: 'pointer'
+            }}
+          >
+            🔄 Actualizar lista
           </button>
         </div>
       </div>

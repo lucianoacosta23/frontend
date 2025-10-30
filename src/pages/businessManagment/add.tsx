@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import type { Pitch } from '../../types/pitchType.ts';
-import { useNavigate, useOutletContext, Navigate } from 'react-router';
-import { useAuth } from '../../components/Auth.tsx';
+import { useNavigate, useOutletContext } from 'react-router';
 
 export default function PitchAdd() {
     const [data, setData] = useState<PitchResponse | null>(null);
@@ -10,33 +9,79 @@ export default function PitchAdd() {
     const [hasNoBusiness, setHasNoBusiness] = useState<boolean>(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(null);
+    const [userData, setUserData] = useState<any>(null);
+    const [authChecked, setAuthChecked] = useState<boolean>(false);
     
     const { showNotification } = useOutletContext<{ showNotification: (m: string, t: 'success' | 'error' | 'warning' | 'info') => void }>();
     const navigate = useNavigate();
 
-    const { userData, token } = useAuth();
+    // 🎯 TODOS LOS HOOKS/CALLBACKS DEBEN IR AQUÍ ARRIBA (antes de cualquier return condicional)
+    
+    // FUNCIÓN PARA DECODIFICAR EL TOKEN JWT
+    const decodeToken = useCallback((token: string) => {
+        try {
+            const payload = token.split('.')[1];
+            const decodedPayload = atob(payload);
+            const userData = JSON.parse(decodedPayload);
+            
+            return {
+                id: userData.id || userData.userId || 0,
+                email: userData.email || '',
+                name: userData.name || userData.username || '',
+                role: userData.role || ''
+            };
+        } catch (error) {
+            console.error('Error decodificando token:', error);
+            return null;
+        }
+    }, []);
 
-    if (!userData) {
-        alert('sesion no iniciada');
-        return <Navigate to="/login" />;
-    }
-
+    // FUNCIÓN PARA OBTENER TOKEN Y DATOS DEL USUARIO DESDE LOCALSTORAGE
+    const getAuthData = useCallback(() => {
+        try {
+            const storedUser = localStorage.getItem('user');
+            
+            if (!storedUser) {
+                console.log('No hay usuario en localStorage');
+                return null;
+            }
+            
+            const parsed = JSON.parse(storedUser);
+            if (!parsed.token) {
+                console.log('No hay token en los datos del usuario');
+                localStorage.removeItem('user');
+                return null;
+            }
+            
+            const decodedUser = decodeToken(parsed.token);
+            if (!decodedUser) {
+                console.log('Token inválido, eliminando datos');
+                localStorage.removeItem('user');
+                return null;
+            }
+            
+            console.log('Datos de usuario obtenidos:', decodedUser);
+            setToken(parsed.token);
+            setUserData(decodedUser);
+            return { token: parsed.token, userData: decodedUser };
+            
+        } catch (error) {
+            console.error('Error obteniendo datos de autenticación:', error);
+            localStorage.removeItem('user');
+            return null;
+        }
+    }, [decodeToken]);
 
     // FUNCIÓN PARA OBTENER EL BUSINESSID DEL USUARIO
     const getBusinessId = useCallback(async () => {
         try {
+            if (!userData?.id || !token) {
+                throw new Error('No hay datos de usuario o token');
+            }
+
             const userId = userData.id;
-            
-            if (!token) {
-                throw new Error('No se encontró token de autenticación');
-            }
-
-            if (!userId) {
-                throw new Error('No se pudo obtener el ID del usuario');
-            }
-
             console.log('Obteniendo business para usuario:', userId);
-            console.log('URL completa:', `http://localhost:3000/api/business/findByOwnerId/${userId}`);
 
             const response = await fetch(`http://localhost:3000/api/business/findByOwnerId/${userId}`, {
                 method: "GET",
@@ -51,11 +96,10 @@ export default function PitchAdd() {
             if (response.status === 401 || response.status === 403) {
                 localStorage.removeItem('user');
                 alert('Sesión expirada o inválida');
-                window.location.href = '/login';
+                navigate('/login');
                 return null;
             }
             
-            // MANEJO ESPECÍFICO DEL 404
             if (response.status === 404) {
                 console.log('No se encontró negocio para este usuario');
                 setHasNoBusiness(true);
@@ -101,11 +145,26 @@ export default function PitchAdd() {
             setHasNoBusiness(true);
             throw error;
         }
-    }, [showNotification, token, userData]);
+    }, [showNotification, token, userData, navigate]);
+
+    // EFECTO PARA OBTENER AUTENTICACIÓN AL CARGAR EL COMPONENTE
+    useEffect(() => {
+        const authData = getAuthData();
+        if (!authData) {
+            alert('Sesión no iniciada o inválida');
+            navigate('/login');
+        } else {
+            setAuthChecked(true);
+        }
+    }, [getAuthData, navigate]);
 
     // EFECTO PARA OBTENER EL BUSINESSID AL CARGAR EL COMPONENTE
     useEffect(() => {
         const initializeBusiness = async () => {
+            if (!token || !userData || !authChecked) {
+                return;
+            }
+            
             try {
                 setLoading(true);
                 await getBusinessId();
@@ -117,16 +176,62 @@ export default function PitchAdd() {
         };
 
         initializeBusiness();
-    }, [getBusinessId]);
+    }, [getBusinessId, token, userData, authChecked]);
 
-    // Opciones válidas para el tamaño
+    // 🎯 AHORA SÍ PODEMOS HACER RETURNS CONDICIONALES (después de todos los hooks)
+
+    // VERIFICAR SI HAY DATOS DE USUARIO ANTES DE RENDERIZAR
+    if (!authChecked || !userData || !token) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Verificando autenticación...</p>
+            </div>
+        );
+    }
+
+    // MANEJO DE ESTADOS DE CARGA Y ERROR
+    if (loading) {
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Cargando información del negocio...</p>
+            </div>
+        );
+    }
+
+    // MANEJO ESPECÍFICO PARA USUARIOS SIN NEGOCIO
+    if (hasNoBusiness) {
+        return (
+            <div className="no-business-container">
+                <h3>🏢 No tienes un negocio registrado</h3>
+                <p>Para crear canchas, primero debes registrar tu negocio.</p>
+                <div className="action-buttons">
+                    <button 
+                        onClick={() => navigate('/registerBusiness')} 
+                        className="primary-button"
+                    >
+                        📝 Registrar mi negocio
+                    </button>
+                    <button 
+                        onClick={() => getAuthData()} 
+                        className="secondary-button"
+                    >
+                        🔄 Verificar nuevamente
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // 🎯 RESTO DE LA LÓGICA DEL COMPONENTE (opciones, handlers, etc.)
+    
     const sizeOptions = [
         { value: '5v5', label: 'Fut 5' },
         { value: '7v7', label: 'Fut 7' },
         { value: '11v11', label: 'Fut 11' }
     ];
 
-    //TIPOS DE SUELO ACTUALIZADOS SEGÚN TU ESPECIFICACIÓN
     const groundTypeOptions = [
         { value: 'césped natural', label: 'Césped Natural' },
         { value: 'césped sintético', label: 'Césped Sintético' },
@@ -165,7 +270,6 @@ export default function PitchAdd() {
                 throw new Error('No se encontró token de autenticación');
             }
 
-            // Para debugging: mostrar los datos que se envían
             console.log('Enviando datos de cancha:');
             for (let [key, value] of pitchData.entries()) {
                 if (key === 'image') {
@@ -184,7 +288,6 @@ export default function PitchAdd() {
             });
 
             console.log('Status:', response.status);
-            console.log('Headers:', Object.fromEntries(response.headers.entries()));
 
             const responseText = await response.text();
             console.log('Response body:', responseText);
@@ -203,14 +306,11 @@ export default function PitchAdd() {
             const json: PitchResponse = JSON.parse(responseText);
             setData(json);
             showNotification('✅ Cancha creada con éxito', 'success');
-            
-            // Regresar a la página anterior en lugar de navegar a una ruta específica
-            navigate(-1); // Esto regresa a la página anterior en el historial
+            navigate(-1);
             
         } catch (error) {
             console.error('Error completo:', error);
             showNotification('❌ Error: ' + error, 'error');
-            setLoading(false);
         } finally {
             setLoading(false);
         }
@@ -226,32 +326,26 @@ export default function PitchAdd() {
 
         const formData = new FormData(e.currentTarget);
         
-        // Validar que se haya seleccionado un tamaño válido
         const selectedSize = formData.get("size") as string;
         if (!sizeOptions.some(option => option.value === selectedSize)) {
             showNotification('Por favor, selecciona un tamaño válido', 'error');
             return;
         }
 
-        // Validar que se haya seleccionado un tipo de suelo válido
         const selectedGroundType = formData.get("groundType") as string;
         if (!groundTypeOptions.some(option => option.value === selectedGroundType)) {
             showNotification('Por favor, selecciona un tipo de suelo válido', 'error');
             return;
         }
 
-        // Crear FormData
         const pitchData = new FormData();
-        
-        // Agregar campos individualmente
         pitchData.append('business', businessId.toString());
-        pitchData.append('rating', '1'); //    RATING FIJO EN 1
+        pitchData.append('rating', '1');
         pitchData.append('price', formData.get("price") as string);
         pitchData.append('size', selectedSize);
         pitchData.append('groundType', selectedGroundType);
         pitchData.append('roof', formData.get("roof") ? 'true' : 'false');
         
-        // Agregar la imagen si existe
         if (imageFile) {
             pitchData.append('image', imageFile);
         }
@@ -267,40 +361,6 @@ export default function PitchAdd() {
             fileInput.value = '';
         }
     };
-
-    // MANEJO DE ESTADOS DE CARGA Y ERROR
-    if (loading) {
-        return (
-            <div className="loading-container">
-                <div className="loading-spinner"></div>
-                <p>Cargando información del negocio...</p>
-            </div>
-        );
-    }
-
-    // MANEJO ESPECÍFICO PARA USUARIOS SIN NEGOCIO
-    if (hasNoBusiness) {
-        return (
-            <div className="no-business-container">
-                <h3>🏢 No tienes un negocio registrado</h3>
-                <p>Para crear canchas, primero debes registrar tu negocio.</p>
-                <div className="action-buttons">
-                    <button 
-                        onClick={() => window.location.href = '/registerBusiness'} 
-                        className="primary-button"
-                    >
-                        📝 Registrar mi negocio
-                    </button>
-                    <button 
-                        onClick={() => window.location.reload()} 
-                        className="secondary-button"
-                    >
-                        🔄 Verificar nuevamente
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className='crud-form-container'>
@@ -397,7 +457,7 @@ export default function PitchAdd() {
                 <div className='crud-form-actions'>
                     <button 
                         type="button" 
-                        onClick={() => navigate(-1)} // Regresar a la página anterior
+                        onClick={() => navigate(-1)}
                         className="secondary-button"
                     >
                         ↩️ Cancelar
@@ -411,6 +471,7 @@ export default function PitchAdd() {
                     </button>
                 </div>
             </form>
+            
             {data && (
                 <div className="success-preview">
                     <h3>🎉 ¡Cancha creada exitosamente!</h3>

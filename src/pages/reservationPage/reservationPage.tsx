@@ -69,15 +69,16 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
     for (let hour = openTime; hour < closeTime; hour++) {
       const startTime = `${hour.toString().padStart(2, '0')}`;
       const endTime = `${(hour + 1).toString().padStart(2, '0')}`;
-      const label = `${startTime} - ${endTime}`;
+      const label = `${startTime}:00 - ${endTime}:00`;
       
       slots.push({
-        time: startTime,
+        time: startTime, // 🎯 FORMATO CONSISTENTE: solo hora sin minutos
         label: label,
         available: true
       });
     }
     
+    console.log('🎯 Time slots generados:', slots);
     return slots;
   }, []);
 
@@ -157,31 +158,63 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
   };
 
   // Función para verificar si un horario está disponible
+  // 🎯 MEJORAR LA FUNCIÓN isTimeSlotAvailable con más debugging y validación
   const isTimeSlotAvailable = useCallback((selectedDate: string, time: string): boolean => {
-    if (!selectedDate || !time || occupiedSlots.length === 0) {
+    if (!selectedDate || !time) {
+      console.log('🎯 isTimeSlotAvailable: Fecha o hora faltante', { selectedDate, time });
       return true;
     }
+
+    if (occupiedSlots.length === 0) {
+      console.log('🎯 isTimeSlotAvailable: No hay slots ocupados');
+      return true;
+    }
+
+    console.log('🎯 Verificando disponibilidad para:', { selectedDate, time });
+    console.log('🎯 Slots ocupados:', occupiedSlots);
 
     // Buscar si existe algún horario ocupado en la misma fecha y hora
     const isOccupied = occupiedSlots.some(slot => {
       const slotDate = new Date(slot.ReservationDate);
-      const slotTime = (slot.ReservationTime);
+      const formattedSlotDate = formatDate(slotDate);
       
-      // Comparar si es el mismo día
-      const isSameDay = formatDate(slotDate) === selectedDate;
+      // Normalizar el tiempo del slot ocupado
+      let slotTime = slot.ReservationTime;
       
-      // Comparar si es la misma hora
+      // Si viene con segundos (ej: "12:00:00"), removerlos
+      if (slotTime && slotTime.includes(':')) {
+        const timeParts = slotTime.split(':');
+        slotTime = `${timeParts[0].padStart(2, '0')}`;
+      }
+      
+      console.log('🎯 Comparando:', {
+        slotDate: formattedSlotDate,
+        selectedDate,
+        slotTime,
+        inputTime: time,
+        dateMatch: formattedSlotDate === selectedDate,
+        timeMatch: slotTime === time
+      });
+      
+      // Comparar si es el mismo día y la misma hora
+      const isSameDay = formattedSlotDate === selectedDate;
       const isSameTime = slotTime === time;
+      
       return isSameDay && isSameTime;
     });
 
+    console.log('🎯 Resultado disponibilidad:', !isOccupied);
     return !isOccupied;
   }, [occupiedSlots]);
 
   // Función para obtener horarios ocupados de la cancha
+  // 🎯 MEJORAR fetchOccupiedSlots con mejor debugging
   const fetchOccupiedSlots = useCallback(async (pitchId: string, authToken: string) => {
     try {
+      console.log('🎯 Obteniendo slots ocupados para cancha:', pitchId);
+      
       if (!authToken) {
+        console.log('🎯 No hay token disponible');
         return [];
       }
 
@@ -193,19 +226,29 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
         },
       });
 
+      console.log('🎯 Response status:', response.status);
+
       if (response.ok) {
         const slotsData = await response.json();
+        console.log('🎯 Datos recibidos del backend:', slotsData);
         
         const slots = Array.isArray(slotsData) 
           ? slotsData 
-          : slotsData.data || slotsData.occupiedSlots || [];
+          : slotsData.data || slotsData.occupiedSlots || slotsData.reservations || [];
+        
+        console.log('🎯 Slots procesados:', slots);
+        console.log('🎯 Cantidad de slots ocupados:', slots.length);
         
         setOccupiedSlots(slots);
         return slots;
+      } else {
+        console.log('🎯 Error en response:', response.status);
+        const errorText = await response.text();
+        console.log('🎯 Error text:', errorText);
       }
       return [];
     } catch (error) {
-      console.error('Error obteniendo horarios ocupados:', error);
+      console.error('🎯 Error obteniendo horarios ocupados:', error);
       return [];
     }
   }, []);
@@ -305,6 +348,23 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
     }
   }, [date]);
 
+  // 🎯 AGREGAR useEffect para refrescar disponibilidad cuando cambian los slots ocupados
+  useEffect(() => {
+    if (date && timeSlots.length > 0) {
+      console.log('🎯 Recalculando disponibilidad para fecha:', date);
+      console.log('🎯 Slots ocupados actuales:', occupiedSlots);
+      
+      // Forzar actualización de la disponibilidad
+      const updatedSlots = timeSlots.map(slot => ({
+        ...slot,
+        available: isTimeSlotAvailable(date, slot.time)
+      }));
+      
+      console.log('🎯 Slots con disponibilidad actualizada:', updatedSlots);
+      setTimeSlots(updatedSlots);
+    }
+  }, [date, occupiedSlots, isTimeSlotAvailable]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pitch) return;
@@ -313,9 +373,17 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
       return;
     }
     
-    // Validar que el horario esté disponible
+    // 🎯 DOBLE VERIFICACIÓN DE DISPONIBILIDAD antes de enviar
+    console.log('🎯 Verificación final de disponibilidad:', { date, selectedTime });
+    
+    // Refrescar slots ocupados antes de la verificación final
+    if (id && token) {
+      await fetchOccupiedSlots(id, token);
+    }
+    
+    // Verificar disponibilidad después del refresh
     if (!isTimeSlotAvailable(date, selectedTime)) {
-      setError('Este horario no está disponible. Por favor selecciona otro.');
+      setError('❌ Este horario ya no está disponible. Alguien más lo reservó. Por favor selecciona otro horario.');
       return;
     }
 
@@ -333,19 +401,23 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
       if (isNaN(datetime.getTime())) throw new Error('Fecha inválida');
 
       // Verificar que la fecha no sea en el pasado
-      if (datetime < new Date()) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      datetime.setHours(0, 0, 0, 0);
+      
+      if (datetime < today) {
         throw new Error('No puedes reservar en fechas pasadas');
       }
 
       const body = {
         ReservationDate: date,
-        ReservationTime: `${selectedTime}:00`,
+        ReservationTime: `${selectedTime}:00:00`, // 🎯 FORMATO COMPLETO PARA EL BACKEND
         pitch: pitch.id,
         user: userData.id,
-        status: 'pendiente'
+        status: 'pending' // 🎯 USAR 'pending' en lugar de 'pendiente'
       };
 
-      console.log('Enviando reserva con datos:', body);
+      console.log('🎯 Enviando reserva con datos:', body);
 
       const res = await fetch('http://localhost:3000/api/reservations/add', {
         method: 'POST',
@@ -373,6 +445,11 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
           msg = txt || msg;
         }
         
+        // 🎯 MANEJO ESPECÍFICO DE CONFLICTO DE HORARIOS
+        if (res.status === 409 || msg.includes('already reserved') || msg.includes('conflicto') || msg.includes('ocupado')) {
+          throw new Error('❌ Este horario ya fue reservado por otro usuario. Por favor selecciona otro horario.');
+        }
+        
         if (msg.includes('User not found')) {
           throw new Error('Error en el sistema: usuario no encontrado. Por favor contacta con soporte.');
         }
@@ -381,16 +458,17 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
       }
 
       const result = await res.json();
-      console.log('Reserva creada exitosamente:', result);
+      console.log('🎯 Reserva creada exitosamente:', result);
 
+      // 🎯 ACTUALIZAR SLOTS OCUPADOS INMEDIATAMENTE
       if (id) {
         await fetchOccupiedSlots(id, token);
       }
 
       alert('✅ Reserva creada correctamente');
-      navigate('/reserve-pitch');
+      navigate('/my-reservations'); // 🎯 REDIRIGIR A MIS RESERVAS en lugar de la lista general
     } catch (err) {
-      console.error('Error en handleSubmit:', err);
+      console.error('🎯 Error en handleSubmit:', err);
       setError(err instanceof Error ? err.message : 'Error al crear la reserva');
     } finally {
       setSubmitting(false);
@@ -692,6 +770,9 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
                     const isAvailable = isTimeSlotAvailable(date, slot.time);
                     const isSelected = selectedTime === slot.time;
                     
+                    // 🎯 DEBUGGING VISUAL
+                    console.log(`🎯 Slot ${slot.time}: disponible=${isAvailable}, seleccionado=${isSelected}`);
+                    
                     return (
                       <button
                         key={slot.time}
@@ -699,13 +780,25 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
                         className={`time-slot ${isSelected ? 'time-slot-selected' : ''} ${
                           isAvailable ? 'time-slot-available' : 'time-slot-unavailable'
                         }`}
-                        onClick={() => isAvailable && setSelectedTime(slot.time)}
+                        onClick={() => {
+                          if (isAvailable) {
+                            console.log('🎯 Seleccionando horario:', slot.time);
+                            setSelectedTime(slot.time);
+                          } else {
+                            console.log('🎯 Horario no disponible:', slot.time);
+                          }
+                        }}
                         disabled={!isAvailable}
+                        title={isAvailable ? 'Horario disponible' : 'Horario ocupado'}
                       >
                         <div className="time-slot-content">
                           <div className="time-slot-label">{slot.label}</div>
                           <div className="time-slot-status">
                             {isAvailable ? '✅ Disponible' : '❌ Ocupado'}
+                          </div>
+                          {/* 🎯 DEBUG INFO - REMOVER EN PRODUCCIÓN */}
+                          <div style={{fontSize: '8px', color: '#666'}}>
+                            Debug: {slot.time}
                           </div>
                         </div>
                       </button>

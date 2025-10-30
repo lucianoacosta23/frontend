@@ -32,12 +32,21 @@ const ReservePitchPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
+      console.log('🎯 Token disponible en ReservePitch:', !!token);
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       const response = await fetch('http://localhost:3000/api/pitchs/getAllFromActiveBusinesses', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
       });
+
+      console.log('🎯 ReservePitch Response status:', response.status);
 
       // Handle 401 Unauthorized (expired/invalid token)
       if (response.status === 401) {
@@ -47,12 +56,34 @@ const ReservePitchPage: React.FC = () => {
         return;
       }
 
+      // 🎯 MANEJAR 404 específico (backend retorna 404 cuando no hay canchas)
+      if (response.status === 404) {
+        const errorText = await response.text();
+        console.log('🎯 ReservePitch 404 Response body:', errorText);
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          
+          // Si el backend dice "No pitches from active businesses", no es un error
+          if (errorData.error && errorData.error.includes('No pitches from active businesses')) {
+            console.log('🎯 ReservePitch: Backend dice no hay canchas de negocios activos');
+            setPitches([]); // Establecer array vacío
+            return; // Salir sin error
+          }
+        } catch (parseError) {
+          console.log('🎯 ReservePitch: No se pudo parsear el error 404');
+        }
+        
+        // Si no es el mensaje específico, es un error del endpoint
+        throw new Error('El endpoint de canchas no está disponible');
+      }
+
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
       const responseData = await response.json();
-      console.log('Pitches data received:', responseData);
+      console.log('🎯 ReservePitch datos recibidos:', responseData);
 
       // Handle different response formats (data array or direct array)
       let pitchesData: ReservePitch[] = [];
@@ -60,13 +91,14 @@ const ReservePitchPage: React.FC = () => {
         pitchesData = responseData;
       } else if (responseData.data && Array.isArray(responseData.data)) {
         pitchesData = responseData.data;
+      } else if (responseData.pitches && Array.isArray(responseData.pitches)) {
+        pitchesData = responseData.pitches;
       } else {
-        console.error('Unexpected response format:', responseData);
+        console.error('🎯 ReservePitch estructura inesperada:', responseData);
         throw new Error('Formato de respuesta inesperado');
       }
 
-      console.log('Processed pitches:', pitchesData);
-      console.log('First pitch structure:', pitchesData[0]);
+      console.log(`🎯 ReservePitch canchas procesadas: ${pitchesData.length}`);
       
       setPitches(pitchesData);
 
@@ -76,12 +108,12 @@ const ReservePitchPage: React.FC = () => {
         setFilters((prev) => ({ ...prev, priceMax: Math.ceil(maxPrice * 1.2) }));
       }
     } catch (err) {
-      console.error('Error fetching pitches:', err);
+      console.error('🎯 ReservePitch Error fetching pitches:', err);
       setError(err instanceof Error ? err.message : 'Error al cargar canchas');
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, token]);
 
   // Filter pitches based on current filters
   const filteredPitches = pitches.filter((pitch) => {
@@ -221,13 +253,31 @@ const ReservePitchPage: React.FC = () => {
               </button>
             </div>
           ) : filteredPitches.length === 0 ? (
-            <div className="no-results">
-              <p className="no-results-icon">🔍</p>
-              <h3 className="no-results-title">No se encontraron canchas</h3>
-              <p className="no-results-text">
-                Intenta ajustar los filtros para ver más resultados
-              </p>
-            </div>
+            pitches.length === 0 ? (
+              // No hay canchas en absoluto
+              <div className="no-results">
+                <p className="no-results-icon">📭</p>
+                <h3 className="no-results-title">No hay canchas disponibles</h3>
+                <p className="no-results-text">
+                  Actualmente no hay canchas de negocios activos disponibles para reservar.
+                </p>
+                <button onClick={fetchPitches} className="retry-button">
+                  🔄 Actualizar
+                </button>
+              </div>
+            ) : (
+              // Hay canchas pero no coinciden con los filtros
+              <div className="no-results">
+                <p className="no-results-icon">🔍</p>
+                <h3 className="no-results-title">No se encontraron canchas</h3>
+                <p className="no-results-text">
+                  Intenta ajustar los filtros para ver más resultados
+                </p>
+                <button onClick={handleClearFilters} className="retry-button">
+                  🗑️ Limpiar filtros
+                </button>
+              </div>
+            )
           ) : (
             <div className="pitch-cards-grid">
               {filteredPitches.map((pitch) => {
