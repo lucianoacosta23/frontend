@@ -411,10 +411,10 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
 
       const body = {
         ReservationDate: date,
-        ReservationTime: `${selectedTime}:00:00`, // 🎯 FORMATO COMPLETO PARA EL BACKEND
+        ReservationTime: `${selectedTime}:00`, // FORMATO COMPLETO PARA EL BACKEND
         pitch: pitch.id,
         user: userData.id,
-        status: 'pending' // 🎯 USAR 'pending' en lugar de 'pendiente'
+        status: 'pendiente' //USAR 'pending' en lugar de 'pendiente'
       };
 
       console.log('🎯 Enviando reserva con datos:', body);
@@ -466,7 +466,7 @@ export default function ReservePitchPageMakeReservation(): JSX.Element {
       }
 
       alert('✅ Reserva creada correctamente');
-      navigate('/my-reservations'); // 🎯 REDIRIGIR A MIS RESERVAS en lugar de la lista general
+      navigate('/myReservations'); // 🎯 REDIRIGIR A MIS RESERVAS en lugar de la lista general
     } catch (err) {
       console.error('🎯 Error en handleSubmit:', err);
       setError(err instanceof Error ? err.message : 'Error al crear la reserva');

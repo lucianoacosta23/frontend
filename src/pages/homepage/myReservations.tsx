@@ -62,7 +62,7 @@ export default function MyReservations() {
                 setLoading(true)
                 const token = JSON.parse(localStorage.getItem('user') || '{}').token;
                 const response = await fetch('http://localhost:3000/api/reservations/cancel/'+id,{
-                    method:"DELETE",
+                    method:"PUT",
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }}
@@ -98,15 +98,25 @@ export default function MyReservations() {
                     <th></th>
                 </thead>
                 <tbody>
-                    {data?.data.map((reservation:Reservation) => (
-            <tr key={reservation.id}>
-              <td>{reservation.id}</td>
-              <td>{typeof(reservation.pitch.business) === "object" && reservation.pitch.business.businessName}</td>
-              <td>{reservation.pitch.id}</td>  
-              <td>{reservation.ReservationTime}</td>
-              <td><button className='action-button delete' value={reservation.id} onClick={handleDeleteSubmit}>Cancelar</button></td>
-            </tr>
-          ))}
+                    {data?.data
+      .filter((reservation: Reservation) => reservation.status !== 'cancelada')
+      .map((reservation: Reservation) => (
+        <tr key={reservation.id}>
+          <td>{reservation.id}</td>
+          <td>{typeof(reservation.pitch.business) === "object" && reservation.pitch.business.businessName}</td>
+          <td>{reservation.pitch.id}</td>  
+          <td>{reservation.ReservationTime}</td>
+          <td>
+            <button
+              className='action-button delete'
+              value={reservation.id}
+              onClick={handleDeleteSubmit}
+            >
+              Cancelar
+            </button>
+          </td>
+        </tr>
+      ))}
                 </tbody>
             </table>
         </pre>}
